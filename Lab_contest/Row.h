@@ -13,11 +13,15 @@ public:
 	Row();
 	Row(size_t n);
 	Row(const Row<T>&);
+	T& operator[](int i) { return arr[i]; }
 	Row<T>& operator=(const Row<T>& b);
 	Row<T>& operator*=(const T& k);
 	Row<T> operator *(const T& k);
-	Row<T>& operator -=(const Row<T>&);
+	Row<T>& operator -=(const Row<T>& b);
+	void Clear();
+	void resize(uint32_t m);
 	void Show();
+	size_t Size();
 	Row<T>& Input();
 
 	~Row();
@@ -40,6 +44,12 @@ inline void Row<T>::Show()
 }
 
 template<typename T>
+inline size_t Row<T>::Size()
+{
+	return n;
+}
+
+template<typename T>
 inline Row<T>& Row<T>::Input()
 {
 	cin >> n;
@@ -59,6 +69,7 @@ template<typename T>
 Row<T>::Row(size_t n)
 {
 	arr = new T[n];
+	for (int i = 0; i < n; ++i) arr[i] = T(0);
 	this->n = n;
 }
 
@@ -100,4 +111,26 @@ inline Row<T>& Row<T>::operator-=(const Row<T>& b)
 {
 	for (int i = 0; i < n; ++i) arr[i] -= b.arr[i];
 	return *this;
+}
+
+template<typename T>
+inline void Row<T>::Clear()
+{
+	delete[] arr;
+	arr = nullptr;
+	n = 0;
+}
+
+template<typename T>
+inline void Row<T>::resize(uint32_t m)
+{
+	if (m != n) {
+		int k = m > n ? n : m;
+		T* tmp = new T[n];
+		for (int i = 0; i < k; ++i) tmp[i] = arr[i];
+		delete[] arr;
+		arr = new T[m];
+		for (int i = 0; i < k; ++i) arr[i] = tmp[i];
+		delete[] tmp;
+	}
 }

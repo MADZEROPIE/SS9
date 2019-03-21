@@ -160,3 +160,15 @@ int64_t gcd(int64_t a, int64_t b) {
 	if (a == 0) return b;
 	return gcd(b%a, a);
 }
+
+ostream & operator<<(ostream & stream, const rational &a)
+{
+	stream << a.p << "/" << a.q;
+	return stream;
+}
+
+istream & operator>>(istream & stream, rational & a)
+{
+	//REALIZATION???
+	return stream;
+}

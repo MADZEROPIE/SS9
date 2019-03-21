@@ -34,3 +34,6 @@ rational set();
 void show(const rational& a);
 void show(const double& a);
 int64_t gcd(int64_t, int64_t);//мнд
+
+ostream& operator<<(ostream& stream,const rational&a);
+istream& operator>>(istream& stream, rational&a);

@@ -4,10 +4,12 @@
 #include "pch.h"
 #include <iostream>
 #include "Row.h"
+#include "rational.h"
+#include "Matrix.h"
 
 int main()
 {
-	Row<int> k;
+	/*Row<int> k;
 	k.Input();
 	k.Show();
 	Row<int> z(k);
@@ -15,5 +17,10 @@ int main()
 	z.Show();
 	k.Show();
 	z -= k;
-	z.Show();
+	z.Show();*/
+	rational a;
+	Matrix<int> b;
+
+	//cin >> a;
+	//cout << a;
 }
