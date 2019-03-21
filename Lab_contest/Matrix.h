@@ -70,6 +70,7 @@ inline Row<T> Matrix<T>::operator*(const Row<T>& X)
 {
 	int len = X.Size();
 	Row<T> res(len);
+	if (m != len) cout << "ERROR";
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < m; ++j) res[i] += M[i][j] * X[j];
 	}
