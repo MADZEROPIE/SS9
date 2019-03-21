@@ -9,6 +9,7 @@
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	/*Row<int> k;
 	k.Input();
 	k.Show();
@@ -18,9 +19,16 @@ int main()
 	k.Show();
 	z -= k;
 	z.Show();*/
-	rational a;
+	//rational a;
 	Matrix<int> b;
-
+	b.Input();
+	b.Show();
+	Matrix<int> c(b);
+	c.Show();
+	c.Input();
+	Matrix<int> z(2, 4);
+	z = c;
+	z.Show();
 	//cin >> a;
 	//cout << a;
 }

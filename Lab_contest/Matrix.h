@@ -12,10 +12,11 @@ private:
 public:
 	Matrix();
 	Matrix(uint32_t n, uint32_t m,T acc=T(0));
-	Matrix(const Matrix& B);
-	Matrix<T>& operator=(const Matrix<T>& B);
+	Matrix( Matrix& B);
+	Matrix<T>& operator=( Matrix<T>& B);
 	Row<T> operator*(const Row<T>& X);
 	Matrix<T>& Input();
+	void Show();
 	~Matrix();
 };
 
@@ -35,19 +36,20 @@ inline Matrix<T>::Matrix(uint32_t n, uint32_t m,T acc)
 }
 
 template<typename T>
-inline Matrix<T>::Matrix(const Matrix & B)
-{	
+inline Matrix<T>::Matrix( Matrix & B)
+{
+	m = B.m;
+	n = B.n;
 	M.resize(B.n);
 	for (int i = 0; i < n; ++i) {
 		M[i].resize(m);
-		for (int j = 0; j < B.m; ++j) M[i][j] = B.M[i][j];
+		for (int j = 0; j < B.m; ++j) { T tmp = B.M[i][j];  M[i][j] = tmp; }
 	}
-	m = B.m;
-	n = B.n;
+	
 }
 
 template<typename T>
-inline Matrix<T> & Matrix<T>::operator=(const Matrix<T> & B)
+inline Matrix<T> & Matrix<T>::operator=(Matrix<T> & B)
 {
 	if (m != B.m || n != B.n) {
 		for (int i = 0; i < n; ++i) M[i].Clear();
@@ -56,8 +58,11 @@ inline Matrix<T> & Matrix<T>::operator=(const Matrix<T> & B)
 		m = B.m;
 		n = B.n;
 	}
-	for (int i = 0; i < n; ++i) for (int j = 0; j < m; j++) M[i][j] = B.M[i][j];
+	for (int i = 0; i < n; ++i) 
+		for (int j = 0; j < m; j++)
+			M[i][j] = B.M[i][j];
 	acc = B.acc;
+	return *this;
 }
 
 template<typename T>
@@ -74,12 +79,34 @@ inline Row<T> Matrix<T>::operator*(const Row<T>& X)
 template<typename T>
 inline Matrix<T>& Matrix<T>::Input()
 {
+	for (int i = 0; i < n; ++i) M[i].Clear();
+	M.Clear();
+	cout << "¬ведите количество строк: ";
+	cin >> n;
+	M.resize(n);
+	cout << "¬ведите количество столбцов: ";
+	cin >> m;
+	cout << "¬ведите точность вычислений: ";
+	cin >> acc;
+	for (int i = 0; i < n; ++i) {
+		M[i].resize(m);
+		for (int j = 0; j < m; ++j) cin >> M[i][j];
+	}
 	return *this;
+}
+
+template<typename T>
+inline void Matrix<T>::Show()
+{
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < m; ++j) cout << M[i][j] << " ";
+		cout << endl;
+	}
 }
 
 template<typename T>
 inline Matrix<T>::~Matrix()
 {
-	for(int i = 0; i < n; ++i) M[i].~Row();
-	M.~Row();
+	//for(int i = 0; i < n; ++i) M[i].~Row();
+	//M.~Row();
 }

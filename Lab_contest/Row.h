@@ -63,6 +63,7 @@ template<typename T>
 inline Row<T>::~Row()
 {
 	delete[] arr;
+	arr = nullptr;
 }
 
 template<typename T>
