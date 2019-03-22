@@ -13,6 +13,7 @@ public:
 	Matrix();
 	Matrix(uint32_t n, uint32_t m,T acc=T(0));
 	Matrix( Matrix& B);
+	T& operator()(int i, int j) { return M[i][j]; }
 	Matrix<T>& operator=( Matrix<T>& B);
 	Row<T> operator*(const Row<T>& X);
 	Matrix<T>& Input();
@@ -42,8 +43,9 @@ inline Matrix<T>::Matrix( Matrix & B)
 	n = B.n;
 	M.resize(B.n);
 	for (int i = 0; i < n; ++i) {
-		M[i].resize(m);
-		for (int j = 0; j < B.m; ++j) { T tmp = B.M[i][j];  M[i][j] = tmp; }
+		M[i].resize(B.m);
+		for (int j = 0; j < B.m; ++j) 
+			M[i][j] = B.M[i][j];  
 	}
 	
 }
@@ -53,13 +55,14 @@ inline Matrix<T> & Matrix<T>::operator=(Matrix<T> & B)
 {
 	if (m != B.m || n != B.n) {
 		for (int i = 0; i < n; ++i) M[i].Clear();
+		M.Clear();
 		M.resize(B.n);
-		for (int i = 0; i < n; ++i) M[i].resize(B.m);
+		for (int i = 0; i < B.n; ++i) M[i].resize(B.m);
 		m = B.m;
 		n = B.n;
 	}
 	for (int i = 0; i < n; ++i) 
-		for (int j = 0; j < m; j++)
+		for (int j = 0; j < m; ++j)
 			M[i][j] = B.M[i][j];
 	acc = B.acc;
 	return *this;

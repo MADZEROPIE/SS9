@@ -23,12 +23,9 @@ int main()
 	Matrix<int> b;
 	b.Input();
 	b.Show();
-	Matrix<int> c(b);
-	c.Show();
-	c.Input();
-	Matrix<int> z(2, 4);
-	z = c;
-	z.Show();
+	b(0, 0) = 7;
+	b.Show();
+
 	//cin >> a;
 	//cout << a;
 }

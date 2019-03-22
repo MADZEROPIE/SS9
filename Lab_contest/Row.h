@@ -18,6 +18,7 @@ public:
 	Row<T>& operator*=(const T& k);
 	Row<T> operator *(const T& k);
 	Row<T>& operator -=(const Row<T>& b);
+	Row<T> operator -(const Row<T>& b);
 	void Clear();
 	void resize(uint32_t m);
 	void Show();
@@ -115,6 +116,14 @@ inline Row<T>& Row<T>::operator-=(const Row<T>& b)
 }
 
 template<typename T>
+inline Row<T> Row<T>::operator-(const Row<T>& b)
+{
+	Row<T> res(*this);
+	for (int i = 0; i < n; ++i) res.arr[i] -= b.arr[i];
+	return res;
+}
+
+template<typename T>
 inline void Row<T>::Clear()
 {
 	delete[] arr;
@@ -125,13 +134,18 @@ inline void Row<T>::Clear()
 template<typename T>
 inline void Row<T>::resize(uint32_t m)
 {
-	if (m != n) {
+	if (m != n && n != 0) {
 		int k = m > n ? n : m;
 		T* tmp = new T[n];
 		for (int i = 0; i < k; ++i) tmp[i] = arr[i];
 		delete[] arr;
 		arr = new T[m];
 		for (int i = 0; i < k; ++i) arr[i] = tmp[i];
+		n = m;
 		delete[] tmp;
+	}
+	if (n == 0){
+		arr = new T[m];
+	n = m;
 	}
 }
