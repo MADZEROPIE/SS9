@@ -89,7 +89,7 @@ inline int SLAU<T>::Gauss_forw()
 			}
 		}
 	}
-	return j;
+	return j;// А надо возвращать РАНГ!!!
 }
 
 template<typename T>
@@ -151,5 +151,5 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
-	return j;
+	return j;// А надо возвращать РАНГ!!!
 }
