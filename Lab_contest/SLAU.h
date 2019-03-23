@@ -1,5 +1,6 @@
 #pragma once
 #include "Matrix.h"
+#include "Con_sole.h"
 
 template<typename T>
 class SLAU
@@ -10,6 +11,7 @@ class SLAU
 public:
 	SLAU();
 	SLAU<T>& Input();
+	SLAU<T>& new_Input();
 	int Gauss_forw();
 	int JGauss();
 	Row<T> Gauss_back();
@@ -43,6 +45,46 @@ inline SLAU<T>& SLAU<T>::Input()
 	cout << "¬ведите столбец b: \n";
 	for (int i = 0; i < v; ++i) cin >> b[i];
 	return	*this;
+}
+
+template<typename T>
+inline SLAU<T>& SLAU<T>::new_Input()
+{
+	int v, h;
+	cout << "¬ведите количество строк: ";
+	cin >> v;
+	cout << "¬ведите количество столбцов: ";
+	cin >> h;
+	cout << "¬ведите точность вычислений: ";
+	cin >> acc;
+	cout << "¬ведите матрицу A: \n";
+	COORD a;
+	for (int i = 0; i < v; ++i)
+	{
+		for (int j = 0; j < h; ++j)
+		{
+			T k;
+			cout << "(" << i << "," << j << ") = ";
+			cin >> k;
+			A(i, j) = k;
+			a = get_coords();
+			a.X++;
+			move_cur(a);
+		}
+		a.X = 0;
+		a.Y++;
+		move_cur(a);
+	}
+	cout << "¬ведите столбец b: \n";
+	for (int i = 0; i < v; ++i)
+	{
+		cout << "(", i, ") = ";
+		cin >> b[i];
+		a = get_coords();
+		a.X++;
+		move_cur(a);
+	}
+	return *this;
 }
 
 template<typename T>

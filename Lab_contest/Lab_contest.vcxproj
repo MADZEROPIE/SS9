@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Con_sole.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="rational.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="SLAU.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Con_sole.cpp" />
     <ClCompile Include="Lab_contest.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="pch.cpp">
