@@ -63,10 +63,8 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	{
 		for (int j = 0; j < h; ++j)
 		{
-			T k;
 			cout << "(" << i << "," << j << ") = ";
-			cin >> k;
-			A(i, j) = k;
+			cin >> A(i, j);
 			a = get_coords();
 			a.X++;
 			move_cur(a);
