@@ -59,38 +59,59 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cin >> acc;
 	A.cl_resize(v, h);
 	b.resize(v);
-	cout << "Введите матрицу A: \n";
-	
-	COORD a = get_coords();
-	move_cur({ a.X, SHORT(a.Y + (v+1) / 2 )});
-	cout << "A = ";
-	a.X = 5;
+	cout << "Система: A*x=b" << endl;
+	COORD lu = get_coords();
+	COORD ld = { lu.X,lu.Y + v - 1 };
+	COORD ru = { lu.X + 5 * h,lu.Y };
+	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
+	for (int i = 1; i <= v; ++i)
+	{
+		move_cur({ lu.X,SHORT(lu.Y + i) });
+		cout << char(124);
+		move_cur({ ru.X,SHORT(ru.Y + i) });
+		cout << char(124);
+		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
+		cout << char(124);
+		move_cur({ ru.X + 9,SHORT(ru.Y + i) });
+		cout << char(124);
+		move_cur({ ru.X + 13,SHORT(ru.Y + i) });
+		cout << char(124);
+		move_cur({ ru.X + 18,SHORT(ru.Y + i) });
+		cout << char(124);
+	}
+	move_cur({ ru.X + 1, SHORT(lu.Y + v / 2) });
+	cout << " * ";
+	move_cur({ ru.X + 10, SHORT(lu.Y + v / 2) });
+	cout << " = ";
+	COORD c = { lu.X + 1,lu.Y+1 };
 	for (int i = 0; i < v; ++i)
 	{
-		move_cur(a);
+
 		for (int j = 0; j < h; ++j)
 		{
-			cin >> A(i, j);
-			a.X=5+5*j;
-			move_cur(a);
+			move_cur(c);
+			cin >> A[i][j];
+			c.X += 5;
 		}
-		//a.X = 5;
-		a.Y++;
-		move_cur(a);
+		c.Y += 1;
+		c.X = lu.X + 1;
 	}
-	move_cur({ 0, a.Y });
-	cout << "Введите столбец b: \n";
+	c = { ru.X + 5,ru.Y+1 };
 	for (int i = 0; i < v; ++i)
 	{
-		cin >> b[i];
-		cout << " ";
-		a = get_coords();
-		a.X=5+5*i;
-		a.Y--;
-		move_cur(a);
-		
+		move_cur(c);
+		cout << "x" << i + 1;
+		c.Y++;
 	}
-	cout << endl;
+	c = { ru.X + 14,ru.Y+1 };
+	for (int i = 0; i < v; ++i)
+	{
+		move_cur(c);
+		cin >> b[i];
+		c.Y++;
+	}
+	move_cur({ 0,SHORT(lu.Y + v) });
+	
 	return *this;
 }
 
@@ -203,5 +224,5 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
-	return j;// А надо возвращать РАНГ!!!
+	return rank;// А надо возвращать РАНГ!!!
 }
