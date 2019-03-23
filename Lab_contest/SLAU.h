@@ -61,6 +61,8 @@ inline SLAU<T>::~SLAU()
 template<typename T>
 inline int SLAU<T>::Gauss_forw()
 {
+	int m = A.m;
+	int n = A.n;
 	for (int j = 0; j < m; ++j)
 	{
 		int k = j;
@@ -79,11 +81,11 @@ inline int SLAU<T>::Gauss_forw()
 		else
 		{
 			swap(A[k], A[j]);
-			for (int i = j + 1, i < n; ++i)
+			for (int i = j + 1;i < n; ++i)
 			{
 				T d = A(i, j) / A(j, j);
 				A[i] -= d * A[j];
-				B[i] -= d * B[j];
+				b[i] -= d * b[j];
 			}
 		}
 	}
@@ -92,28 +94,35 @@ inline int SLAU<T>::Gauss_forw()
 template<typename T>
 inline Row<T> SLAU<T>::Gauss_back()
 {
+	int m = A.m;
+	int n = A.n;
 	Row<T>x;
 	x.resize(n);
+	int rank = 0;
 	for (int i = n - 1; i >= 0; --i)
 	{
 		T sum = 0;
 		for (int k = n - 1; k > i; ++k)
 			sum += x[k] * A(i, k);
-		if (A(i, i) < acc && sum - b[i] < acc)
+		if (A(i, i) < acc && sum - b[i] < acc);
 			//x - любое
 		else if (A(i, i) < acc && sum - b[i] >= acc)
-		{
-			//no solution
-			break;
-		}
+			return 0;
+		//no solution
 		else
+		{
 			x[i] = (b[i] - sum) / A(i, i);
-
+			rank++;
+		}
+			
 	}
+	return rank;
 }
 template<typename T>
 inline int SLAU<T>::JGauss()
 {
+	int m = A.m;
+	int n = A.n;
 	for (int j = 0; j < m; ++j)
 	{
 		int k = j;
@@ -131,12 +140,12 @@ inline int SLAU<T>::JGauss()
 		else
 		{
 			swap(A[k], A[j]);
-			for (int i = 0, i < n; ++i)
+			for (int i = 0; i < n; ++i)
 				if (i != j)
 				{
 					T d = A(i, j) / A(j, j);
 					A[i] -= d * A[j];
-					B[i] -= d * B[j];
+					b[i] -= d * b[j];
 				}
 		}
 	}
