@@ -8,8 +8,9 @@ private:
 	uint32_t n,//Количество строк
 		m;// Количество столбцов
 	Row<Row<T> > M;
-	T acc;
+
 public:
+	friend class SLAU<T>;
 	Matrix();
 	Matrix(uint32_t n, uint32_t m,T acc=T(0));
 	Matrix( Matrix& B);
@@ -34,7 +35,6 @@ inline Matrix<T>::Matrix(uint32_t n, uint32_t m,T acc)
 	for(int i=0;i<n;++i) M[i].resize(m);
 	this->m = m;
 	this->n = n;
-	this->acc = acc;
 }
 
 template<typename T>
@@ -65,7 +65,7 @@ inline Matrix<T> & Matrix<T>::operator=(Matrix<T> & B)
 	for (int i = 0; i < n; ++i) 
 		for (int j = 0; j < m; ++j)
 			M[i][j] = B.M[i][j];
-	acc = B.acc;
+	
 	return *this;
 }
 
@@ -91,8 +91,8 @@ inline Matrix<T>& Matrix<T>::Input()
 	M.resize(n);
 	cout << "Введите количество столбцов: ";
 	cin >> m;
-	cout << "Введите точность вычислений: ";
-	cin >> acc;
+	//cout << "Введите точность вычислений: ";
+	//cin >> acc;
 	for (int i = 0; i < n; ++i) {
 		M[i].resize(m);
 		for (int j = 0; j < m; ++j) cin >> M[i][j];
