@@ -104,8 +104,8 @@ template<typename T>
 inline int SLAU<T>::Gauss_forw()
 {
 	int m = A.m;
-	int n = A.n;
-	for (int j = 0; j < m; ++j)
+	int n = A.n; int j;
+	for (j = 0; j < m; ++j)
 	{
 		int k = j;
 		int max_elem = k;
@@ -122,15 +122,16 @@ inline int SLAU<T>::Gauss_forw()
 			A(max_elem, j) = 0;
 		else
 		{
-			swap(A[k], A[j]);
+			swap(A[max_elem], A[j]);
 			for (int i = j + 1;i < n; ++i)
 			{
 				T d = A(i, j) / A(j, j);
-				A[i] -= d * A[j];
-				b[i] -= d * b[j];
+				A[i] -=  A[j]*d;
+				b[i] -=  b[j]*d;
 			}
 		}
 	}
+	return j;// А надо возвращать РАНГ!!!
 }
 
 template<typename T>
@@ -144,7 +145,7 @@ inline Row<T> SLAU<T>::Gauss_back()
 	for (int i = n - 1; i >= 0; --i)
 	{
 		T sum = 0;
-		for (int k = n - 1; k > i; ++k)
+		for (int k = n - 1; k > i; --k)
 			sum += x[k] * A(i, k);
 		if (A(i, i) < acc && sum - b[i] < acc);
 			//x - любое
@@ -158,14 +159,15 @@ inline Row<T> SLAU<T>::Gauss_back()
 		}
 			
 	}
-	return rank;
+	return x;
 }
 template<typename T>
 inline int SLAU<T>::JGauss()
 {
 	int m = A.m;
 	int n = A.n;
-	for (int j = 0; j < m; ++j)
+	int j=0;
+	for ( j = 0; j < m; ++j)
 	{
 		int k = j;
 		int max_elem = k;
@@ -181,14 +183,15 @@ inline int SLAU<T>::JGauss()
 			A(max_elem, j) = 0;
 		else
 		{
-			swap(A[k], A[j]);
+			swap(A[max_elem], A[j]);
 			for (int i = 0; i < n; ++i)
 				if (i != j)
 				{
 					T d = A(i, j) / A(j, j);
-					A[i] -= d * A[j];
-					b[i] -= d * b[j];
+					A[i] -=  A[j]*d;
+					b[i] -=  b[j]*d;
 				}
 		}
 	}
+	return j;// А надо возвращать РАНГ!!!
 }

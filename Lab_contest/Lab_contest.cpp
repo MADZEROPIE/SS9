@@ -26,11 +26,12 @@ int main()
 	//b.Show();
 	//b(0, 0) = 7;
 	//b.Show();
-	SLAU<int> a;
-	//a.Input();
-	//a.Show();
-	a.new_Input();
+	SLAU<double> a;
+	a.Input();
 	a.Show();
+	cout<<a.JGauss()<<endl;
+	a.Show();
+	(a.Gauss_back()).Show();
 	//cin >> a;
 	//cout << a;
 }

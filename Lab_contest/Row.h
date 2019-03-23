@@ -24,7 +24,7 @@ public:
 	void Show();
 	size_t Size();
 	Row<T>& Input();
-
+	template <typename T> friend void swap(Row<T>&a, Row<T>& b);
 	~Row();
 };
 
@@ -86,10 +86,12 @@ inline Row<T>::Row(const Row<T>&b)
 template<typename T>
 inline Row<T>& Row<T>::operator=(const Row<T>& b)
 {
-	delete[] arr;
-	arr = new T[b.n];
-	n = b.n;
-	for (int i = 0; i < n; ++i) arr[i] = b.arr[i];
+	if (this != &b) {
+		delete[] arr;
+		arr = new T[b.n];
+		n = b.n;
+		for (int i = 0; i < n; ++i) arr[i] = b.arr[i];	
+	}
 	return *this;
 }
 
@@ -148,4 +150,14 @@ inline void Row<T>::resize(uint32_t m)
 		arr = new T[m];
 	n = m;
 	}
+}
+
+template<typename T>
+inline void swap(Row<T>& a, Row<T>& b)
+{
+	T* tmp = new T[a.n];
+	for (int i = 0; i < a.n; ++i) tmp[i] = a.arr[i];
+	for (int i = 0; i < b.n; ++i) a.arr[i] = b.arr[i];
+	for (int i = 0; i < a.n; ++i) b.arr[i] = tmp[i];
+	delete[] tmp;
 }
