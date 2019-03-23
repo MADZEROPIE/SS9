@@ -71,10 +71,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		for (int j = 0; j < h; ++j)
 		{
 			cin >> A(i, j);
-			a.X+=5;
+			a.X=5+5*j;
 			move_cur(a);
 		}
-		a.X = 5;
+		//a.X = 5;
 		a.Y++;
 		move_cur(a);
 	}
@@ -111,8 +111,8 @@ template<typename T>
 inline int SLAU<T>::Gauss_forw()
 {
 	int m = A.m;
-	int n = A.n; int j;
-	for (j = 0; j < m; ++j)
+	int n = A.n; int rank=0;
+	for (int j = 0; j < m; ++j)
 	{
 		int k = j;
 		int max_elem = k;
@@ -129,6 +129,7 @@ inline int SLAU<T>::Gauss_forw()
 			A(max_elem, j) = 0;
 		else
 		{
+			rank++;
 			swap(A[max_elem], A[j]);
 			for (int i = j + 1;i < n; ++i)
 			{
@@ -138,7 +139,7 @@ inline int SLAU<T>::Gauss_forw()
 			}
 		}
 	}
-	return j;// А надо возвращать РАНГ!!!
+	return rank;// А надо возвращать РАНГ!!!
 }
 
 template<typename T>
@@ -168,13 +169,14 @@ inline Row<T> SLAU<T>::Gauss_back()
 	}
 	return x;
 }
+
 template<typename T>
 inline int SLAU<T>::JGauss()
 {
 	int m = A.m;
 	int n = A.n;
-	int j=0;
-	for ( j = 0; j < m; ++j)
+	int rank=0;
+	for (int j = 0; j < m; ++j)
 	{
 		int k = j;
 		int max_elem = k;
@@ -190,6 +192,7 @@ inline int SLAU<T>::JGauss()
 			A(max_elem, j) = 0;
 		else
 		{
+			rank++;
 			swap(A[max_elem], A[j]);
 			for (int i = 0; i < n; ++i)
 				if (i != j)
