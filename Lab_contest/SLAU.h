@@ -57,31 +57,39 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cin >> h;
 	cout << "¬ведите точность вычислений: ";
 	cin >> acc;
+	A.cl_resize(v, h);
+	b.resize(v);
 	cout << "¬ведите матрицу A: \n";
-	COORD a;
+	
+	COORD a = get_coords();
+	move_cur({ a.X, SHORT(a.Y + (v+1) / 2 )});
+	cout << "A = ";
+	a.X = 5;
 	for (int i = 0; i < v; ++i)
 	{
+		move_cur(a);
 		for (int j = 0; j < h; ++j)
 		{
-			cout << "(" << i << "," << j << ") = ";
 			cin >> A(i, j);
-			a = get_coords();
-			a.X++;
+			a.X+=5;
 			move_cur(a);
 		}
-		a.X = 0;
+		a.X = 5;
 		a.Y++;
 		move_cur(a);
 	}
+	move_cur({ 0, a.Y });
 	cout << "¬ведите столбец b: \n";
 	for (int i = 0; i < v; ++i)
 	{
-		cout << "(", i, ") = ";
 		cin >> b[i];
+		cout << " ";
 		a = get_coords();
-		a.X++;
+		a.X+=5;
+		a.Y--;
 		move_cur(a);
 	}
+	cout << endl;
 	return *this;
 }
 
