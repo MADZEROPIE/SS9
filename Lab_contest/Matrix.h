@@ -10,7 +10,7 @@ private:
 	Row<Row<T> > M;
 
 public:
-	friend class SLAU<T>;
+	template<typename T1> friend class SLAU;
 	Matrix();
 	Matrix(uint32_t n, uint32_t m,T acc=T(0));
 	Matrix( Matrix& B);
