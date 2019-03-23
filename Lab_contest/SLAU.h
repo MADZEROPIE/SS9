@@ -57,3 +57,87 @@ template<typename T>
 inline SLAU<T>::~SLAU()
 {
 }
+
+template<typename T>
+inline int SLAU<T>::Gauss_forw()
+{
+	for (int j = 0; j < m; ++j)
+	{
+		int k = j;
+		int max_elem = k;
+		for (; k < n; ++k)
+		{
+			if (A(k, j) > A(max_elem, j))
+				max_elem = k;
+			if (A(k, j) < acc)
+				A(k, j) = 0;
+		}
+
+
+		if (A(max_elem, j) < acc)
+			A(max_elem, j) = 0;
+		else
+		{
+			swap(A[k], A[j]);
+			for (int i = j + 1, i < n; ++i)
+			{
+				T d = A(i, j) / A(j, j);
+				A[i] -= d * A[j];
+				B[i] -= d * B[j];
+			}
+		}
+	}
+}
+
+template<typename T>
+inline Row<T> SLAU<T>::Gauss_back()
+{
+	Row<T>x;
+	x.resize(n);
+	for (int i = n - 1; i >= 0; --i)
+	{
+		T sum = 0;
+		for (int k = n - 1; k > i; ++k)
+			sum += x[k] * A(i, k);
+		if (A(i, i) < acc && sum - b[i] < acc)
+			//x - любое
+		else if (A(i, i) < acc && sum - b[i] >= acc)
+		{
+			//no solution
+			break;
+		}
+		else
+			x[i] = (b[i] - sum) / A(i, i);
+
+	}
+}
+template<typename T>
+inline int SLAU<T>::JGauss()
+{
+	for (int j = 0; j < m; ++j)
+	{
+		int k = j;
+		int max_elem = k;
+		for (; k < n; ++k)
+		{
+			if (A(k, j) > A(max_elem, j))
+				max_elem = k;
+			if (A(k, j) < acc)
+				A(k, j) = 0;
+		}
+
+		if (A(max_elem, j) < acc)
+			A(max_elem, j) = 0;
+		else
+		{
+			swap(A[k], A[j]);
+			for (int i = 0, i < n; ++i)
+				if (i != j)
+				{
+					T d = A(i, j) / A(j, j);
+					A[i] -= d * A[j];
+					B[i] -= d * B[j];
+				}
+		}
+	}
+}
