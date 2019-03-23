@@ -174,15 +174,14 @@ istream & operator>>(istream & stream, rational & a)
 	int num = 0;
 	int flag = 0;
 	for (int i = 0; i < str.size(); ++i)
-	{
 		if (str[i] == '/')
 		{
 			a.p = num;
 			num = 0;
 			flag = 1;
 		}
-		num += num * 10 + (str[i] - '0');
-	}
+		else
+			num += num * 10 + (str[i] - '0');
 	if (flag)
 		a.q = num;
 	else
