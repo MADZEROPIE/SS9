@@ -19,6 +19,13 @@ public:
 	Row<T> operator*(const Row<T>& X);
 	Row<T>& operator[](int i) { return M[i]; }
 	Matrix<T>& Input();
+	void cl_resize(int v, int h) {
+		for (int i = 0; i < m; ++i)	M[i].Clear(); 
+		M.Clear(); 
+		n = v; m = h;
+		M.resize(v);
+		for (int i = 0; i < n; ++i)	M[i].resize(h);
+	}
 	void Show();
 	~Matrix();
 };

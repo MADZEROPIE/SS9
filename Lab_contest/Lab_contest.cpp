@@ -6,6 +6,7 @@
 #include "Row.h"
 #include "rational.h"
 #include "Matrix.h"
+#include "SLAU.h"
 
 int main()
 {
@@ -20,12 +21,14 @@ int main()
 	z -= k;
 	z.Show();*/
 	//rational a;
-	Matrix<int> b;
-	b.Input();
-	b.Show();
-	b(0, 0) = 7;
-	b.Show();
-
+	//Matrix<int> b;
+	//b.Input();
+	//b.Show();
+	//b(0, 0) = 7;
+	//b.Show();
+	SLAU<int> a;
+	a.Input();
+	a.Show();
 	//cin >> a;
 	//cout << a;
 }
