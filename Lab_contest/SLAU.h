@@ -203,5 +203,5 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
-	return j;// А надо возвращать РАНГ!!!
+	return rank;// А надо возвращать РАНГ!!!
 }
