@@ -16,6 +16,7 @@ public:
 	T& operator()(int i, int j) { return M[i][j]; }
 	Matrix<T>& operator=( Matrix<T>& B);
 	Row<T> operator*(const Row<T>& X);
+	Row<T>& operator[](int i) { return M[i]; }
 	Matrix<T>& Input();
 	void Show();
 	~Matrix();
