@@ -85,9 +85,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		cin >> b[i];
 		cout << " ";
 		a = get_coords();
-		a.X+=5;
+		a.X=5+5*i;
 		a.Y--;
 		move_cur(a);
+		
 	}
 	cout << endl;
 	return *this;
