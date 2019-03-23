@@ -172,7 +172,7 @@ istream & operator>>(istream & stream, rational & a)
 	string str;
 	stream >> str;
 	int num = 0;
-	int flag = 0;
+	bool flag = 0;
 	for (int i = 0; i < str.size(); ++i)
 		if (str[i] == '/')
 		{
@@ -189,6 +189,5 @@ istream & operator>>(istream & stream, rational & a)
 		a.p = num;
 		a.q = 1;
 	}
-	//REALIZATION???
 	return stream;
 }
