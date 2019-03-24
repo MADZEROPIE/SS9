@@ -110,10 +110,30 @@ inline Matrix<T>& Matrix<T>::Input()
 template<typename T>
 inline void Matrix<T>::Show()
 {
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < m; ++j) cout << M[i][j] << " ";
-		cout << endl;
+	COORD lu = get_coords();
+	COORD ru = { SHORT(lu.X + 5 * m),SHORT(lu.Y) };
+	char border = char(166);
+	for (int i = 1; i <= n; ++i)
+	{
+		move_cur({ lu.X,SHORT(lu.Y + i) });
+		cout << border;
+		move_cur({ ru.X,SHORT(ru.Y + i) });
+		cout << border;
 	}
+	COORD c = { lu.X + 1,lu.Y + 1 };
+	for (int i = 0; i < n; ++i)
+	{
+
+		for (int j = 0; j < m; ++j)
+		{
+			move_cur(c);
+			cout << M[i][j];
+			c.X += 5;
+		}
+		c.Y += 1;
+		c.X = lu.X + 1;
+	}
+	move_cur({ 0,c.Y + 1 });
 }
 
 template<typename T>

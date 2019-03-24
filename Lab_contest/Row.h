@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-
+#include "Con_sole.h"
 using namespace std;
 
 template <typename T>
@@ -40,8 +40,23 @@ inline Row<T>::Row()
 template<typename T>
 inline void Row<T>::Show()
 {
-	for (int i = 0; i < n; ++i) cout << arr[i] << " ";
-	cout << endl;
+	COORD l = get_coords();
+	l.Y++;
+	COORD l1 = { l.X + 1,l.Y };
+	COORD r = { l.X + 5,l.Y };
+	for (int i = 0; i < n; ++i) 
+	{
+		move_cur(l);
+		cout << char(166);
+		move_cur(l1);
+		cout << arr[i];
+		move_cur(r);
+		cout << char(166);
+		l.Y++;
+		l1.Y++;
+		r.Y++;
+	}
+	move_cur({ 0,l.Y + 1 });
 }
 
 template<typename T>

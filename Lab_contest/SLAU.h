@@ -208,8 +208,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 template<typename T>
 inline void SLAU<T>::Show()
 {
+	COORD xy1 = get_coords();
 	A.Show();
-	cout << "---------------------------\n";
+	COORD xy2 = { xy1.X + 5 * A.m,xy1.Y };
+	move_cur(xy2);
 	b.Show();
 }
 

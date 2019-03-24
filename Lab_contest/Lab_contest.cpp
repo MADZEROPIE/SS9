@@ -35,7 +35,7 @@ int main()
 	*/
 	SLAU<int> a;
 	a.new_Input();
-	//a.Show();
+	a.Show();
 	//cin >> a;
 	//cout << a;
 }
