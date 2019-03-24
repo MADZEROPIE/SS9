@@ -40,10 +40,11 @@ inline Row<T>::Row()
 template<typename T>
 inline void Row<T>::Show()
 {
+	int step = 10;
 	COORD l = get_coords();
 	l.Y++;
 	COORD l1 = { l.X + 1,l.Y };
-	COORD r = { l.X + 5,l.Y };
+	COORD r = { l.X + step,l.Y };
 	for (int i = 0; i < n; ++i) 
 	{
 		move_cur(l);

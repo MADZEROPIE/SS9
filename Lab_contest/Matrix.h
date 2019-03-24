@@ -110,8 +110,9 @@ inline Matrix<T>& Matrix<T>::Input()
 template<typename T>
 inline void Matrix<T>::Show()
 {
+	int step = 10;
 	COORD lu = get_coords();
-	COORD ru = { SHORT(lu.X + 5 * m),SHORT(lu.Y) };
+	COORD ru = { SHORT(lu.X + step * m),SHORT(lu.Y) };
 	char border = char(166);
 	for (int i = 1; i <= n; ++i)
 	{
@@ -128,7 +129,7 @@ inline void Matrix<T>::Show()
 		{
 			move_cur(c);
 			cout << M[i][j];
-			c.X += 5;
+			c.X += step;
 		}
 		c.Y += 1;
 		c.X = lu.X + 1;
