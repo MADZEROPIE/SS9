@@ -36,9 +36,8 @@ int main()
 	SLAU<double> a;
 	a.new_Input();
 	a.Show();
-	a.Gauss_back();
-	a.Show();
-	Row<double>x = a.Gauss_forw();
+	a.Gauss_forw();
+	Row<double>x = a.Gauss_back();
 	x.Show();
 	//cin >> a;
 	//cout << a;
