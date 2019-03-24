@@ -64,26 +64,55 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	COORD ld = { lu.X,lu.Y + v - 1 };
 	COORD ru = { lu.X + 5 * h,lu.Y };
 	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
-	for (int i = 1; i <= v; ++i)
+	char border = char(166);
+	char border_lu = 'A';
+	char border_ru = 'B';
+	char border_ld = 'C';
+	char border_rd = 'D';
+	for (int i = 2; i <= v - 1; ++i)
 	{
 		move_cur({ lu.X,SHORT(lu.Y + i) });
-		cout << char(124);
+		cout << border;
 		move_cur({ ru.X,SHORT(ru.Y + i) });
-		cout << char(124);
+		cout << border;
 		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
-		cout << char(124);
+		cout << border;
 		move_cur({ ru.X + 9,SHORT(ru.Y + i) });
-		cout << char(124);
+		cout << border;
 		move_cur({ ru.X + 13,SHORT(ru.Y + i) });
-		cout << char(124);
+		cout << border;
 		move_cur({ ru.X + 18,SHORT(ru.Y + i) });
-		cout << char(124);
+		cout << border;
 	}
+	move_cur({ lu.X,SHORT(lu.Y + 1) });
+	cout << border_lu;
+	move_cur({ ru.X,SHORT(ru.Y + 1) });
+	cout << border_ru;
+	move_cur({ lu.X,SHORT(lu.Y + v) });
+	cout << border_ld;
+	move_cur({ ru.X,SHORT(ru.Y + v) });
+	cout << border_rd;
+	move_cur({ ru.X + 4,SHORT(ru.Y + 1) });
+	cout << border_lu;
+	move_cur({ ru.X + 9,SHORT(ru.Y + 1) });
+	cout << border_ru;
+	move_cur({ ru.X + 13,SHORT(ru.Y + 1) });
+	cout << border_lu;
+	move_cur({ ru.X + 18,SHORT(ru.Y + 1) });
+	cout << border_ru;
+	move_cur({ ru.X + 4,SHORT(ru.Y + v) });
+	cout << border_lu;
+	move_cur({ ru.X + 9,SHORT(ru.Y + v) });
+	cout << border_ru;
+	move_cur({ ru.X + 13,SHORT(ru.Y + v) });
+	cout << border_lu;
+	move_cur({ ru.X + 18,SHORT(ru.Y + v) });
+	cout << border_ru;
 	move_cur({ ru.X + 1, SHORT(lu.Y + v / 2) });
 	cout << " * ";
 	move_cur({ ru.X + 10, SHORT(lu.Y + v / 2) });
 	cout << " = ";
-	COORD c = { lu.X + 1,lu.Y+1 };
+	COORD c = { lu.X + 1,lu.Y + 1 };
 	for (int i = 0; i < v; ++i)
 	{
 
@@ -96,14 +125,14 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.Y += 1;
 		c.X = lu.X + 1;
 	}
-	c = { ru.X + 5,ru.Y+1 };
+	c = { ru.X + 5,ru.Y + 1 };
 	for (int i = 0; i < v; ++i)
 	{
 		move_cur(c);
 		cout << "x" << i + 1;
 		c.Y++;
 	}
-	c = { ru.X + 14,ru.Y+1 };
+	c = { ru.X + 14,ru.Y + 1 };
 	for (int i = 0; i < v; ++i)
 	{
 		move_cur(c);
@@ -111,7 +140,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.Y++;
 	}
 	move_cur({ 0,SHORT(lu.Y + v) });
-	
+
 	return *this;
 }
 
