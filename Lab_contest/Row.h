@@ -3,6 +3,7 @@
 #include "Con_sole.h"
 using namespace std;
 
+
 template <typename T>
 class Row
 {
@@ -40,7 +41,6 @@ inline Row<T>::Row()
 template<typename T>
 inline void Row<T>::Show()
 {
-	int step = 10;
 	COORD l = get_coords();
 	l.Y++;
 	COORD l1 = { l.X + 1,l.Y };

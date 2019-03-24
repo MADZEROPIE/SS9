@@ -110,7 +110,6 @@ inline Matrix<T>& Matrix<T>::Input()
 template<typename T>
 inline void Matrix<T>::Show()
 {
-	int step = 10;
 	COORD lu = get_coords();
 	COORD ru = { SHORT(lu.X + step * m),SHORT(lu.Y) };
 	char border = char(166);

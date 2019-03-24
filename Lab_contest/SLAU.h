@@ -50,7 +50,7 @@ inline SLAU<T>& SLAU<T>::Input()
 template<typename T>
 inline SLAU<T>& SLAU<T>::new_Input()
 {
-	int v, h,step=10;
+	int v, h;
 	cout << "Введите количество строк: ";
 	cin >> v;
 	cout << "Введите количество столбцов: ";
@@ -208,7 +208,6 @@ inline SLAU<T>& SLAU<T>::new_Input()
 template<typename T>
 inline void SLAU<T>::Show()
 {
-	int step=10;
 	COORD xy1 = get_coords();
 	A.Show();
 	COORD xy2 = { xy1.X + step * A.m,xy1.Y };
@@ -232,13 +231,13 @@ inline int SLAU<T>::Gauss_forw()
 		int max_elem = k;
 		for (; k < n; ++k)
 		{
-			if (A(k, j) > A(max_elem, j))
+			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
-			if (A(k, j) < acc)
+			if (abs(A(k, j)) < acc)
 				A(k, j) = 0;
 		}
 		(*this).Show();
-		if (A(max_elem, j) < acc)
+		if (abs(A(max_elem, j)) < acc)
 			A(max_elem, j) = 0;
 		else
 		{
@@ -248,6 +247,7 @@ inline int SLAU<T>::Gauss_forw()
 			{
 				T d = A(i, j) / A(j, j);
 				A[i] -=  A[j]*d;
+				A(i, j) = 0;
 				b[i] -=  b[j]*d;
 			}
 		}
