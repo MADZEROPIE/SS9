@@ -243,6 +243,7 @@ inline int SLAU<T>::Gauss_forw()
 		{
 			rank++;
 			swap(A[max_elem], A[j]);
+			swap(b[max_elem], b[j]);
 			for (int i = j + 1;i < n; ++i)
 			{
 				T d = A(i, j) / A(j, j);
@@ -307,6 +308,7 @@ inline int SLAU<T>::JGauss()
 		{
 			rank++;
 			swap(A[max_elem], A[j]);
+			swap(b[max_elem], b[j]);
 			for (int i = 0; i < n; ++i)
 				if (i != j)
 				{
