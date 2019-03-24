@@ -50,7 +50,7 @@ inline SLAU<T>& SLAU<T>::Input()
 template<typename T>
 inline SLAU<T>& SLAU<T>::new_Input()
 {
-	int v, h;
+	int v, h,step=10;
 	cout << "Введите количество строк: ";
 	cin >> v;
 	cout << "Введите количество столбцов: ";
@@ -68,8 +68,8 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	COORD c = get_coords();
 	COORD lu = { c.X + 5,c.Y };
 	COORD ld = { lu.X,lu.Y + v - 1 };
-	COORD ru = { lu.X + 5 * h,lu.Y };
-	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
+	COORD ru = { lu.X + step * h,lu.Y };
+	COORD rd = { lu.X + step * h,lu.Y + v - 1 };
 	move_cur({ 0,SHORT(c.Y + v / 2) });
 	cout << "A = ";
 	for (int i = 1; i <= v - 2; ++i)
@@ -95,7 +95,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		{
 			move_cur(c);
 			cin >> A[i][j];
-			c.X += 5;
+			c.X += step;
 		}
 		c.Y += 1;
 		c.X = lu.X + 1;
@@ -104,20 +104,20 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << " b = ";
 	for (int i = 1; i <= v - 2; ++i)
 	{
-		move_cur({ ru.X + 6,SHORT(lu.Y + i) });
+		move_cur({ SHORT(ru.X + 6),SHORT(lu.Y + i) });
 		cout << border;
-		move_cur({ ru.X + 11,SHORT(ru.Y + i) });
+		move_cur({ SHORT(ru.X + 6+step),SHORT(ru.Y + i) });
 		cout << border;
 	}
-	move_cur({ ru.X + 6, SHORT(lu.Y) });
+	move_cur({ SHORT(ru.X + 6), SHORT(lu.Y) });
 	cout << border_lu;
-	move_cur({ ru.X + 6, SHORT(lu.Y + v-1) });
+	move_cur({ SHORT(ru.X + 6), SHORT(lu.Y + v-1) });
 	cout << border_ld;
-	move_cur({ ru.X + 11, SHORT(lu.Y) });
+	move_cur({ SHORT(ru.X + 6 + step) , SHORT(lu.Y) });
 	cout << border_ru;
-	move_cur({ ru.X + 11, SHORT(lu.Y + v-1) });
+	move_cur({ SHORT(ru.X + 6 + step) , SHORT(lu.Y + v - 1) });
 	cout << border_rd;
-	c = { ru.X + 7,ru.Y };
+	c = { SHORT(ru.X + 7),ru.Y };
 	for (int i = 0; i < v; ++i)
 	{
 		move_cur(c);
@@ -127,8 +127,8 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << "Система: A*x=b" << endl;
 	lu = get_coords();
 	ld = { lu.X,SHORT(lu.Y + v - 1) };
-	ru = { SHORT(lu.X + 5 * h),SHORT(lu.Y) };
-	rd = { SHORT(lu.X + 5 * h),SHORT(lu.Y + v - 1) };
+	ru = { SHORT(lu.X + step * h),SHORT(lu.Y) };
+	rd = { SHORT(lu.X + step * h),SHORT(lu.Y + v - 1) };
 	
 	for (int i = 2; i <= v - 1; ++i)
 	{
@@ -138,11 +138,11 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		cout << border;
 		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
 		cout << border;
-		move_cur({ ru.X + 9,SHORT(ru.Y + i) });
+		move_cur({ SHORT(ru.X + 4+step),SHORT(ru.Y + i) });
 		cout << border;
-		move_cur({ ru.X + 13,SHORT(ru.Y + i) });
+		move_cur({ SHORT(ru.X + 8+step),SHORT(ru.Y + i) });
 		cout << border;
-		move_cur({ ru.X + 18,SHORT(ru.Y + i) });
+		move_cur({ SHORT(ru.X + 8+2*step),SHORT(ru.Y + i) });
 		cout << border;
 	}
 	move_cur({ lu.X,SHORT(lu.Y + 1) });
@@ -155,23 +155,23 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << border_rd;
 	move_cur({ ru.X + 4,SHORT(ru.Y + 1) });
 	cout << border_lu;
-	move_cur({ ru.X + 9,SHORT(ru.Y + 1) });
+	move_cur({ SHORT(ru.X + 4+step),SHORT(ru.Y + 1) });
 	cout << border_ru;
-	move_cur({ ru.X + 13,SHORT(ru.Y + 1) });
+	move_cur({ SHORT(ru.X + 8 + step),SHORT(ru.Y + 1) });
 	cout << border_lu;
-	move_cur({ ru.X + 18,SHORT(ru.Y + 1) });
+	move_cur({ SHORT(ru.X + 8 + 2 * step),SHORT(ru.Y + 1) });
 	cout << border_ru;
 	move_cur({ ru.X + 4,SHORT(ru.Y + v) });
 	cout << border_lu;
-	move_cur({ ru.X + 9,SHORT(ru.Y + v) });
+	move_cur({ SHORT(ru.X + 4 + step) ,SHORT(ru.Y + v) });
 	cout << border_ru;
-	move_cur({ ru.X + 13,SHORT(ru.Y + v) });
+	move_cur({ SHORT(ru.X + 8 + step),SHORT(ru.Y + v) });
 	cout << border_lu;
-	move_cur({ ru.X + 18,SHORT(ru.Y + v) });
+	move_cur({ SHORT(ru.X + 8 + 2 * step),SHORT(ru.Y + v) });
 	cout << border_ru;
 	move_cur({ ru.X + 1, SHORT(lu.Y + v / 2) });
 	cout << " * ";
-	move_cur({ ru.X + 10, SHORT(lu.Y + v / 2) });
+	move_cur({ SHORT(ru.X + 5 + step), SHORT(lu.Y + v / 2) });
 	cout << " = ";
 	c = { lu.X + 1,lu.Y + 1 };
 	for (int i = 0; i < v; ++i)
@@ -181,7 +181,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		{
 			move_cur(c);
 			cout << A(i,j);
-			c.X += 5;
+			c.X += step;
 		}
 		c.Y += 1;
 		c.X = lu.X + 1;
@@ -193,7 +193,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		cout << "x" << i + 1;
 		c.Y++;
 	}
-	c = { ru.X + 14,ru.Y + 1 };
+	c = { SHORT(ru.X + 9 + step),ru.Y + 1 };
 	for (int i = 0; i < v; ++i)
 	{
 		move_cur(c);
@@ -236,8 +236,7 @@ inline int SLAU<T>::Gauss_forw()
 			if (A(k, j) < acc)
 				A(k, j) = 0;
 		}
-
-
+		(*this).Show();
 		if (A(max_elem, j) < acc)
 			A(max_elem, j) = 0;
 		else
@@ -252,7 +251,7 @@ inline int SLAU<T>::Gauss_forw()
 			}
 		}
 	}
-	return rank;// А надо возвращать РАНГ!!!
+	return rank;
 }
 
 template<typename T>
