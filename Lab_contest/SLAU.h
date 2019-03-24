@@ -6,6 +6,7 @@ template<typename T>
 class SLAU
 {
 	Matrix<T> A;
+	Row<T> x;
 	Row<T> b;
 	T acc;
 public:
@@ -37,6 +38,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	cin >> acc;
 	A.cl_resize(v, h);
 	b.resize(v);
+	x.resize(v);
 	
 	cout << "Введите матрицу A: \n";
 	for (int i = 0; i < v; ++i) { 
@@ -60,6 +62,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
+	x.resize(v);
 	char border = char(166);
 	char border_lu = char(166);
 	char border_ru = char(166);
@@ -201,7 +204,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.Y++;
 	}
 	move_cur({ 0,SHORT(lu.Y + v) });
-
+	for (int i = 0; i < v; ++i) x[i] = T(0);
 	return *this;
 }
 
@@ -234,11 +237,11 @@ inline int SLAU<T>::Gauss_forw()
 			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
 			if (abs(A(k, j)) < acc)
-				A(k, j) = 0.0;
+				A(k, j) = T(0);
 		}
-		(*this).Show();
+		this->Show();
 		if (abs(A(max_elem, j)) < acc)
-			A(max_elem, j) = 0.0;
+			A(max_elem, j) = T(0);
 		else
 		{
 			rank++;
@@ -248,7 +251,7 @@ inline int SLAU<T>::Gauss_forw()
 			{
 				T d = A(i, j) / A(j, j);
 				A[i] -=  A[j]*d;
-				A(i, j) = 0.0;
+				A(i, j) = T(0);
 				b[i] -=  b[j]*d;
 			}
 		}
@@ -261,12 +264,12 @@ inline Row<T> SLAU<T>::Gauss_back()
 {
 	int m = A.m;
 	int n = A.n;
-	Row<T>x;
-	x.resize(n);
+	
+	
 	int rank = 0;
 	for (int i = n - 1; i >= 0; --i)
 	{
-		T sum = 0.0;
+		T sum = T(0);
 		for (int k = n - 1; k > i; --k)
 			sum += x[k] * A(i, k);
 		if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc);
@@ -285,6 +288,14 @@ inline Row<T> SLAU<T>::Gauss_back()
 }
 
 template<typename T>
+inline Row<T> SLAU<T>::check_res()
+{
+	Row<T> res = A * x - b;
+	res.Show();
+	return res;
+}
+
+template<typename T>
 inline int SLAU<T>::JGauss()
 {
 	int m = A.m;
@@ -296,14 +307,14 @@ inline int SLAU<T>::JGauss()
 		int max_elem = k;
 		for (; k < n; ++k)
 		{
-			if (A(k, j) > A(max_elem, j))
+			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
-			if (A(k, j) < acc)
-				A(k, j) = 0;
+			if (abs(A(k, j)) < acc)
+				A(k, j) = T(0);
 		}
 
-		if (A(max_elem, j) < acc)
-			A(max_elem, j) = 0;
+		if (abs(A(max_elem, j)) < acc)
+			A(max_elem, j) = T(0);
 		else
 		{
 			rank++;
@@ -318,5 +329,5 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
-	return rank;// А надо возвращать РАНГ!!!
+	return rank;
 }
