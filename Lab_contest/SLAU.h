@@ -57,18 +57,79 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cin >> h;
 	cout << "Введите точность вычислений: ";
 	cin >> acc;
+	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
-	cout << "Система: A*x=b" << endl;
-	COORD lu = get_coords();
-	COORD ld = { lu.X,lu.Y + v - 1 };
-	COORD ru = { lu.X + 5 * h,lu.Y };
-	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
 	char border = char(166);
 	char border_lu = char(166);
 	char border_ru = char(166);
 	char border_ld = char(166);
 	char border_rd = char(166);
+	COORD c = get_coords();
+	COORD lu = { c.X + 5,c.Y };
+	COORD ld = { lu.X,lu.Y + v - 1 };
+	COORD ru = { lu.X + 5 * h,lu.Y };
+	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
+	move_cur({ 0,SHORT(c.Y + v / 2) });
+	cout << "A = ";
+	for (int i = 1; i <= v - 2; ++i)
+	{
+		move_cur({ lu.X,SHORT(lu.Y + i) });
+		cout << border;
+		move_cur({ ru.X,SHORT(ru.Y + i) });
+		cout << border;
+	}
+	move_cur(lu);
+	cout << border_lu;
+	move_cur(ru);
+	cout << border_ru;
+	move_cur(ld);
+	cout << border_ld;
+	move_cur(rd);
+	cout << border_rd;
+	c = { lu.X + 1,lu.Y };
+	for (int i = 0; i < v; ++i)
+	{
+
+		for (int j = 0; j < h; ++j)
+		{
+			move_cur(c);
+			cin >> A[i][j];
+			c.X += 5;
+		}
+		c.Y += 1;
+		c.X = lu.X + 1;
+	}
+	move_cur({ ru.X + 1,SHORT(ru.Y + v / 2) });
+	cout << " b = ";
+	for (int i = 1; i <= v - 2; ++i)
+	{
+		move_cur({ ru.X + 6,SHORT(lu.Y + i) });
+		cout << border;
+		move_cur({ ru.X + 11,SHORT(ru.Y + i) });
+		cout << border;
+	}
+	move_cur({ ru.X + 6, SHORT(lu.Y) });
+	cout << border_lu;
+	move_cur({ ru.X + 6, SHORT(lu.Y + v-1) });
+	cout << border_ld;
+	move_cur({ ru.X + 11, SHORT(lu.Y) });
+	cout << border_ru;
+	move_cur({ ru.X + 11, SHORT(lu.Y + v-1) });
+	cout << border_rd;
+	c = { ru.X + 7,ru.Y };
+	for (int i = 0; i < v; ++i)
+	{
+		move_cur(c);
+		cin >> b[i];
+		c.Y++;
+	}
+	cout << "Система: A*x=b" << endl;
+	lu = get_coords();
+	ld = { lu.X,SHORT(lu.Y + v - 1) };
+	ru = { SHORT(lu.X + 5 * h),SHORT(lu.Y) };
+	rd = { SHORT(lu.X + 5 * h),SHORT(lu.Y + v - 1) };
+	
 	for (int i = 2; i <= v - 1; ++i)
 	{
 		move_cur({ lu.X,SHORT(lu.Y + i) });
@@ -112,14 +173,14 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << " * ";
 	move_cur({ ru.X + 10, SHORT(lu.Y + v / 2) });
 	cout << " = ";
-	COORD c = { lu.X + 1,lu.Y + 1 };
+	c = { lu.X + 1,lu.Y + 1 };
 	for (int i = 0; i < v; ++i)
 	{
 
 		for (int j = 0; j < h; ++j)
 		{
 			move_cur(c);
-			cin >> A[i][j];
+			cout << A(i,j);
 			c.X += 5;
 		}
 		c.Y += 1;
@@ -136,7 +197,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	for (int i = 0; i < v; ++i)
 	{
 		move_cur(c);
-		cin >> b[i];
+		cout << b[i];
 		c.Y++;
 	}
 	move_cur({ 0,SHORT(lu.Y + v) });
