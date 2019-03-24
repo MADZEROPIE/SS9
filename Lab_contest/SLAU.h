@@ -65,10 +65,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	COORD ru = { lu.X + 5 * h,lu.Y };
 	COORD rd = { lu.X + 5 * h,lu.Y + v - 1 };
 	char border = char(166);
-	char border_lu = 'A';
-	char border_ru = 'B';
-	char border_ld = 'C';
-	char border_rd = 'D';
+	char border_lu = char(166);
+	char border_ru = char(166);
+	char border_ld = char(166);
+	char border_rd = char(166);
 	for (int i = 2; i <= v - 1; ++i)
 	{
 		move_cur({ lu.X,SHORT(lu.Y + i) });
