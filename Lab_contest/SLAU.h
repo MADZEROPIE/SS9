@@ -8,7 +8,8 @@ class SLAU
 	Matrix<T> A;
 	Row<T> x;
 	Row<T> b;
-	T acc;
+	T acc=T(0);
+	bool solved = false;
 public:
 	SLAU();
 	SLAU<T>& Input();
@@ -256,6 +257,7 @@ inline int SLAU<T>::Gauss_forw()
 			}
 		}
 	}
+	solved = true;
 	return rank;
 }
 
@@ -265,24 +267,29 @@ inline Row<T> SLAU<T>::Gauss_back()
 	int m = A.m;
 	int n = A.n;
 	
-	
-	int rank = 0;
-	for (int i = n - 1; i >= 0; --i)
-	{
-		T sum = T(0);
-		for (int k = n - 1; k > i; --k)
-			sum += x[k] * A(i, k);
-		if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc);
-			//x - любое
-		else if (abs(A(i, i)) < acc && abs(sum - b[i]) >= acc)
-			return 0;
-		//no solution
-		else
+	if (solved) {
+		int rank = 0;
+		for (int i = n - 1; i >= 0; --i)
 		{
-			x[i] = (b[i] - sum) / A(i, i);
-			rank++;
+			T sum = T(0);
+			for (int k = n - 1; k > i; --k)
+				sum += x[k] * A(i, k);
+			if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc);
+			//x - любое
+			else if (abs(A(i, i)) < acc && abs(sum - b[i]) >= acc)
+				return 0;
+			//no solution
+			else
+			{
+				x[i] = (b[i] - sum) / A(i, i);
+				rank++;
+			}
+
 		}
-			
+	}
+	else
+	{
+		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
 	return x;
 }
@@ -329,5 +336,6 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
+	solved = true;
 	return rank;
 }

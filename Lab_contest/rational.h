@@ -23,7 +23,10 @@ struct rational
 	rational& operator -=(const rational& a);
 	rational& operator *=(const rational& a);
 	rational& operator /=(const rational& a);
+	operator double() {	return double(p) / q;	}
+	operator float() {	return float(p) / q;	}
 };
+
 rational operator+ (const rational& a,const rational& b);
 rational operator- (const rational& a, const rational& b);
 rational operator* (const rational& a, const rational& b);
