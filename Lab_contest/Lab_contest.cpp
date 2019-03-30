@@ -39,6 +39,7 @@ int main()
 	a.Gauss_forw();
 	Row<double>x = a.Gauss_back();
 	x.Show();
+	(a.check_res()).Show();
 	//cin >> a;
 	//cout << a;
 }
