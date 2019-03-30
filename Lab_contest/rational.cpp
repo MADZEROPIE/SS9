@@ -161,6 +161,28 @@ int64_t gcd(int64_t a, int64_t b) {
 	return gcd(b%a, a);
 }
 
+rational abs(const rational &b)
+{
+	rational res;
+	if (b.p < 0)
+	{
+		res.p = -b.p;
+		res.q = b.q;
+	}
+	else if (b.q<0)
+	{
+		res.p = b.p;
+		res.q = -b.q;
+	}
+	else
+	{
+		res.p = b.p;
+		res.q = b.q;
+	}
+	return res;
+	
+}
+
 ostream & operator<<(ostream & stream, const rational &a)
 {
 	stream << a.p << "/" << a.q;

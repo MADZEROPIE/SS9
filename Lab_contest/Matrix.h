@@ -16,7 +16,7 @@ public:
 	Matrix( Matrix& B);
 	T& operator()(int i, int j) { return M[i][j]; }
 	Matrix<T>& operator=( Matrix<T>& B);
-	Row<T> operator*(const Row<T>& X);
+	Row<T> operator*(Row<T>& X);
 	Row<T>& operator[](int i) { return M[i]; }
 	Matrix<T>& Input();
 	void cl_resize(int v, int h) {
@@ -77,7 +77,7 @@ inline Matrix<T> & Matrix<T>::operator=(Matrix<T> & B)
 }
 
 template<typename T>
-inline Row<T> Matrix<T>::operator*(const Row<T>& X)
+inline Row<T> Matrix<T>::operator*(Row<T>& X)
 {
 	int len = X.Size();
 	Row<T> res(len);

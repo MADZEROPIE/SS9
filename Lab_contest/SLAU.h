@@ -6,14 +6,18 @@ template<typename T>
 class SLAU
 {
 	Matrix<T> A;
+	Row<T> x;
 	Row<T> b;
-	T acc;
+	bool solex;
+	T acc=T(0);
+	bool solved = false;
 public:
 	SLAU();
 	SLAU<T>& Input();
 	SLAU<T>& new_Input();
 	int Gauss_forw();
 	int JGauss();
+	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Row<T> Gauss_back();
 	Row<T> check_res();
 	void Show();
@@ -24,6 +28,8 @@ template<typename T>
 inline SLAU<T>::SLAU()
 {
 }
+
+
 
 template<typename T>
 inline SLAU<T>& SLAU<T>::Input()
@@ -37,6 +43,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	cin >> acc;
 	A.cl_resize(v, h);
 	b.resize(v);
+	x.resize(v);
 	
 	cout << "Введите матрицу A: \n";
 	for (int i = 0; i < v; ++i) { 
@@ -60,6 +67,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
+	x.resize(h);
 	char border = char(166);
 	char border_lu = char(166);
 	char border_ru = char(166);
@@ -136,13 +144,17 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		cout << border;
 		move_cur({ ru.X,SHORT(ru.Y + i) });
 		cout << border;
-		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
-		cout << border;
-		move_cur({ SHORT(ru.X + 4+step),SHORT(ru.Y + i) });
-		cout << border;
+		
 		move_cur({ SHORT(ru.X + 8+step),SHORT(ru.Y + i) });
 		cout << border;
 		move_cur({ SHORT(ru.X + 8+2*step),SHORT(ru.Y + i) });
+		cout << border;
+	}
+	for (int i = 1; i <=h; ++i)
+	{
+		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
+		cout << border;
+		move_cur({ SHORT(ru.X + 4 + step),SHORT(ru.Y + i) });
 		cout << border;
 	}
 	move_cur({ lu.X,SHORT(lu.Y + 1) });
@@ -187,7 +199,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.X = lu.X + 1;
 	}
 	c = { ru.X + 5,ru.Y + 1 };
-	for (int i = 0; i < v; ++i)
+	for (int i = 0; i < h; ++i)
 	{
 		move_cur(c);
 		cout << "x" << i + 1;
@@ -200,8 +212,8 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		cout << b[i];
 		c.Y++;
 	}
-	move_cur({ 0,SHORT(lu.Y + v) });
-
+	move_cur({ 0,SHORT(lu.Y + max(v,h)+1) });
+	for (int i = 0; i < v; ++i) x[i] = T(0);
 	return *this;
 }
 
@@ -225,20 +237,20 @@ inline int SLAU<T>::Gauss_forw()
 {
 	int m = A.m;
 	int n = A.n; int rank=0;
-	for (int j = 0; j < m; ++j)
+	for (int j = 0; j < m && j<n; ++j)
 	{
 		int k = j;
 		int max_elem = k;
 		for (; k < n; ++k)
 		{
-			if (abs(A(k, j)) > abs(A(max_elem, j)))
+ 			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
 			if (abs(A(k, j)) < acc)
-				A(k, j) = 0.0;
+				A(k, j) = T(0);
 		}
-		(*this).Show();
+		this->Show();
 		if (abs(A(max_elem, j)) < acc)
-			A(max_elem, j) = 0.0;
+			A(max_elem, j) = T(0);
 		else
 		{
 			rank++;
@@ -248,11 +260,12 @@ inline int SLAU<T>::Gauss_forw()
 			{
 				T d = A(i, j) / A(j, j);
 				A[i] -=  A[j]*d;
-				A(i, j) = 0.0;
+				A(i, j) = T(0);
 				b[i] -=  b[j]*d;
 			}
 		}
 	}
+	solved = true;
 	return rank;
 }
 
@@ -261,27 +274,44 @@ inline Row<T> SLAU<T>::Gauss_back()
 {
 	int m = A.m;
 	int n = A.n;
-	Row<T>x;
-	x.resize(n);
-	int rank = 0;
-	for (int i = n - 1; i >= 0; --i)
-	{
-		T sum = 0.0;
-		for (int k = n - 1; k > i; --k)
-			sum += x[k] * A(i, k);
-		if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc);
-			//x - любое
-		else if (abs(A(i, i)) < acc && abs(sum - b[i]) >= acc)
-			return 0;
-		//no solution
-		else
+	
+	if (solved) {
+		int rank = 0;
+		for (int i = n - 1; i >= 0; --i)
 		{
-			x[i] = (b[i] - sum) / A(i, i);
-			rank++;
+			T sum = T(0);
+			for (int k = n - 1; k > i; --k)
+				sum += x[k] * A(i, k);
+			if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc)
+			{
+				
+			}
+			else if (abs(A(i, i)) < acc && abs(sum - b[i]) >= acc)
+			{
+				solex = false;
+				return 0;
+			}
+			else
+			{
+				x[i] = (b[i] - sum) / A(i, i);
+				rank++;
+			}
+
 		}
-			
+	}
+	else
+	{
+		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
 	return x;
+}
+
+template<typename T>
+inline Row<T> SLAU<T>::check_res()
+{
+	Row<T> res = A * x - b;
+	res.Show();
+	return res;
 }
 
 template<typename T>
@@ -296,14 +326,14 @@ inline int SLAU<T>::JGauss()
 		int max_elem = k;
 		for (; k < n; ++k)
 		{
-			if (A(k, j) > A(max_elem, j))
+			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
-			if (A(k, j) < acc)
-				A(k, j) = 0;
+			if (abs(A(k, j)) < acc)
+				A(k, j) = T(0);
 		}
 
-		if (A(max_elem, j) < acc)
-			A(max_elem, j) = 0;
+		if (abs(A(max_elem, j)) < acc)
+			A(max_elem, j) = T(0);
 		else
 		{
 			rank++;
@@ -318,5 +348,22 @@ inline int SLAU<T>::JGauss()
 				}
 		}
 	}
-	return rank;// А надо возвращать РАНГ!!!
+	solved = true;
+	return rank;
+}
+
+template<typename T>
+template<typename T1>
+inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
+{
+	A.cl_resize(c.n,c.m);
+	x.resize(x.Size());
+	acc = c.acc;
+	for (int i = 0; i < A.n; ++i)
+	{
+		b[i] = T(c.b[i]);
+		for (int j = 0; j < A.m; ++j)
+			A(i, j) = T(c.A(i, j));
+	}
+	return *this;
 }

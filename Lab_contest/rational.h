@@ -23,7 +23,10 @@ struct rational
 	rational& operator -=(const rational& a);
 	rational& operator *=(const rational& a);
 	rational& operator /=(const rational& a);
+	operator double() {	return double(p) / q;	}
+	operator float() {	return float(p) / q;	}
 };
+
 rational operator+ (const rational& a,const rational& b);
 rational operator- (const rational& a, const rational& b);
 rational operator* (const rational& a, const rational& b);
@@ -35,6 +38,7 @@ rational set();
 void show(const rational& a);
 void show(const double& a);
 int64_t gcd(int64_t, int64_t);//мнд
+rational abs(const rational&);
 
 ostream& operator<<(ostream& stream,const rational& a);
 istream& operator>>(istream& stream, rational& a);
