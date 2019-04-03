@@ -9,7 +9,8 @@ class SLAU
 	Row<T> x;
 	Row<T> b;
 	bool solex;
-	T acc=T(0);
+	int rank = 0;
+	double acc=1e-16;
 	bool solved = false;
 public:
 	SLAU();
@@ -236,7 +237,7 @@ template<typename T>
 inline int SLAU<T>::Gauss_forw()
 {
 	int m = A.m;
-	int n = A.n; int rank=0;
+	int n = A.n; rank=0;
 	for (int j = 0; j < m && j<n; ++j)
 	{
 		int k = j;
@@ -245,11 +246,11 @@ inline int SLAU<T>::Gauss_forw()
 		{
  			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
-			if (abs(A(k, j)) < acc)
+			if (double(abs(A(k, j))) < acc)
 				A(k, j) = T(0);
 		}
 		this->Show();
-		if (abs(A(max_elem, j)) < acc)
+		if (double(abs(A(max_elem, j))) < acc)
 			A(max_elem, j) = T(0);
 		else
 		{
@@ -282,27 +283,30 @@ inline Row<T> SLAU<T>::Gauss_back()
 			T sum = T(0);
 			for (int k = n - 1; k > i; --k)
 				sum += x[k] * A(i, k);
-			if (abs(A(i, i)) < acc && abs(sum - b[i]) < acc)
+			if (double(abs(A(i, i))) < acc && double(abs(sum - b[i])) < acc)
 			{
 				
 			}
-			else if (abs(A(i, i)) < acc && abs(sum - b[i]) >= acc)
+			else if (double(abs(A(i, i))) < acc && double(abs(sum - b[i])) >= acc)
 			{
 				solex = false;
-				return 0;
+				cout << "Нет решений " << endl;
+				return x;
 			}
 			else
 			{
 				x[i] = (b[i] - sum) / A(i, i);
 				rank++;
 			}
-
+			solex = true;
 		}
 	}
-	else
+	else 
 	{
+		
 		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
+	
 	return x;
 }
 
@@ -319,8 +323,8 @@ inline int SLAU<T>::JGauss()
 {
 	int m = A.m;
 	int n = A.n;
-	int rank=0;
-	for (int j = 0; j < m; ++j)
+	rank=0;
+	for (int j = 0; j < m && j < n; ++j)
 	{
 		int k = j;
 		int max_elem = k;
@@ -328,11 +332,11 @@ inline int SLAU<T>::JGauss()
 		{
 			if (abs(A(k, j)) > abs(A(max_elem, j)))
 				max_elem = k;
-			if (abs(A(k, j)) < acc)
+			if (double(abs(A(k, j))) < acc)
 				A(k, j) = T(0);
 		}
-
-		if (abs(A(max_elem, j)) < acc)
+		this->Show();
+		if (double(abs(A(max_elem, j))) < acc)
 			A(max_elem, j) = T(0);
 		else
 		{
@@ -367,3 +371,4 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 	}
 	return *this;
 }
+

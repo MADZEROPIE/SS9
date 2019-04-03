@@ -8,6 +8,14 @@
 #include "Matrix.h"
 #include "SLAU.h"
 
+
+void menu() {
+
+}
+
+
+
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -33,13 +41,23 @@ int main()
 	a.Show();
 	(a.Gauss_back()).Show();
 	*/
-	SLAU<double> a;
+	SLAU<int> a;
 	a.new_Input();
 	a.Show();
-	a.Gauss_forw();
-	Row<double>x = a.Gauss_back();
-	x.Show();
-	(a.check_res()).Show();
+	SLAU<double> b;
+	b.new_Input();
+	b = a;
+	/*SLAU<rational> c;
+	c = a;
+	b.Show();
+	c.Show();
+	b.JGauss();
+	b.Gauss_back();
+	c.JGauss();
+	c.Gauss_back();
+	b.check_res();
+	c.check_res();*/
+
 	//cin >> a;
 	//cout << a;
 }

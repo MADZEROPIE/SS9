@@ -5,6 +5,7 @@ void move_cur(COORD coord)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
 COORD get_coords()
 {
 	pair<int, int>a;
