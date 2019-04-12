@@ -57,4 +57,5 @@ int main()
 	c.Gauss_back();
 //	b.check_res();
 	c.check_res();
+	return 0;
 }

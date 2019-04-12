@@ -45,7 +45,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	cin >> acc;
 	A.cl_resize(v, h);
 	b.resize(v);
-	x.resize(v);
+	x.resize(h);
 	
 	cout << "Введите матрицу A: \n";
 	for (int i = 0; i < v; ++i) { 
@@ -308,16 +308,13 @@ inline Row<T> SLAU<T>::Gauss_back()
 		
 		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
-	
+	x.Show();
 	return x;
 }
 
 template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
-	A.Show();
-	b.Show();
-	x.Show();
 	Row<T> res (A * x);
 	res -= b;
 	res.Show();
@@ -368,7 +365,7 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 {
 	A.cl_resize(c.A.n,c.A.m);
 	x.resize(c.x.Size());
-	b.resize(A.n);
+	b.resize(c.b.Size());
 	acc = c.acc;
 	for (int i = 0; i < A.n; ++i)
 	{

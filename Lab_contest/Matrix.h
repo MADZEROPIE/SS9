@@ -80,10 +80,10 @@ template<typename T>
 inline Row<T> Matrix<T>::operator*(Row<T>& X)
 {
 	int len = X.Size();
-	Row<T> res(len);
+	Row<T> res(n);
 	if (m != len) cout << "ERROR";
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < m; ++j) res[i] += M[i][j] * X[j];
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) res[j] += M[j][i] * X[i];
 	}
 	return res;
 }
