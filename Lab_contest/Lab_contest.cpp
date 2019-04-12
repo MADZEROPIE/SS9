@@ -44,20 +44,17 @@ int main()
 	SLAU<int> a;
 	a.new_Input();
 	a.Show();
-	SLAU<double> b;
-	b.new_Input();
-	b = a;
-	/*SLAU<rational> c;
+	//SLAU<double> b;
+	//b.new_Input();
+	//b = a;
+	SLAU<rational> c;
 	c = a;
-	b.Show();
+	//b.Show();
 	c.Show();
-	b.JGauss();
-	b.Gauss_back();
-	c.JGauss();
+	//b.JGauss();
+	//b.Gauss_back();
+	c.Gauss_forw();
 	c.Gauss_back();
-	b.check_res();
-	c.check_res();*/
-
-	//cin >> a;
-	//cout << a;
+//	b.check_res();
+	c.check_res();
 }

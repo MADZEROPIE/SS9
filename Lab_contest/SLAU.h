@@ -14,6 +14,7 @@ class SLAU
 	bool solved = false;
 public:
 	SLAU();
+	template<typename T1> friend class SLAU;
 	SLAU<T>& Input();
 	SLAU<T>& new_Input();
 	int Gauss_forw();
@@ -231,6 +232,7 @@ inline void SLAU<T>::Show()
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
+	cout << "DESTRUCTOR SLAU";
 }
 
 template<typename T>
@@ -313,7 +315,11 @@ inline Row<T> SLAU<T>::Gauss_back()
 template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
-	Row<T> res = A * x - b;
+	A.Show();
+	b.Show();
+	x.Show();
+	Row<T> res (A * x);
+	res -= b;
 	res.Show();
 	return res;
 }
@@ -360,8 +366,9 @@ template<typename T>
 template<typename T1>
 inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 {
-	A.cl_resize(c.n,c.m);
-	x.resize(x.Size());
+	A.cl_resize(c.A.n,c.A.m);
+	x.resize(c.x.Size());
+	b.resize(A.n);
 	acc = c.acc;
 	for (int i = 0; i < A.n; ++i)
 	{
