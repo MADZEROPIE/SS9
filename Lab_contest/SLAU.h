@@ -5,14 +5,15 @@
 template<typename T>
 class SLAU
 {
-	Matrix<T> A;
-	Row<T> x;
-	Row<T> b;
+	
+	Matrix<T> x;
 	bool solex;
 	int rank = 0;
 	double acc=1e-16;
 	bool solved = false;
 public:
+	Matrix<T> A;
+	Row<T> b;
 	SLAU();
 	template<typename T1> friend class SLAU;
 	SLAU<T>& Input();
@@ -20,7 +21,7 @@ public:
 	int Gauss_forw();
 	int JGauss();
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
-	Row<T> Gauss_back();
+	Matrix<T> Gauss_back();
 	Row<T> check_res();
 	void Show();
 	~SLAU();
@@ -69,8 +70,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
-	x.resize(h);
-	for (int i = 0; i < h; ++i) x[i] = T(0);
+	//for (int i = 0; i < h; ++i) x[i] = T(0);
 	char border = char(166);
 	char border_lu = char(166);
 	char border_ru = char(166);
@@ -216,7 +216,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.Y++;
 	}
 	move_cur({ 0,SHORT(lu.Y + max(v,h)+1) });
-	for (int i = 0; i < h; ++i) x[i] = T(0);
+	//for (int i = 0; i < h; ++i) x[i] = T(0);
 	return *this;
 }
 
@@ -255,7 +255,7 @@ inline int SLAU<T>::Gauss_forw()
 			if (double(abs(A(k, j))) < acc)
 				A(k, j) = T(0);
 		}
-		this->Show();
+		
 		if (double(abs(A(max_elem, j))) < acc)
 			A(max_elem, j) = T(0);
 		else
@@ -271,40 +271,49 @@ inline int SLAU<T>::Gauss_forw()
 				b[i] -=  b[j]*d;
 			}
 		}
+		this->Show();
 	}
 	solved = true;
 	return rank;
 }
 
 template<typename T>
-inline Row<T> SLAU<T>::Gauss_back()
+inline Matrix<T> SLAU<T>::Gauss_back()
 {
 	int m = A.m;
 	int n = A.n;
 	
 	if (solved) {
-		int rank = 0;
-		for (int i = n - 1; i >= 0; --i)
-		{
-			T sum = T(0);
-			for (int k = n - 1; k > i; --k)
-				sum += x[k] * A(i, k);
-			if (double(abs(A(i, i))) < acc && double(abs(sum - b[i])) < acc)
-			{
-				
-			}
-			else if (double(abs(A(i, i))) < acc && double(abs(sum - b[i])) >= acc)
-			{
-				solex = false;
-				cout << "Нет решений " << endl;
-				return x;
-			}
+		for (int i = rank; i < n; ++i)
+			if (abs(b[i]) < acc)
+				b[i] = T(0);
 			else
 			{
-				x[i] = (b[i] - sum) / A(i, i);
-				rank++;
+				cout << "Система несовместна" << endl;
+				solex = false;
+				return x;
 			}
-			solex = true;
+		x.cl_resize(m, m - rank + 1);
+		for (int i=rank-1;i>=0;--i)
+			for (int j = i-1; j >= 0; --j)
+			{
+				T d = A(i, j) / A(i, i);
+				A[j] -= A[i] * d;
+				A(i, j) = T(0);
+				b[j] -= b[i] * d;
+				this->Show();
+			}
+		cout << rank;
+		this->Show();
+		for (int i = 0; i < rank; ++i)
+		{
+			x[i][0] = b[i] / A[i][i];
+			for (int j = rank; j < m; ++j)
+				x[i][j-rank+1] = A[i][j] / A[i][i];
+		}
+		for (int i = rank; i < m; ++i)
+		{
+			x[i][i-rank+1] = 1;
 		}
 	}
 	else 

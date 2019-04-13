@@ -19,11 +19,21 @@ void menu() {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-
+	int n, m;
 	SLAU<double> a;
-	a.new_Input();
+	cin >> n>>m;
+	a.A.cl_resize(n, m);
+	a.b.resize(n);
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < m; ++j)
+			cin >> a.A[i][j];
+	cout << "b" << endl;
+	for (int i = 0; i < n; ++i)
+		cin >> a.b[i];
+	//a.new_Input();
 	a.Show();
-	
+	a.Gauss_forw();
+	a.Gauss_back();
 	cout << "fdssssssssssssssssssssssssssssssssssssssssss";
 	//SLAU<double> b;
 	//b = a;
