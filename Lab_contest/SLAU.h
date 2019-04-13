@@ -70,153 +70,73 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
-	//for (int i = 0; i < h; ++i) x[i] = T(0);
-	char border = char(166);
-	char border_lu = char(166);
-	char border_ru = char(166);
-	char border_ld = char(166);
-	char border_rd = char(166);
-	COORD c = get_coords();
-	COORD lu = { c.X + 5,c.Y };
-	COORD ld = { lu.X,lu.Y + v - 1 };
-	COORD ru = { lu.X + step * h,lu.Y };
-	COORD rd = { lu.X + step * h,lu.Y + v - 1 };
-	move_cur({ 0,SHORT(c.Y + v / 2) });
+
+	COORD cur = get_coords();
+	gotoxy(0, cur.Y+v / 2);
 	cout << "A = ";
-	for (int i = 1; i <= v - 2; ++i)
-	{
-		move_cur({ lu.X,SHORT(lu.Y + i) });
-		cout << border;
-		move_cur({ ru.X,SHORT(ru.Y + i) });
-		cout << border;
-	}
-	move_cur(lu);
-	cout << border_lu;
-	move_cur(ru);
-	cout << border_ru;
-	move_cur(ld);
-	cout << border_ld;
-	move_cur(rd);
-	cout << border_rd;
-	c = { lu.X + 1,lu.Y };
+	cur.X += 4;
+	drawline(cur.X, cur.Y, v);
+	COORD c = { cur.X + 1,cur.Y };
 	for (int i = 0; i < v; ++i)
-	{
-
 		for (int j = 0; j < h; ++j)
 		{
-			move_cur(c);
+			gotoxy(c.X + step * j, c.Y + i);
 			cin >> A[i][j];
-			c.X += step;
 		}
-		c.Y += 1;
-		c.X = lu.X + 1;
-	}
-	move_cur({ ru.X + 1,SHORT(ru.Y + v / 2) });
-	cout << " b = ";
-	for (int i = 1; i <= v - 2; ++i)
-	{
-		move_cur({ SHORT(ru.X + 6),SHORT(lu.Y + i) });
-		cout << border;
-		move_cur({ SHORT(ru.X + 6+step),SHORT(ru.Y + i) });
-		cout << border;
-	}
-	move_cur({ SHORT(ru.X + 6), SHORT(lu.Y) });
-	cout << border_lu;
-	move_cur({ SHORT(ru.X + 6), SHORT(lu.Y + v-1) });
-	cout << border_ld;
-	move_cur({ SHORT(ru.X + 6 + step) , SHORT(lu.Y) });
-	cout << border_ru;
-	move_cur({ SHORT(ru.X + 6 + step) , SHORT(lu.Y + v - 1) });
-	cout << border_rd;
-	c = { SHORT(ru.X + 7),ru.Y };
-	for (int i = 0; i < v; ++i)
-	{
-		move_cur(c);
-		cin >> b[i];
-		c.Y++;
-	}
-	cout << "Система: A*x=b" << endl;
-	lu = get_coords();
-	ld = { lu.X,SHORT(lu.Y + v - 1) };
-	ru = { SHORT(lu.X + step * h),SHORT(lu.Y) };
-	rd = { SHORT(lu.X + step * h),SHORT(lu.Y + v - 1) };
-	
-	for (int i = 2; i <= v - 1; ++i)
-	{
-		move_cur({ lu.X,SHORT(lu.Y + i) });
-		cout << border;
-		move_cur({ ru.X,SHORT(ru.Y + i) });
-		cout << border;
-		
-		move_cur({ SHORT(ru.X + 8+step),SHORT(ru.Y + i) });
-		cout << border;
-		move_cur({ SHORT(ru.X + 8+2*step),SHORT(ru.Y + i) });
-		cout << border;
-	}
-	for (int i = 1; i <=h; ++i)
-	{
-		move_cur({ ru.X + 4,SHORT(ru.Y + i) });
-		cout << border;
-		move_cur({ SHORT(ru.X + 4 + step),SHORT(ru.Y + i) });
-		cout << border;
-	}
-	move_cur({ lu.X,SHORT(lu.Y + 1) });
-	cout << border_lu;
-	move_cur({ ru.X,SHORT(ru.Y + 1) });
-	cout << border_ru;
-	move_cur({ lu.X,SHORT(lu.Y + v) });
-	cout << border_ld;
-	move_cur({ ru.X,SHORT(ru.Y + v) });
-	cout << border_rd;
-	move_cur({ ru.X + 4,SHORT(ru.Y + 1) });
-	cout << border_lu;
-	move_cur({ SHORT(ru.X + 4+step),SHORT(ru.Y + 1) });
-	cout << border_ru;
-	move_cur({ SHORT(ru.X + 8 + step),SHORT(ru.Y + 1) });
-	cout << border_lu;
-	move_cur({ SHORT(ru.X + 8 + 2 * step),SHORT(ru.Y + 1) });
-	cout << border_ru;
-	move_cur({ ru.X + 4,SHORT(ru.Y + v) });
-	cout << border_lu;
-	move_cur({ SHORT(ru.X + 4 + step) ,SHORT(ru.Y + v) });
-	cout << border_ru;
-	move_cur({ SHORT(ru.X + 8 + step),SHORT(ru.Y + v) });
-	cout << border_lu;
-	move_cur({ SHORT(ru.X + 8 + 2 * step),SHORT(ru.Y + v) });
-	cout << border_ru;
-	move_cur({ ru.X + 1, SHORT(lu.Y + v / 2) });
-	cout << " * ";
-	move_cur({ SHORT(ru.X + 5 + step), SHORT(lu.Y + v / 2) });
-	cout << " = ";
-	c = { lu.X + 1,lu.Y + 1 };
-	for (int i = 0; i < v; ++i)
-	{
 
+	drawline(cur.X += step * h, cur.Y, v);
+	gotoxy(cur.X+=1, cur.Y + v / 2);
+	cout << " b = ";
+	cur.X += 5;
+	drawline(cur.X, cur.Y, v);
+	cur.X += 1;
+	for (int i = 0; i < v; ++i)
+	{
+		gotoxy(cur);
+		cin >> b[i];
+		cur.Y += 1;
+	}
+	cur.Y += 1;
+	gotoxy(0,cur.Y);
+	cout << "Система: A*x=b" << endl;
+	cur = get_coords();
+	drawline(cur.X, cur.Y, v);
+	cur.X += 1;
+	for (int i = 0; i < v; ++i)
 		for (int j = 0; j < h; ++j)
 		{
-			move_cur(c);
-			cout << A(i,j);
-			c.X += step;
+			gotoxy(cur.X + step * j, cur.Y + i);
+			cout << A[i][j];
 		}
-		c.Y += 1;
-		c.X = lu.X + 1;
-	}
-	c = { ru.X + 5,ru.Y + 1 };
+			
+	gotoxy(cur.X + step * h, cur.Y);
+	cur = get_coords();
+	drawline(cur.X,cur.Y,v);
+	cur.X += 1;
+	gotoxy(cur);
+	cout << " * ";
+	drawline(cur.X+=4,cur.Y,h);
+	cur.X += 1;
 	for (int i = 0; i < h; ++i)
 	{
-		move_cur(c);
+		gotoxy(cur.X, cur.Y + i);
 		cout << "x" << i + 1;
-		c.Y++;
 	}
-	c = { SHORT(ru.X + 9 + step),ru.Y + 1 };
+	cur.X += 5;
+	drawline(cur.X, cur.Y, h);
+	cur.X += 1;
+	gotoxy(cur);
+	cout << " = ";
+	drawline(cur.X+=4, cur.Y, v);
+	cur.X += 1;
 	for (int i = 0; i < v; ++i)
 	{
-		move_cur(c);
+		gotoxy(cur.X, cur.Y + i);
 		cout << b[i];
-		c.Y++;
 	}
-	move_cur({ 0,SHORT(lu.Y + max(v,h)+1) });
-	//for (int i = 0; i < h; ++i) x[i] = T(0);
+	cur.X += step;
+	drawline(cur.X, cur.Y, v);
+	gotoxy(0, cur.Y + v + 1);
 	return *this;
 }
 
@@ -226,7 +146,7 @@ inline void SLAU<T>::Show()
 	COORD xy1 = get_coords();
 	A.Show();
 	COORD xy2 = { xy1.X + step * A.m,xy1.Y };
-	move_cur(xy2);
+	gotoxy(xy2);
 	b.Show();
 }
 

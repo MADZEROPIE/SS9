@@ -6,7 +6,10 @@
 
 using namespace std;
 
-const int step = 15;
+const int step = 10;
 
 COORD get_coords();
-void move_cur(COORD coord);
+void gotoxy(int x, int y);
+void gotoxy(COORD coord);
+void drawline(int x, int y, int l);
+void move_cur(COORD);
