@@ -216,7 +216,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 		c.Y++;
 	}
 	move_cur({ 0,SHORT(lu.Y + max(v,h)+1) });
-	for (int i = 0; i < v; ++i) x[i] = T(0);
+	for (int i = 0; i < h; ++i) x[i] = T(0);
 	return *this;
 }
 
