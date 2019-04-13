@@ -70,6 +70,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	A.cl_resize(v, h);
 	b.resize(v);
 	x.resize(h);
+	for (int i = 0; i < h; ++i) x[i] = T(0);
 	char border = char(166);
 	char border_lu = char(166);
 	char border_ru = char(166);
@@ -232,7 +233,7 @@ inline void SLAU<T>::Show()
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
-	cout << "DESTRUCTOR SLAU";
+	cout << "DESTRUCTOR SLAU"<<endl;
 }
 
 template<typename T>
@@ -373,6 +374,7 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 		for (int j = 0; j < A.m; ++j)
 			A(i, j) = T(c.A(i, j));
 	}
+	for (int j = 0; j < c.x.Size(); ++j) x[j] = T(c.x[j]);
 	return *this;
 }
 

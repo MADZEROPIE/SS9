@@ -79,8 +79,10 @@ inline Row<T>& Row<T>::Input()
 template<typename T>
 inline Row<T>::~Row()
 {
-	delete[] arr;
-	arr = nullptr;
+	if (arr != nullptr) {
+		delete[] arr;
+		arr = nullptr;
+	}
 }
 
 template<typename T>
@@ -144,9 +146,11 @@ inline Row<T> Row<T>::operator-(const Row<T>& b)
 template<typename T>
 inline void Row<T>::Clear()
 {
-	delete[] arr;
-	arr = nullptr;
-	n = 0;
+	if (arr != nullptr) {
+		delete[] arr;
+		arr = nullptr;
+		n = 0;
+	}
 }
 
 template<typename T>
