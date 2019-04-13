@@ -233,7 +233,7 @@ inline void SLAU<T>::Show()
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
-	cout << "DESTRUCTOR SLAU"<<endl;
+	//cout << "DESTRUCTOR SLAU"<<endl;
 	//b.~Row();
 	//x.~Row();
 	//A.~Matrix();
@@ -285,7 +285,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 	
 	if (solved) {
 		for (int i = rank; i < n; ++i)
-			if (abs(b[i]) < acc)
+			if (double(abs(b[i])) < acc)
 				b[i] = T(0);
 			else
 			{
@@ -328,7 +328,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
-	Row<T> res (A * x);
+	Row<T> res (A * x[0]);
 	res -= b;
 	res.Show();
 	return res;
@@ -377,7 +377,7 @@ template<typename T1>
 inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 {
 	A.cl_resize(c.A.n,c.A.m);
-	x.resize(c.x.Size());
+	x.cl_resize(c.x.n,c.x.m);
 	b.resize(c.b.Size());
 	acc = c.acc;
 	for (int i = 0; i < A.n; ++i)
@@ -386,7 +386,7 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 		for (int j = 0; j < A.m; ++j)
 			A(i, j) = T(c.A(i, j));
 	}
-	for (int j = 0; j < c.x.Size(); ++j) x[j] = T(c.x[j]);
+	//for (int j = 0; j < c.x.Size(); ++j) x[j] = T(c.x[j]);
 	return *this;
 }
 

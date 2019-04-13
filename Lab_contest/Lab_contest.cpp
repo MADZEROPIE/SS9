@@ -33,20 +33,19 @@ int main()
 		*/
 	a.new_Input();
 	a.Show();
-	a.Gauss_forw();
-	a.Gauss_back();
-	cout << "fdssssssssssssssssssssssssssssssssssssssssss";
-	//SLAU<double> b;
-	//b = a;
-	//SLAU<rational> c;
-	//c = a;
-	//b.Show();
-	//c.Show();
-	//b.JGauss();
-	//b.Gauss_back();
-	//c.Gauss_forw();
-	//c.Gauss_back();
-	//b.check_res();
-	//c.check_res();
+	
+
+	SLAU<double> b;
+	b = a;
+	SLAU<rational> c;
+	c = a;
+	b.Show();
+	c.Show();
+	b.JGauss();
+	b.Gauss_back();
+	c.Gauss_forw();
+	c.Gauss_back();
+	b.check_res();
+	c.check_res();
 	return 0;
 }

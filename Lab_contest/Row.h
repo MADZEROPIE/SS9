@@ -77,7 +77,7 @@ inline Row<T>& Row<T>::Input()
 template<typename T>
 inline Row<T>::~Row()
 {
-	cout << "ROW DESTRUCTOR" << endl;
+	//cout << "ROW DESTRUCTOR" << endl;
 	n = 0;
 }
 

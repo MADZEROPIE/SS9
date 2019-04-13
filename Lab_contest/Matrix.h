@@ -140,7 +140,7 @@ inline void Matrix<T>::Show()
 template<typename T>
 inline Matrix<T>::~Matrix()
 {
-	cout << "MATRIX DESTRUCTOR" << endl;
+	//cout << "MATRIX DESTRUCTOR" << endl;
 	//for(int i = 0; i < n; ++i) M[i].~Row();
 	//M.~Row();
 }
