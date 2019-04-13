@@ -297,7 +297,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 		for (int i=rank-1;i>=0;--i)
 			for (int j = i-1; j >= 0; --j)
 			{
-				T d = A(i, j) / A(i, i);
+				T d = A(j, i) / A(i, i);
 				A[j] -= A[i] * d;
 				A(i, j) = T(0);
 				b[j] -= b[i] * d;

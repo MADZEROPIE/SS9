@@ -21,7 +21,7 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	int n, m;
 	SLAU<double> a;
-	cin >> n>>m;
+	/*cin >> n>>m;
 	a.A.cl_resize(n, m);
 	a.b.resize(n);
 	for (int i = 0; i < n; ++i)
@@ -30,7 +30,8 @@ int main()
 	cout << "b" << endl;
 	for (int i = 0; i < n; ++i)
 		cin >> a.b[i];
-	//a.new_Input();
+		*/
+	a.new_Input();
 	a.Show();
 	a.Gauss_forw();
 	a.Gauss_back();
