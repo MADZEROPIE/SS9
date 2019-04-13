@@ -12,7 +12,7 @@ private:
 public:
 	template<typename T1> friend class SLAU;
 	Matrix();
-	Matrix(uint32_t n, uint32_t m,T acc=T(0));
+	Matrix(uint32_t n, uint32_t m);
 	Matrix( Matrix& B);
 	T& operator()(int i, int j) { return M[i][j]; }
 	Matrix<T>& operator=( Matrix<T>& B);
@@ -36,8 +36,9 @@ inline Matrix<T>::Matrix()
 }
 
 template<typename T>
-inline Matrix<T>::Matrix(uint32_t n, uint32_t m,T acc)
+inline Matrix<T>::Matrix(uint32_t n, uint32_t m)
 {
+
 	M.resize(n);
 	for(int i=0;i<n;++i) M[i].resize(m);
 	this->m = m;
@@ -139,6 +140,7 @@ inline void Matrix<T>::Show()
 template<typename T>
 inline Matrix<T>::~Matrix()
 {
+	cout << "MATRIX DESTRUCTOR" << endl;
 	//for(int i = 0; i < n; ++i) M[i].~Row();
 	//M.~Row();
 }

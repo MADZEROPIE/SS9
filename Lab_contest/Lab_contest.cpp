@@ -20,17 +20,17 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 
-	SLAU<int> a;
+	SLAU<double> a;
 	a.new_Input();
 	a.Show();
 	
-	
-	SLAU<double> b;
-	b = a;
-	SLAU<rational> c;
-	c = a;
-	b.Show();
-	c.Show();
+	cout << "fdssssssssssssssssssssssssssssssssssssssssss";
+	//SLAU<double> b;
+	//b = a;
+	//SLAU<rational> c;
+	//c = a;
+	//b.Show();
+	//c.Show();
 	//b.JGauss();
 	//b.Gauss_back();
 	//c.Gauss_forw();

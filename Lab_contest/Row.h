@@ -8,7 +8,7 @@ template <typename T>
 class Row
 {
 private:
-	T* arr;//
+	vector<T> arr;//
 	size_t n;//SIZE
 public:
 	Row();
@@ -31,9 +31,8 @@ public:
 
 
 template<typename T>
-inline Row<T>::Row()
+inline Row<T>::Row() :arr()
 {
-	arr = nullptr;
 	n = 0;
 }
 
@@ -70,8 +69,7 @@ template<typename T>
 inline Row<T>& Row<T>::Input()
 {
 	cin >> n;
-	delete[] arr;
-	arr = new T[n];
+	arr.resize(n);
 	for (int i = 0; i < n; ++i) cin >> arr[i];
 	return *this;
 }
@@ -79,34 +77,29 @@ inline Row<T>& Row<T>::Input()
 template<typename T>
 inline Row<T>::~Row()
 {
-	if (arr != nullptr) {
-		delete[] arr;
-		arr = nullptr;
-	}
+	cout << "ROW DESTRUCTOR" << endl;
+	n = 0;
 }
 
 template<typename T>
-Row<T>::Row(size_t n)
+Row<T>::Row(size_t n):arr(n)
 {
-	arr = new T[n];
+	
 	for (int i = 0; i < n; ++i) arr[i] = T(0);
 	this->n = n;
 }
 
 template<typename T>
-inline Row<T>::Row(const Row<T>&b)
+inline Row<T>::Row(const Row<T>&b):arr(b.arr)
 {
 	n = b.n;
-	arr = new T[n];
-	for (int i = 0; i < n; ++i) arr[i] = b.arr[i];
 }
 
 template<typename T>
 inline Row<T>& Row<T>::operator=(const Row<T>& b)
 {
 	if (this != &b) {
-		delete[] arr;
-		arr = new T[b.n];
+		arr.resize(b.n); 
 		n = b.n;
 		for (int i = 0; i < n; ++i) arr[i] = b.arr[i];	
 	}
@@ -146,36 +139,20 @@ inline Row<T> Row<T>::operator-(const Row<T>& b)
 template<typename T>
 inline void Row<T>::Clear()
 {
-	if (arr != nullptr) {
-		delete[] arr;
-		arr = nullptr;
-		n = 0;
-	}
+	arr.clear();
+	n = 0;
 }
 
 template<typename T>
 inline void Row<T>::resize(uint32_t m)
 {
-	if (m != n && n != 0) {
-		int k = m > n ? n : m;
-		T* tmp = new T[n];
-		for (int i = 0; i < k; ++i) tmp[i] = arr[i];
-		delete[] arr;
-		arr = new T[m];
-		for (int i = 0; i < k; ++i) arr[i] = tmp[i];
-		n = m;
-		delete[] tmp;
-	}
-	if (n == 0){
-		arr = new T[m];
+	arr.resize(m);
 	n = m;
-	}
 }
 
 template<typename T>
 inline void swap(Row<T>& a, Row<T>& b)
 {
-	T* tmp = a.arr;
-	a.arr = b.arr;
-	b.arr = tmp;
+	swap(a.arr, b.arr);
+	swap(a.n, b.n);
 }

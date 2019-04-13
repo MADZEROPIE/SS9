@@ -234,6 +234,9 @@ template<typename T>
 inline SLAU<T>::~SLAU()
 {
 	cout << "DESTRUCTOR SLAU"<<endl;
+	//b.~Row();
+	//x.~Row();
+	//A.~Matrix();
 }
 
 template<typename T>
