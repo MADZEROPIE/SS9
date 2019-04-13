@@ -248,7 +248,11 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
-	Row<T> res (A * x[0]);
+	int m = A.m;
+	Row<T>frv(m);
+	for (int i = 0; i < m; ++i)
+		frv[i] = x[i][0];
+	Row<T> res (A * frv);
 	res -= b;
 	res.Show();
 	return res;
