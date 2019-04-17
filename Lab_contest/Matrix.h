@@ -82,9 +82,11 @@ inline Row<T> Matrix<T>::operator*(Row<T>& X)
 {
 	int len = X.Size();
 	Row<T> res(n);
-	if (m != len) cout << "ERROR";
-	for (int i = 0; i < m; ++i) {
-		for (int j = 0; j < n; ++j) res[j] += M[j][i] * X[i];
+	if (m != len) cout << "ERROR"<<endl;
+	else {
+		for (int i = 0; i < m; ++i) {
+			for (int j = 0; j < n; ++j) res[j] += M[j][i] * X[i];
+		}
 	}
 	return res;
 }

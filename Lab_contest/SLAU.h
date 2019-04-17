@@ -5,15 +5,14 @@
 template<typename T>
 class SLAU
 {
-	
+	Matrix<T> A;
+	Row<T> b;
 	Matrix<T> x;
 	bool solex;
 	int rank = 0;
 	double acc=1e-16;
 	bool solved = false;
 public:
-	Matrix<T> A;
-	Row<T> b;
 	SLAU();
 	template<typename T1> friend class SLAU;
 	SLAU<T>& Input();
@@ -22,6 +21,9 @@ public:
 	int JGauss();
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
+	void Show_res() {
+		x.Show();
+	}
 	Row<T> check_res();
 	void Show();
 	~SLAU();

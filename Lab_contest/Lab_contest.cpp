@@ -10,7 +10,58 @@
 
 
 void menu() {
-
+	vector<const char*> menu = { "Задать СЛАУ ","Решение СЛАУ методом Гаусса","Решение СЛАУ методом Жордана-Гаусса ","Интерактивный метод Гаусса ","Вывод результатов ","Выход" };
+	int ch = -1;
+	SLAU<int> tslau;
+	SLAU<rational> rslau;
+	SLAU<float> flslau;
+	bool slau_ex = false;
+	while (true) {
+		do
+		{
+			cout << "Выберете пункт меню " << endl;
+			for (auto i = 0; i < menu.size(); ++i) cout << i+1 << ". " << menu[i] << endl;
+			cin >> ch;
+		} while (ch <= 0 || ch > menu.size());
+		switch (ch)
+		{
+		case 1:
+			tslau.new_Input();
+			rslau = tslau;
+			flslau = tslau;
+			slau_ex = true;
+			break;
+		case 2:
+			if (!slau_ex) { cout << "Cначала создайте СЛАУ"; break; }
+			cout << "Выполняется метод Гаусса для десятичных дробей (float)" << endl;
+			flslau.Gauss_forw();
+			cout << "Выполняется метод Гаусса для рациональных дробей (rational)" << endl;
+			rslau.Gauss_forw();
+			break;
+		case 3:
+			if (!slau_ex) { cout << "Cначала создайте СЛАУ"; break; }
+			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)" << endl;
+			flslau.Gauss_forw();
+			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)" << endl;
+			rslau.Gauss_forw();
+			break;
+		case 4:
+			cout << "ТУТ ДОЛЖЕН БЫТЬ ИНТЕРАКТИВ, но его НЕТ" << endl;
+			break;
+		case 5:
+			cout << "Идет формирование решений " << endl;
+			flslau.Gauss_back();
+			rslau.Gauss_back();
+			cout<<"Невязка для десятичных дробей (float) :" << endl;
+			flslau.check_res();
+			cout << "Невязка для рациональных дробей (rational) :" << endl;
+			rslau.check_res();
+			break;
+		default:
+			return;
+			break;
+		}
+	}
 }
 
 
@@ -19,33 +70,7 @@ void menu() {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	int n, m;
-	SLAU<double> a;
-	/*cin >> n>>m;
-	a.A.cl_resize(n, m);
-	a.b.resize(n);
-	for (int i = 0; i < n; ++i)
-		for (int j = 0; j < m; ++j)
-			cin >> a.A[i][j];
-	cout << "b" << endl;
-	for (int i = 0; i < n; ++i)
-		cin >> a.b[i];
-		*/
-	a.new_Input();
-	a.Show();
+	menu();
 	
-
-	SLAU<double> b;
-	b = a;
-	SLAU<rational> c;
-	c = a;
-	b.Show();
-	c.Show();
-	b.JGauss();
-	b.Gauss_back();
-	c.Gauss_forw();
-	c.Gauss_back();
-	b.check_res();
-	c.check_res();
 	return 0;
 }
