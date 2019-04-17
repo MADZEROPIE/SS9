@@ -225,7 +225,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 				b[j] -= b[i] * d;
 				this->Show();
 			}
-		cout << rank;
+		cout <<"ÐÀÍÃ ÑÈÑÒÅÌÛ = " <<rank<<endl;
 		this->Show();
 		for (int i = 0; i < rank; ++i)
 		{
