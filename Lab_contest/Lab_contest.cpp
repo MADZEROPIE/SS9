@@ -15,11 +15,11 @@ void menu() {
 	SLAU<int> tslau;
 	SLAU<rational> rslau;
 	SLAU<float> flslau;
-	bool slau_ex = false;
+	bool slau_ex = false,solved=false;
 	while (true) {
 		do
 		{
-			cout << "Выберете пункт меню " << endl;
+			cout << "Выберете пункт меню: " << endl;
 			for (auto i = 0; i < menu.size(); ++i) cout << i+1 << ". " << menu[i] << endl;
 			cin >> ch;
 		} while (ch <= 0 || ch > menu.size());
@@ -30,25 +30,31 @@ void menu() {
 			rslau = tslau;
 			flslau = tslau;
 			slau_ex = true;
+			solved = false;
 			break;
 		case 2:
-			if (!slau_ex) { cout << "Cначала создайте СЛАУ"; break; }
+			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)" << endl;
 			flslau.Gauss_forw();
 			cout << "Выполняется метод Гаусса для рациональных дробей (rational)" << endl;
 			rslau.Gauss_forw();
+			solved = true;
 			break;
 		case 3:
-			if (!slau_ex) { cout << "Cначала создайте СЛАУ"; break; }
+			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)" << endl;
 			flslau.Gauss_forw();
 			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)" << endl;
 			rslau.Gauss_forw();
+			solved = true;
 			break;
 		case 4:
+			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
 			cout << "ТУТ ДОЛЖЕН БЫТЬ ИНТЕРАКТИВ, но его НЕТ" << endl;
 			break;
 		case 5:
+			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
+			else if (!solved) { system("cls"); cout << "Cначала вызовите метод Гаусса"<<endl; break; }
 			cout << "Идет формирование решений " << endl;
 			flslau.Gauss_back();
 			rslau.Gauss_back();
