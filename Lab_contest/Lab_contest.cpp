@@ -8,6 +8,16 @@
 #include "Matrix.h"
 #include "SLAU.h"
 
+/*0 = Black 8 = Gray
+1 = Blue 9 = Light Blue
+2 = Green A = Light Green
+3 = Aqua B = Light Aqua
+4 = Red C = Light Red
+5 = Purple D = Light Purple
+6 = Yellow E = Light Yellow
+7 = White F = Bright White*/
+
+const int NotUsed = system("color F1");
 
 void menu() {
 	vector<const char*> menu = { "Задать СЛАУ ","Решение СЛАУ методом Гаусса","Решение СЛАУ методом Жордана-Гаусса ","Интерактивный метод Гаусса ","Вывод результатов ","Выход" };
