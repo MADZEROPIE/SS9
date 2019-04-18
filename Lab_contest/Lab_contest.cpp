@@ -36,9 +36,9 @@ void menu() {
 		switch (ch)
 		{
 		case 1:
-			tslau.new_Input();
-			rslau = tslau;
-			flslau = tslau;
+			rslau.new_Input();
+			//rslau = tslau;
+			flslau = rslau;
 			slau_ex = true;
 			solved = false;
 			break;
@@ -86,7 +86,9 @@ void menu() {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	menu();
-	
+	//menu();
+	rational a;
+	cin >> a;
+	cout << a;
 	return 0;
 }

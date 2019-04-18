@@ -22,6 +22,7 @@ public:
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
 	void Show_res() {
+		// ТУТ ДОЛЖЕН БЫТЬ НОРМАЛЬНЫЙ ВЫВОД РЕШЕНИЯ
 		x.Show();
 	}
 	Row<T> check_res();
@@ -156,9 +157,6 @@ template<typename T>
 inline SLAU<T>::~SLAU()
 {
 	//cout << "DESTRUCTOR SLAU"<<endl;
-	//b.~Row();
-	//x.~Row();
-	//A.~Matrix();
 }
 
 template<typename T>
@@ -237,10 +235,10 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 		{
 			x[i][i-rank+1] = 1;
 		}
+		solex = true;
 	}
 	else 
-	{
-		
+	{	
 		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
 	x.Show();
@@ -252,11 +250,14 @@ inline Row<T> SLAU<T>::check_res()
 {
 	int m = A.m;
 	Row<T>frv(m);
+	Row<T> res;
+	if(solex){
 	for (int i = 0; i < m; ++i)
 		frv[i] = x[i][0];
-	Row<T> res (A * frv);
-	res -= b;
+	res= A * frv-b;
 	res.Show();
+	}
+	else cout<<"Невозможно посчитать невязку. "<<endl;
 	return res;
 }
 
@@ -312,7 +313,6 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 		for (int j = 0; j < A.m; ++j)
 			A(i, j) = T(c.A(i, j));
 	}
-	//for (int j = 0; j < c.x.Size(); ++j) x[j] = T(c.x[j]);
 	return *this;
 }
 
