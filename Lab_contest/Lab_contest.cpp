@@ -60,7 +60,8 @@ void menu() {
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
-			cout << "ТУТ ДОЛЖЕН БЫТЬ ИНТЕРАКТИВ, но его НЕТ" << endl;
+			flslau.interactive();
+			cout << "Метод Гаусса завершен" << endl;
 			break;
 		case 5:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }

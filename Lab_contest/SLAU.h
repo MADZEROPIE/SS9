@@ -19,7 +19,8 @@ public:
 	SLAU<T>& new_Input();
 	int Gauss_forw();
 	int JGauss();
-	void interactive(int i,int j,int k);
+	void interactive();
+	bool end_gauss(vector<bool>&used, int k);
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
 	void Show_res() {
@@ -333,11 +334,65 @@ inline int SLAU<T>::JGauss()
 }
 
 template<typename T>
-void  SLAU<T>::interactive(int i,int j,int k)
+void SLAU<T>::interactive()
 {
+	int n = A.n;
+	int m = A.m;
+	int k = 0;
+	vector<bool> used(m);
+	do
+	{
+		int i,j;
+		this->Show();
+		cout << "Введите номер строки: i = ";
+		cin >> i;
+		cout << endl << "Введите номер столбца j = ";
+		cin >> j;
+		//i -= 1;
+		//j -= 1;
+		if (!used[j] && k<=i && abs(A[i][j])>acc)
+		{
+			used[j] = true;
+			swap(A[i], A[k]);
+			swap(b[i], b[k]);
+			for (int l = k+1; l < n; ++l)
+			{
+				T d = A[l][j] / A[k][j];
+				A[l] -= A[k] * d;
+				b[l] -= b[k] * d;
+			}
+			k++;
+		}
+		else
+			cout << "Выберите другой ведущий элемент";
 
+		cout << endl;
+
+	} while (!end_gauss(used,k));
+	this->Show();
 }
 
+template<typename T>
+bool SLAU<T>::end_gauss(vector<bool>& used,int k)
+{
+	int n = A.n;
+	int m = A.m;
+	if (k >= min(n, m))
+		return true;
+	else
+	{
+		for (int i = 0; i < m; ++i)
+			if (used[i] == false)
+			{
+				int j;
+				for (j = k; j < n && abs(A[j][i]) < acc; ++j)
+					A[j][i] = T(0);
+				if (j < n)
+					return false;
+			}
+		return true;
+	}
+}
 
 template<typename T>
 template<typename T1>
