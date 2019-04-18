@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int step = 10;
+const int step = 12;
 
 COORD get_coords();
 void gotoxy(int x, int y);
