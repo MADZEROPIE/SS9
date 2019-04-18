@@ -19,6 +19,7 @@ public:
 	SLAU<T>& new_Input();
 	int Gauss_forw();
 	int JGauss();
+	void interactive(int i,int j,int k);
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
 	void Show_res() {
@@ -93,6 +94,7 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << " b = ";
 	cur.X += 5;
 	drawline(cur.X, cur.Y, v);
+	drawline(cur.X+step, cur.Y, v);
 	cur.X += 1;
 	for (int i = 0; i < v; ++i)
 	{
@@ -329,6 +331,13 @@ inline int SLAU<T>::JGauss()
 	solved = true;
 	return rank;
 }
+
+template<typename T>
+void  SLAU<T>::interactive(int i,int j,int k)
+{
+
+}
+
 
 template<typename T>
 template<typename T1>
