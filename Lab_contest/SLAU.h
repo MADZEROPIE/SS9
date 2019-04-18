@@ -283,7 +283,7 @@ inline Row<T> SLAU<T>::check_res()
 	Row<T> frw(m);
 	if (solex) {
 		for (int i = 0; i < m; ++i)
-			frw[i] = x[0][i];
+			frw[i] = x[i][0];
 		res = A * frw - b;
 		cout << "Невязка:";
 		res.Show();
