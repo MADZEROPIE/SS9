@@ -203,7 +203,7 @@ istream & operator>>(istream & stream, rational & a)
 			flag = 1;
 		}
 		else
-			num += num * 10 + (str[i] - '0');
+			num = (num * 10 + (str[i] - '0'));
 	if (flag)
 		a.q = num;
 	else
