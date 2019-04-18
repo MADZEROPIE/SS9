@@ -68,9 +68,9 @@ void menu() {
 			cout << "Идет формирование решений " << endl;
 			flslau.Gauss_back();
 			rslau.Gauss_back();
-			cout<<"Невязка для десятичных дробей (float) :" << endl;
+			cout<<"Решение и невязка для десятичных дробей (float) :" << endl;
 			flslau.check_res();
-			cout << "Невязка для рациональных дробей (rational) :" << endl;
+			cout << "Решение и невязка для рациональных дробей (rational) :" << endl;
 			rslau.check_res();
 			break;
 		default:
@@ -86,9 +86,9 @@ void menu() {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	//menu();
-	rational a;
-	cin >> a;
-	cout << a;
+	menu();
+	//rational a;
+	//cin >> a;
+	//cout << a;
 	return 0;
 }

@@ -13,3 +13,4 @@ void gotoxy(int x, int y);
 void gotoxy(COORD coord);
 void drawline(int x, int y, int l);
 void move_cur(COORD);
+void drawx(int x, int y, int n);

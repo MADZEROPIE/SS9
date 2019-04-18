@@ -27,6 +27,7 @@ public:
 	}
 	Row<T> check_res();
 	void Show();
+	void Show_sol();
 	~SLAU();
 };
 
@@ -103,43 +104,19 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	gotoxy(0,cur.Y);
 	cout << "Система: A*x=b" << endl;
 	cur = get_coords();
-	drawline(cur.X, cur.Y, v);
-	cur.X += 1;
-	for (int i = 0; i < v; ++i)
-		for (int j = 0; j < h; ++j)
-		{
-			gotoxy(cur.X + step * j, cur.Y + i);
-			cout << A[i][j];
-		}
-			
-	gotoxy(cur.X + step * h, cur.Y);
+	A.Show(true);
 	cur = get_coords();
-	drawline(cur.X,cur.Y,v);
 	cur.X += 1;
 	gotoxy(cur);
 	cout << " * ";
-	drawline(cur.X+=4,cur.Y,h);
-	cur.X += 1;
-	for (int i = 0; i < h; ++i)
-	{
-		gotoxy(cur.X, cur.Y + i);
-		cout << "x" << i + 1;
-	}
-	cur.X += 5;
-	drawline(cur.X, cur.Y, h);
-	cur.X += 1;
+	cur.X += 4;
+	drawx(cur.X, cur.Y, h);
+	cur = get_coords();
 	gotoxy(cur);
 	cout << " = ";
-	drawline(cur.X+=4, cur.Y, v);
-	cur.X += 1;
-	for (int i = 0; i < v; ++i)
-	{
-		gotoxy(cur.X, cur.Y + i);
-		cout << b[i];
-	}
-	cur.X += step;
-	drawline(cur.X, cur.Y, v);
-	gotoxy(0, cur.Y + v + 1);
+	cur.X += 4;
+	b.Show(true);
+	gotoxy(0, cur.Y + max(v,h) + 1);
 	return *this;
 }
 
@@ -152,7 +129,15 @@ inline void SLAU<T>::Show()
 	gotoxy(xy2);
 	b.Show();
 }
+template<typename T>
+inline void SLAU<T>::Show_sol()
+{
 
+
+
+
+
+}
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
@@ -249,12 +234,41 @@ template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
 	int m = A.m;
-	Row<T>frv(m);
+	int n = m - rank + 1;
+	Matrix<T>sol(n,m);
+
 	Row<T> res;
 	if(solex){
+
 	for (int i = 0; i < m; ++i)
-		frv[i] = x[i][0];
-	res= A * frv-b;
+		for (int j = 0; j < n; ++j)
+			sol[j][i] = x[i][j];
+	COORD cur = get_coords();
+	drawx(cur.X, cur.Y, m);
+	cur = get_coords();
+	gotoxy(cur.X, cur.Y + n / 2);
+	cout << " = ";
+	gotoxy(cur.X + 4, cur.Y);
+	sol[0].Show(true);
+	cur = get_coords();
+	gotoxy(cur.X, cur.Y + n / 2);
+	cout << " + ";
+	gotoxy(cur.X + 4, cur.Y);
+	for (int i = 1; i < n-1; ++i)
+	{
+		sol[i].Show(true);
+		cur = get_coords();
+		gotoxy(cur.X, cur.Y + n / 2);
+		cout << " * t"<<i<<" + ";
+		gotoxy(cur.X + 10, cur.Y);
+	}
+	sol[n - 1].Show(true);
+	cur = get_coords();
+	gotoxy(cur.X, cur.Y + n / 2);
+	cout << " * t" << n-1;
+	gotoxy(0, cur.Y + m + 1);
+	res= A * sol[0]-b;
+	cout << "Невязка:";
 	res.Show();
 	}
 	else cout<<"Невозможно посчитать невязку. "<<endl;

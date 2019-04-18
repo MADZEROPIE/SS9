@@ -21,6 +21,18 @@ void drawline(int x, int y, int l)
 	}
 	gotoxy(cur);
 }
+void drawx(int x, int y, int n)
+{
+	
+	drawline(x, y, n);
+	drawline(x + 5, y, n);
+	for (int i = 1; i <= n; ++i)
+	{
+		gotoxy(x + 1, y + i - 1);
+		cout << "x" << i;
+	}
+	gotoxy(x + 6, y);
+}
 void move_cur(COORD coord)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);

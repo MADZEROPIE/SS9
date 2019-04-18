@@ -26,7 +26,7 @@ public:
 		M.resize(v);
 		for (int i = 0; i < n; ++i)	M[i].resize(h);
 	}
-	void Show();
+	void Show(bool nextdraw=false);
 	~Matrix();
 };
 
@@ -111,32 +111,21 @@ inline Matrix<T>& Matrix<T>::Input()
 }
 
 template<typename T>
-inline void Matrix<T>::Show()
+inline void Matrix<T>::Show(bool nextdraw)
 {
-	COORD lu = get_coords();
-	COORD ru = { SHORT(lu.X + step * m),SHORT(lu.Y) };
-	char border = char(166);
-	for (int i = 1; i <= n; ++i)
-	{
-		move_cur({ lu.X,SHORT(lu.Y + i) });
-		cout << border;
-		move_cur({ ru.X,SHORT(ru.Y + i) });
-		cout << border;
-	}
-	COORD c = { lu.X + 1,lu.Y + 1 };
+	COORD c = get_coords();
+	drawline(c.X, c.Y, n);
+	drawline(c.X + m * step, c.Y, n);
 	for (int i = 0; i < n; ++i)
-	{
-
 		for (int j = 0; j < m; ++j)
 		{
-			move_cur(c);
+			gotoxy(c.X + j * step + 1, c.Y + i);
 			cout << M[i][j];
-			c.X += step;
 		}
-		c.Y += 1;
-		c.X = lu.X + 1;
-	}
-	move_cur({ 0,c.Y + 1 });
+	if (nextdraw == true)
+		gotoxy(c.X + m * step + 1, c.Y);
+	else
+		gotoxy(0, c.Y + n + 2);
 }
 
 template<typename T>

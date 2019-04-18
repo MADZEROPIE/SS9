@@ -22,7 +22,7 @@ public:
 	Row<T> operator -(const Row<T>& b);
 	void Clear();
 	void resize(uint32_t m);
-	void Show();
+	void Show(bool drawnext=false);
 	size_t Size();
 	Row<T>& Input();
 	template <typename T> friend void swap(Row<T>&a, Row<T>& b);
@@ -38,25 +38,20 @@ inline Row<T>::Row() :arr()
 
 
 template<typename T>
-inline void Row<T>::Show()
+inline void Row<T>::Show(bool nextdraw)
 {
-	COORD l = get_coords();
-	l.Y++;
-	COORD l1 = { l.X + 1,l.Y };
-	COORD r = { l.X + step,l.Y };
+	COORD c = get_coords();
+	drawline(c.X, c.Y, n);
+	drawline(c.X + step, c.Y, n);
 	for (int i = 0; i < n; ++i) 
 	{
-		move_cur(l);
-		cout << char(166);
-		move_cur(l1);
+		gotoxy(c.X + 1, c.Y + i);
 		cout << arr[i];
-		move_cur(r);
-		cout << char(166);
-		l.Y++;
-		l1.Y++;
-		r.Y++;
 	}
-	move_cur({ 0,l.Y + 1 });
+	if (nextdraw == true)
+		gotoxy(c.X + step + 1, c.Y);
+	else
+		gotoxy(0, c.Y + n + 1);
 }
 
 template<typename T>
