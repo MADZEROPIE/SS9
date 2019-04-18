@@ -279,7 +279,7 @@ template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
 	int m = A.m;
-	Row<T> res;
+	Row<T> res(m);
 	Row<T> frw(m);
 	if (solex) {
 		for (int i = 0; i < m; ++i)

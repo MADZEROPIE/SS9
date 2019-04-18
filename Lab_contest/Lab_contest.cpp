@@ -67,10 +67,12 @@ void menu() {
 			else if (!solved) { system("cls"); cout << "Cначала вызовите метод Гаусса"<<endl; break; }
 			cout << "Идет формирование решений " << endl;
 			flslau.Gauss_back();
+			flslau.Show_sol();
 			rslau.Gauss_back();
-			cout<<"Решение и невязка для десятичных дробей (float) :" << endl;
+			rslau.Show_sol();
+			cout<<"Невязка для десятичных дробей (float) :" << endl;
 			flslau.check_res();
-			cout << "Решение и невязка для рациональных дробей (rational) :" << endl;
+			cout << "Невязка для рациональных дробей (rational) :" << endl;
 			rslau.check_res();
 			break;
 		default:
