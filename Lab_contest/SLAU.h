@@ -327,6 +327,7 @@ inline int SLAU<T>::JGauss()
 			rank++;
 			swap(A[max_elem], A[j]);
 			swap(b[max_elem], b[j]);
+			pivot[j] = j;
 			for (int i = 0; i < n; ++i)
 				if (i != j)
 				{

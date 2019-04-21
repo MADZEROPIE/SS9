@@ -53,9 +53,9 @@ void menu() {
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ" << endl; break; }
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)" << endl;
-			flslau.Gauss_forw();
+			flslau.JGauss();
 			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)" << endl;
-			rslau.Gauss_forw();
+			rslau.JGauss();
 			solved = true;
 			break;
 		case 4:
