@@ -216,11 +216,13 @@ inline int SLAU<T>::Gauss_forw()
 	{
 		int max_elem = k;
 		for (int i = k; i < n; ++i)
-			if (double(A[i][j]) < acc)
+		{
+			if (abs(double(A[i][j])) < acc)
 				A[i][j] = T(0);
 			else if (abs(A[i][j]) > abs(A[max_elem][j]))
 				max_elem = i;
-		if (double(abs(A[max_elem][j]))<acc)
+		}
+		if (max_elem>=n || double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
@@ -337,11 +339,11 @@ inline int SLAU<T>::JGauss()
 	{
 		int max_elem = k;
 		for (int i = k; i < n; ++i)
-			if (double(A[i][j]) < acc)
+			if (abs(double(A[i][j])) < acc)
 				A[i][j] = T(0);
 			else if (abs(A[i][j]) > abs(A[max_elem][j]))
 				max_elem = i;
-		if (double(abs(A[max_elem][j]))<acc)
+		if (max_elem >= n || double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
@@ -381,7 +383,6 @@ void SLAU<T>::interactive()
 	int n = A.n;
 	int m = A.m;
 	int k = 0;
-	vector<bool> used(m);
 	do
 	{
 		int i,j;
