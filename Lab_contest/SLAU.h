@@ -211,7 +211,7 @@ inline int SLAU<T>::Gauss_forw()
 				A[i][j] = T(0);
 			else if (abs(A[i][j]) > abs(A[max_elem][j]))
 				max_elem = i;
-		if (double(abs(A[max_elem][j]))<acc)
+		if (max_elem>=n || double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
@@ -331,7 +331,7 @@ inline int SLAU<T>::JGauss()
 				A[i][j] = T(0);
 			else if (abs(A[i][j]) > abs(A[max_elem][j]))
 				max_elem = i;
-		if (double(abs(A[max_elem][j]))<acc)
+		if (max_elem >= n || double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
