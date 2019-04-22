@@ -36,7 +36,7 @@ void menu() {
 		switch (ch)
 		{
 		case 1:
-			rslau.new_Input();
+			rslau.new_Input(true);
 			//rslau = tslau;
 			flslau = rslau;
 			slau_ex = true;

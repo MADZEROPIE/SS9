@@ -1,6 +1,7 @@
 #pragma once
 #include "Matrix.h"
 #include "Con_sole.h"
+#include <ctime>
 
 template<typename T>
 class SLAU
@@ -18,7 +19,7 @@ public:
 	SLAU();
 	template<typename T1> friend class SLAU;
 	SLAU<T>& Input();
-	SLAU<T>& new_Input();
+	SLAU<T>& new_Input(bool random=false);
 	int Gauss_forw();
 	int JGauss();
 	void interactive();
@@ -66,7 +67,7 @@ inline SLAU<T>& SLAU<T>::Input()
 }
 
 template<typename T>
-inline SLAU<T>& SLAU<T>::new_Input()
+inline SLAU<T>& SLAU<T>::new_Input(bool random)
 {
 	int v, h;
 	cout << "Введите количество строк: ";
@@ -88,11 +89,15 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cur.X += 4;
 	drawline(cur.X, cur.Y, v);
 	COORD c = { cur.X + 1,cur.Y };
+	if (random) srand(time(NULL));
 	for (int i = 0; i < v; ++i)
 		for (int j = 0; j < h; ++j)
 		{
 			gotoxy(c.X + step * j, c.Y + i);
-			cin >> A[i][j];
+			if(!random) cin >> A[i][j];
+			else {
+				A[i][j] = T(rand()); cout << A[i][j];
+			}
 		}
 
 	drawline(cur.X += step * h, cur.Y, v);
@@ -105,7 +110,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	for (int i = 0; i < v; ++i)
 	{
 		gotoxy(cur);
-		cin >> b[i];
+		if (!random) cin >> b[i];
+		else {
+			b[i] = T(rand()); cout << b[i];
+		}
 		cur.Y += 1;
 	}
 	cur.Y += 1;
@@ -137,6 +145,7 @@ inline void SLAU<T>::Show()
 	gotoxy(xy2);
 	b.Show();
 }
+
 template<typename T>
 inline void SLAU<T>::Show_sol()
 {
@@ -221,7 +230,7 @@ inline int SLAU<T>::Gauss_forw()
 				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-
+				this->Show();
 			}
 			pivot[j] = k;
 			k++;
@@ -229,6 +238,7 @@ inline int SLAU<T>::Gauss_forw()
 			for (int l = k; l < n; ++l)
 			{
 				T d = A[l][j] / A[k - 1][j];
+				cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
@@ -254,7 +264,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 				
 			else if (used[i]==false)
 			{
-				cout << "Система несовместна" << endl;
+				cout << "Система несовместна." << endl;
 				solex = false;
 				return x;
 			}
@@ -295,7 +305,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 	}
 	else 
 	{	
-		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
+		cout << "Сначала вызовите Метод Гаусса или Жордана-Гаусса." << endl;
 	}
 	return x;
 }
@@ -341,7 +351,7 @@ inline int SLAU<T>::JGauss()
 				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-
+				this->Show();
 			}
 			pivot[j] = k;
 			k++;
@@ -351,6 +361,7 @@ inline int SLAU<T>::JGauss()
 				if (l == k - 1)
 					continue;
 				T d = A[l][j] / A[k - 1][j];
+				cout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
@@ -379,25 +390,24 @@ void SLAU<T>::interactive()
 		cin >> i;
 		cout << endl << "Введите номер столбца j = ";
 		cin >> j;
-		//i -= 1;
-		//j -= 1;
+		cout << endl;
 		if (!used[j] && k<=i && abs(A[i][j])>acc)
 		{
 			used[j] = true;
+			cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
 			swap(A[i], A[k]);
 			swap(b[i], b[k]);
+			this->Show();
 			for (int l = k+1; l < n; ++l)
 			{
 				T d = A[l][j] / A[k][j];
+				cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
 				A[l] -= A[k] * d;
 				b[l] -= b[k] * d;
 			}
 			k++;
 		}
-		else
-			cout << "Выберите другой ведущий элемент";
-
-		cout << endl;
+		else cout << "Выберите другой ведущий элемент."<<endl;
 
 	} while (!end_gauss(used,k));
 	this->Show();
