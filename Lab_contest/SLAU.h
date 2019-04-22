@@ -205,15 +205,24 @@ inline int SLAU<T>::Gauss_forw()
 	int k = 0;
 	for (int j = 0; j < m; ++j)
 	{
-		int i;
-		for (i = k; i < n && double(abs(A[i][j])) < acc; ++i)
-			A[i][j] = T(0);
-		if (i == n)
+		int max_elem = k;
+		for (int i = k; i < n; ++i)
+			if (double(A[i][j]) < acc)
+				A[i][j] = T(0);
+			else if (abs(A[i][j]) > abs(A[max_elem][j]))
+				max_elem = i;
+		if (double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
-			swap(A[i], A[k]);
-			swap(b[i], b[k]);
+			cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if (max_elem != k)
+			{
+				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				swap(A[max_elem], A[k]);
+				swap(b[max_elem], b[k]);
+
+			}
 			pivot[j] = k;
 			k++;
 			used[k-1] = true;
@@ -224,9 +233,10 @@ inline int SLAU<T>::Gauss_forw()
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
+			this->Show();
 		}
 	}	
-	this->Show();
+
 	solved = true;
 	rank = k;
 	return rank;
@@ -271,7 +281,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 				for (int l = 0; l < m; ++l)
 				{
 					if (pivot[l] == -1)
-						x[pivot[j]][k++] = T(0)-A[pivot[j]][l] / A[pivot[j]][j];
+						x[j][k++] = T(0)-A[pivot[j]][l] / A[pivot[j]][j];
 				}
 			}
 			else
@@ -279,8 +289,6 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 				x[j][p] = 1;
 				p++;
 			}
-				
-			x.Show();
 		}
 		
 		solex = true;
@@ -289,7 +297,6 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 	{	
 		cout << "Сначала вызовите Метод Гаусса или Жордана- Гаусса." << endl;
 	}
-	x.Show();
 	return x;
 }
 
@@ -318,15 +325,24 @@ inline int SLAU<T>::JGauss()
 	int k = 0;
 	for (int j = 0; j < m; ++j)
 	{
-		int i;
-		for (i = k; i < n && double(abs(A[i][j])) < acc; ++i)
-			A[i][j] = T(0);
-		if (i == n)
+		int max_elem = k;
+		for (int i = k; i < n; ++i)
+			if (double(A[i][j]) < acc)
+				A[i][j] = T(0);
+			else if (abs(A[i][j]) > abs(A[max_elem][j]))
+				max_elem = i;
+		if (double(abs(A[max_elem][j]))<acc)
 			continue;
 		else
 		{
-			swap(A[i], A[k]);
-			swap(b[i], b[k]);
+			cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if (max_elem != k)
+			{
+				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				swap(A[max_elem], A[k]);
+				swap(b[max_elem], b[k]);
+
+			}
 			pivot[j] = k;
 			k++;
 			used[k-1] = true;
@@ -339,9 +355,10 @@ inline int SLAU<T>::JGauss()
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
+			this->Show();
 		}
 	}
-	this->Show();
+	
 	solved = true;
 	rank = k;
 	return rank;
