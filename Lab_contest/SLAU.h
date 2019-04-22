@@ -12,6 +12,8 @@ class SLAU
 	int rank = 0;
 	double acc=1e-16;
 	bool solved = false;
+	Row<int>pivot;
+	vector<bool> used;
 public:
 	SLAU();
 	template<typename T1> friend class SLAU;
@@ -76,7 +78,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
-
+	pivot.resize(h);
+	used.resize(v);
+	for (int i = 0; i < h; ++i)
+		pivot[i] = -1;
 	COORD cur = get_coords();
 	gotoxy(0, cur.Y+v / 2);
 	cout << "A = ";
@@ -197,36 +202,33 @@ inline int SLAU<T>::Gauss_forw()
 {
 	int m = A.m;
 	int n = A.n; rank=0;
-	for (int j = 0; j < m && j<n; ++j)
+	int k = 0;
+	for (int j = 0; j < m; ++j)
 	{
-		int k = j;
-		int max_elem = k;
-		for (; k < n; ++k)
-		{
- 			if (abs(A(k, j)) > abs(A(max_elem, j)))
-				max_elem = k;
-			if (double(abs(A(k, j))) < acc)
-				A(k, j) = T(0);
-		}
-		
-		if (double(abs(A(max_elem, j))) < acc)
-			A(max_elem, j) = T(0);
+		int i;
+		for (i = k; i < n && double(abs(A[i][j])) < acc; ++i)
+			A[i][j] = T(0);
+		if (i == n)
+			continue;
 		else
 		{
-			rank++;
-			swap(A[max_elem], A[j]);
-			swap(b[max_elem], b[j]);
-			for (int i = j + 1;i < n; ++i)
+			swap(A[i], A[k]);
+			swap(b[i], b[k]);
+			pivot[j] = k;
+			k++;
+			used[k-1] = true;
+			for (int l = k; l < n; ++l)
 			{
-				T d = A(i, j) / A(j, j);
-				A[i] -=  A[j]*d;
-				A(i, j) = T(0);
-				b[i] -=  b[j]*d;
+				T d = A[l][j] / A[k - 1][j];
+				A[l] -= A[k - 1] * d;
+				b[l] -= b[k - 1] * d;
+				A[l][j] = T(0);
 			}
 		}
-		this->Show();
-	}
+	}	
+	this->Show();
 	solved = true;
+	rank = k;
 	return rank;
 }
 
@@ -237,37 +239,50 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 	int n = A.n;
 	
 	if (solved) {
-		for (int i = rank; i < n; ++i)
-			if (double(abs(b[i])) < acc)
-				b[i] = T(0);
-			else
+		for (int i = 0; i < n; ++i)
+			if (used[i] == false && double(abs(b[i])) < acc);
+				
+			else if (used[i]==false)
 			{
 				cout << "Ñèñòåìà íåñîâìåñòíà" << endl;
 				solex = false;
 				return x;
 			}
 		x.cl_resize(m, m - rank + 1);
-		for (int i=rank-1;i>=0;--i)
-			for (int j = i-1; j >= 0; --j)
-			{
-				T d = A(j, i) / A(i, i);
-				A[j] -= A[i] * d;
-				A(i, j) = T(0);
-				b[j] -= b[i] * d;
-				this->Show();
-			}
+		for (int j=0;j<m;++j)
+			if (pivot[j]>=0)
+				for (int i = pivot[j] - 1; i >= 0; i--)
+				{
+					T d = A[i][j] / A[pivot[j]][j];
+					A[i] -= A[pivot[j]] * d;
+					b[i] -= b[pivot[j]] * d;
+					A[i][j] = T(0);
+				}
+
 		cout <<"ÐÀÍÃ ÑÈÑÒÅÌÛ = " <<rank<<endl;
 		this->Show();
-		for (int i = 0; i < rank; ++i)
+		int p = 1;
+		for (int j = 0; j < m; ++j)
 		{
-			x[i][0] = b[i] / A[i][i];
-			for (int j = rank; j < m; ++j)
-				x[i][j-rank+1] = A[i][j] / A[i][i];
+			if (pivot[j] >= 0)
+			{
+				x[j][0] = b[pivot[j]] / A[pivot[j]][j];
+				int k = 1;
+				for (int l = 0; l < m; ++l)
+				{
+					if (pivot[l] == -1)
+						x[pivot[j]][k++] = T(0)-A[pivot[j]][l] / A[pivot[j]][j];
+				}
+			}
+			else
+			{
+				x[j][p] = 1;
+				p++;
+			}
+				
+			x.Show();
 		}
-		for (int i = rank; i < m; ++i)
-		{
-			x[i][i-rank+1] = 1;
-		}
+		
 		solex = true;
 	}
 	else 
@@ -299,38 +314,36 @@ template<typename T>
 inline int SLAU<T>::JGauss()
 {
 	int m = A.m;
-	int n = A.n;
-	rank=0;
-	for (int j = 0; j < m && j < n; ++j)
+	int n = A.n; rank = 0;
+	int k = 0;
+	for (int j = 0; j < m; ++j)
 	{
-		int k = j;
-		int max_elem = k;
-		for (; k < n; ++k)
-		{
-			if (abs(A(k, j)) > abs(A(max_elem, j)))
-				max_elem = k;
-			if (double(abs(A(k, j))) < acc)
-				A(k, j) = T(0);
-		}
-		this->Show();
-		if (double(abs(A(max_elem, j))) < acc)
-			A(max_elem, j) = T(0);
+		int i;
+		for (i = k; i < n && double(abs(A[i][j])) < acc; ++i)
+			A[i][j] = T(0);
+		if (i == n)
+			continue;
 		else
 		{
-			rank++;
-			swap(A[max_elem], A[j]);
-			swap(b[max_elem], b[j]);
-			pivot[j] = j;
-			for (int i = 0; i < n; ++i)
-				if (i != j)
-				{
-					T d = A(i, j) / A(j, j);
-					A[i] -=  A[j]*d;
-					b[i] -=  b[j]*d;
-				}
+			swap(A[i], A[k]);
+			swap(b[i], b[k]);
+			pivot[j] = k;
+			k++;
+			used[k-1] = true;
+			for (int l = 0; l < n; ++l)
+			{
+				if (l == k - 1)
+					continue;
+				T d = A[l][j] / A[k - 1][j];
+				A[l] -= A[k - 1] * d;
+				b[l] -= b[k - 1] * d;
+				A[l][j] = T(0);
+			}
 		}
 	}
+	this->Show();
 	solved = true;
+	rank = k;
 	return rank;
 }
 
@@ -402,6 +415,10 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 	A.cl_resize(c.A.n,c.A.m);
 	x.cl_resize(c.x.n,c.x.m);
 	b.resize(c.b.Size());
+	pivot.resize(c.pivot.Size());
+	used.resize(c.used.size());
+	for (int i = 0; i < pivot.Size(); ++i)
+		pivot[i] = -1;
 	acc = c.acc;
 	for (int i = 0; i < A.n; ++i)
 	{
