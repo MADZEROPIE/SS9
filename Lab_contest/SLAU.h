@@ -19,17 +19,15 @@ public:
 	SLAU();
 	template<typename T1> friend class SLAU;
 	SLAU<T>& Input();
-	SLAU<T>& new_Input(bool random=false);
-	int Gauss_forw();
-	int JGauss();
-	void interactive();
+	SLAU<T>& new_Input();
+	int Gauss_forw(bool steps_sh=true);
+	int JGauss(bool steps_sh = true);
+	void interactive(bool steps_sh = true);
 	bool end_gauss(vector<bool>&used, int k);
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
-	void Show_res() {
-		// ТУТ ДОЛЖЕН БЫТЬ НОРМАЛЬНЫЙ ВЫВОД РЕШЕНИЯ
-		x.Show();
-	}
+	bool sol_ex() { return solex; }
+	bool is_solved() { return solved; }
 	Row<T> check_res();
 	void Show();
 	void Show_sol();
@@ -67,7 +65,7 @@ inline SLAU<T>& SLAU<T>::Input()
 }
 
 template<typename T>
-inline SLAU<T>& SLAU<T>::new_Input(bool random)
+inline SLAU<T>& SLAU<T>::new_Input()
 {
 	int v, h;
 	cout << "Введите количество строк: ";
@@ -81,43 +79,52 @@ inline SLAU<T>& SLAU<T>::new_Input(bool random)
 	b.resize(v);
 	pivot.resize(h);
 	used.resize(v);
+	solved = false;
 	for (int i = 0; i < h; ++i)
 		pivot[i] = -1;
+	char rand_c = 'L';
+	cout << "Заполнить СЛАУ случайными числами? ";
+	bool random = get_ch();
 	COORD cur = get_coords();
-	gotoxy(0, cur.Y+v / 2);
-	cout << "A = ";
-	cur.X += 4;
-	drawline(cur.X, cur.Y, v);
-	COORD c = { cur.X + 1,cur.Y };
-	if (random) srand(time(NULL));
-	for (int i = 0; i < v; ++i)
-		for (int j = 0; j < h; ++j)
-		{
-			gotoxy(c.X + step * j, c.Y + i);
-			if(!random) cin >> A[i][j];
-			else {
-				A[i][j] = T(rand()); cout << A[i][j];
+	if (!random){
+		gotoxy(0, cur.Y + v / 2);
+		cout << "A = ";
+		cur.X += 4;
+		drawline(cur.X, cur.Y, v);
+		COORD c = { cur.X + 1,cur.Y };
+		for (int i = 0; i < v; ++i) {
+			for (int j = 0; j < h; ++j)
+			{
+				gotoxy(c.X + step * j, c.Y + i);
+				cin >> A[i][j];
 			}
 		}
-
 	drawline(cur.X += step * h, cur.Y, v);
-	gotoxy(cur.X+=1, cur.Y + v / 2);
+	gotoxy(cur.X += 1, cur.Y + v / 2);
 	cout << " b = ";
 	cur.X += 5;
 	drawline(cur.X, cur.Y, v);
-	drawline(cur.X+step, cur.Y, v);
+	drawline(cur.X + step, cur.Y, v);
 	cur.X += 1;
 	for (int i = 0; i < v; ++i)
 	{
 		gotoxy(cur);
-		if (!random) cin >> b[i];
-		else {
-			b[i] = T(rand()); cout << b[i];
-		}
+		cin >> b[i];
 		cur.Y += 1;
 	}
 	cur.Y += 1;
-	gotoxy(0,cur.Y);
+	gotoxy(0, cur.Y);
+	}
+	else {
+		srand(time(NULL));
+		for (int i = 0; i < v; ++i) {
+			b[i] = T(rand());
+			for (int j = 0; j < h; ++j)
+			{
+				A[i][j] = T(rand()); 
+			}
+		}
+	}
 	cout << "Система: A*x=b" << endl;
 	cur = get_coords();
 	A.Show(true);
@@ -207,7 +214,7 @@ inline SLAU<T>::~SLAU()
 }
 
 template<typename T>
-inline int SLAU<T>::Gauss_forw()
+inline int SLAU<T>::Gauss_forw(bool steps_sh )
 {
 	int m = A.m;
 	int n = A.n; rank=0;
@@ -226,10 +233,10 @@ inline int SLAU<T>::Gauss_forw()
 			continue;
 		else
 		{
-			cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if (steps_sh) cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
 				this->Show();
@@ -240,12 +247,12 @@ inline int SLAU<T>::Gauss_forw()
 			for (int l = k; l < n; ++l)
 			{
 				T d = A[l][j] / A[k - 1][j];
-				cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			this->Show();
+			if (steps_sh) this->Show();
 		}
 	}	
 
@@ -330,7 +337,7 @@ inline Row<T> SLAU<T>::check_res()
 }
 
 template<typename T>
-inline int SLAU<T>::JGauss()
+inline int SLAU<T>::JGauss(bool steps_sh)
 {
 	int m = A.m;
 	int n = A.n; rank = 0;
@@ -347,13 +354,13 @@ inline int SLAU<T>::JGauss()
 			continue;
 		else
 		{
-			cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if(steps_sh) cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				this->Show();
+				if (steps_sh) this->Show();
 			}
 			pivot[j] = k;
 			k++;
@@ -363,12 +370,12 @@ inline int SLAU<T>::JGauss()
 				if (l == k - 1)
 					continue;
 				T d = A[l][j] / A[k - 1][j];
-				cout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
+				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			this->Show();
+			if (steps_sh) this->Show();
 		}
 	}
 	
@@ -378,7 +385,7 @@ inline int SLAU<T>::JGauss()
 }
 
 template<typename T>
-void SLAU<T>::interactive()
+void SLAU<T>::interactive(bool steps_sh)
 {
 	int n = A.n;
 	int m = A.m;
@@ -395,14 +402,14 @@ void SLAU<T>::interactive()
 		if (!used[j] && k<=i && abs(A[i][j])>acc)
 		{
 			used[j] = true;
-			cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
+			if (steps_sh) cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
 			swap(A[i], A[k]);
 			swap(b[i], b[k]);
 			this->Show();
 			for (int l = k+1; l < n; ++l)
 			{
 				T d = A[l][j] / A[k][j];
-				cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
+				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
 				A[l] -= A[k] * d;
 				b[l] -= b[k] * d;
 			}
@@ -443,6 +450,7 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 	A.cl_resize(c.A.n,c.A.m);
 	x.cl_resize(c.x.n,c.x.m);
 	b.resize(c.b.Size());
+	solved = false;
 	pivot.resize(c.pivot.Size());
 	used.resize(c.used.size());
 	for (int i = 0; i < pivot.Size(); ++i)

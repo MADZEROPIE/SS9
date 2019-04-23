@@ -44,12 +44,6 @@
     <ClCompile Include="rational.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Row.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="SLAU.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

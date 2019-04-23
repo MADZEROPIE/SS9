@@ -33,6 +33,13 @@ void drawx(int x, int y, int n)
 	}
 	gotoxy(x + 6, y);
 }
+bool get_ch()
+{
+	char ch = 'L';
+	while (ch != 'Y' && ch != 'N' && ch != '0' && ch != '1') cin >> ch;
+	return (ch == 'Y' || ch == '1');
+}
+
 void move_cur(COORD coord)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);

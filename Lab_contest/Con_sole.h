@@ -14,3 +14,5 @@ void gotoxy(COORD coord);
 void drawline(int x, int y, int l);
 void move_cur(COORD);
 void drawx(int x, int y, int n);
+
+bool get_ch();
