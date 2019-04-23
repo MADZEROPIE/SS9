@@ -49,7 +49,7 @@ void menu() {
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
 			flslau.Gauss_forw(step_sh);
 			
-			cout << "Выполняется метод Гаусса для рациональных дробей (rational)" << endl;
+			cout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.Gauss_forw(step_sh);
 			break;
 		case 3:
@@ -61,12 +61,12 @@ void menu() {
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
 			flslau.JGauss(step_sh );
 			
-			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)" << endl;
+			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.JGauss(step_sh);
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Выводить промежуточные преборазования с комментариями? ";
+			cout << "Выводить пояснения? ";
 			step_sh = get_ch();
 			
 			flslau.interactive(step_sh);

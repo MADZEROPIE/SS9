@@ -394,12 +394,18 @@ void SLAU<T>::interactive(bool steps_sh)
 	{
 		int i,j;
 		this->Show();
-		cout << "Введите номер строки: i = ";
-		cin >> i;
-		cout << endl << "Введите номер столбца j = ";
-		cin >> j;
-		cout << endl;
-		if (pivot[j]==-1 && k<=i && abs(A[i][j])>acc)
+		do
+		{
+			cout << "Введите номер строки: i = ";
+			cin >> i;
+		} while (i<0 || i>=n);
+		do
+		{
+			cout << "Введите номер столбца j = ";
+			cin >> j;
+		} while (j < 0 || j >= m);
+		
+		if (pivot[j]==-1 && k<=i && abs(double(A[i][j]))>acc)
 		{
 			pivot[j] = k;
 			used[k] = true;
@@ -438,7 +444,7 @@ bool SLAU<T>::end_gauss(int k)
 			if (pivot[i] == -1)
 			{
 				int j;
-				for (j = k; j < n && abs(A[j][i]) < acc; ++j)
+				for (j = k; j < n && abs(double(A[j][i])) < acc; ++j)
 					A[j][i] = T(0);
 				if (j < n)
 					return false;
