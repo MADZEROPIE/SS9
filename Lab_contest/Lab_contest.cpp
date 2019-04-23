@@ -70,7 +70,6 @@ void menu() {
 			step_sh = get_ch();
 			
 			flslau.interactive(step_sh);
-			
 			cout << "Метод Гаусса завершен." << endl;
 			break;
 		case 5:

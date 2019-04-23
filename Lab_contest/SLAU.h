@@ -23,7 +23,7 @@ public:
 	int Gauss_forw(bool steps_sh=true);
 	int JGauss(bool steps_sh = true);
 	void interactive(bool steps_sh = true);
-	bool end_gauss(vector<bool>&used, int k);
+	bool end_gauss(int k);
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 	Matrix<T> Gauss_back();
 	bool sol_ex() { return solex; }
@@ -399,9 +399,10 @@ void SLAU<T>::interactive(bool steps_sh)
 		cout << endl << "Введите номер столбца j = ";
 		cin >> j;
 		cout << endl;
-		if (!used[j] && k<=i && abs(A[i][j])>acc)
+		if (pivot[j]==-1 && k<=i && abs(A[i][j])>acc)
 		{
-			used[j] = true;
+			pivot[j] = k;
+			used[k] = true;
 			if (steps_sh) cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
 			swap(A[i], A[k]);
 			swap(b[i], b[k]);
@@ -412,17 +413,19 @@ void SLAU<T>::interactive(bool steps_sh)
 				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
 				A[l] -= A[k] * d;
 				b[l] -= b[k] * d;
+				A[l][j] = T(0);
 			}
 			k++;
 		}
 		else cout << "Выберите другой ведущий элемент."<<endl;
 
-	} while (!end_gauss(used,k));
+	} while (!end_gauss(k));
+	solved = true;
 	this->Show();
 }
 
 template<typename T>
-bool SLAU<T>::end_gauss(vector<bool>& used,int k)
+bool SLAU<T>::end_gauss(int k)
 {
 	int n = A.n;
 	int m = A.m;
@@ -431,7 +434,7 @@ bool SLAU<T>::end_gauss(vector<bool>& used,int k)
 	else
 	{
 		for (int i = 0; i < m; ++i)
-			if (used[i] == false)
+			if (pivot[i] == -1)
 			{
 				int j;
 				for (j = k; j < n && abs(A[j][i]) < acc; ++j)
