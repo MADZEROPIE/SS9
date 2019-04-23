@@ -118,10 +118,10 @@ inline SLAU<T>& SLAU<T>::new_Input()
 	else {
 		srand(time(NULL));
 		for (int i = 0; i < v; ++i) {
-			b[i] = T(rand());
+			b[i] = T(rand()%100);
 			for (int j = 0; j < h; ++j)
 			{
-				A[i][j] = T(rand()); 
+				A[i][j] = T(rand()%100); 
 			}
 		}
 	}
@@ -421,6 +421,7 @@ void SLAU<T>::interactive(bool steps_sh)
 
 	} while (!end_gauss(k));
 	solved = true;
+	rank = k;
 	this->Show();
 }
 
