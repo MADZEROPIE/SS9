@@ -69,11 +69,23 @@ inline SLAU<T>& SLAU<T>::new_Input()
 {
 	int v, h;
 	cout << "¬ведите количество строк: ";
-	cin >> v;
+	do
+	{
+		cin >> v;
+		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); v = -1; }
+	} while (v < 0);
 	cout << "¬ведите количество столбцов: ";
-	cin >> h;
+	do
+	{
+		cin >> h;
+		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); h = -1; }
+	} while (h < 0);
 	cout << "¬ведите точность вычислений: ";
-	cin >> acc;
+	do
+	{
+		cin >> acc;
+		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); acc = -1.0; }
+	} while (acc < 0);
 	cout << endl;
 	A.cl_resize(v, h);
 	b.resize(v);
@@ -398,11 +410,13 @@ void SLAU<T>::interactive(bool steps_sh)
 		{
 			cout << "¬ведите номер строки: i = ";
 			cin >> i;
+			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); i = -1; }
 		} while (i<0 || i>=n);
 		do
 		{
 			cout << "¬ведите номер столбца j = ";
 			cin >> j;
+			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); j = -1; }
 		} while (j < 0 || j >= m);
 		
 		if (pivot[j]==-1 && k<=i && abs(double(A[i][j]))>acc)
