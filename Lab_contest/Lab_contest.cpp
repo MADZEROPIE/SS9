@@ -24,7 +24,7 @@ void menu() {
 	int ch = -1;
 	SLAU<rational> rslau;
 	SLAU<float> flslau;
-	bool slau_ex = false;
+	bool slau_ex = false,sol_inter=false;
 	bool step_sh;
 	while (true) {
 		do
@@ -32,6 +32,7 @@ void menu() {
 			cout << "Выберете пункт меню: " << endl;
 			for (auto i = 0; i < menu.size(); ++i) cout << i+1 << ". " << menu[i] << endl;
 			cin >> ch;
+			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); ch = -1; system("cls");}
 		} while (ch <= 0 || ch > menu.size());
 		switch (ch)
 		{
@@ -39,6 +40,7 @@ void menu() {
 			rslau.new_Input();
 			flslau = rslau;
 			slau_ex = true;
+			sol_inter = false;
 			break;
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -51,6 +53,7 @@ void menu() {
 			
 			cout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.Gauss_forw(step_sh);
+			sol_inter = false;
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -63,6 +66,7 @@ void menu() {
 			
 			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.JGauss(step_sh);
+			sol_inter = false;
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -71,6 +75,7 @@ void menu() {
 			
 			flslau.interactive(step_sh);
 			cout << "Метод Гаусса завершен." << endl;
+			sol_inter = true;
 			break;
 		case 5:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -78,12 +83,17 @@ void menu() {
 			cout << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
 			flslau.Show_sol();
-			rslau.Gauss_back();
-			rslau.Show_sol();
-			if(flslau.sol_ex()){  cout<<"Невязка для десятичных дробей (float) :" << endl;
-			flslau.check_res();
-			cout << "Невязка для рациональных дробей (rational) :" << endl;
-			rslau.check_res();
+			if (!sol_inter) {
+				rslau.Gauss_back();
+				rslau.Show_sol();
+			}
+			if (flslau.sol_ex()) {
+				cout << "Невязка для десятичных дробей (float) :" << endl;
+				flslau.check_res();
+				if (!sol_inter) {
+					cout << "Невязка для рациональных дробей (rational) :" << endl;
+					rslau.check_res();
+				}
 			}
 			break;
 		default:
@@ -100,8 +110,5 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 	menu();
-	//rational a;
-	//cin >> a;
-	//cout << a;
 	return 0;
 }

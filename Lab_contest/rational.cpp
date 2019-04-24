@@ -194,16 +194,23 @@ istream & operator>>(istream & stream, rational & a)
 	string str;
 	stream >> str;
 	int num = 0;
-	bool flag = 0;
-	for (int i = 0; i < str.size(); ++i)
-		if (str[i] == '/')
+	bool flag = false;
+	for (int i = 0, tmp = 1; i < str.size(); ++i) {
+		if (str[i] == '-' && i==0) tmp = -1;
+		else if (str[i] == '/')
 		{
+			tmp = 1;
 			a.p = num;
 			num = 0;
-			flag = 1;
+			flag = true;
+		}
+		else if (str[i]<'0' || str[i]>'9')
+		{
+			str.clear(); stream >> str; num = 0; flag = false; i = -1; a.p = 0; a.q = 0;
 		}
 		else
-			num = (num * 10 + (str[i] - '0'));
+			num = (num * 10 + (str[i] - '0')*tmp);
+	}
 	if (flag)
 		a.q = num;
 	else
@@ -211,5 +218,6 @@ istream & operator>>(istream & stream, rational & a)
 		a.p = num;
 		a.q = 1;
 	}
+	del(a);
 	return stream;
 }
