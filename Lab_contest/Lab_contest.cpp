@@ -29,7 +29,7 @@ void menu() {
 	while (true) {
 		do
 		{
-			cout << "Выберете пункт меню: " << endl;
+			cout << "Выберите пункт меню: " << endl;
 			for (auto i = 0; i < menu.size(); ++i) cout << i+1 << ". " << menu[i] << endl;
 			cin >> ch;
 			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); ch = -1; system("cls");}
