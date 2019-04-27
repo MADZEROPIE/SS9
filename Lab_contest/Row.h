@@ -8,25 +8,33 @@ template <typename T>
 class Row
 {
 private:
-	vector<T> arr;//
-	size_t n;//SIZE
+	vector<T> arr; //Вектор элементов столбца
+	size_t n; //Количество элементов
 public:
-	Row();
+	// Конструкторы
+	Row(); 
 	Row(size_t n);
 	Row(const Row<T>&);
+
+	//Перегруженные операции
 	T& operator[](int i) { return arr[i]; }
 	Row<T>& operator=(const Row<T>& b);
 	Row<T>& operator*=(const T& k);
 	Row<T> operator *(const T& k);
 	Row<T>& operator -=(const Row<T>& b);
 	Row<T> operator -(const Row<T>& b);
-	void Clear();
-	void resize(uint32_t m);
-	void Show(bool drawnext=false);
-	size_t Size();
-	Row<T>& Input();
-	template <typename T> friend void swap(Row<T>&a, Row<T>& b);
-	~Row();
+
+	void Clear(); //Удаление всех элементов столбца
+	void resize(uint32_t m); //Изменение размера
+	void Show(bool drawnext=false);	//Вывод на экран
+
+	size_t Size() {
+		return n;
+	} // Возвращает размер столбца
+	Row<T>& Input(); //Ввод столбца
+	template <typename T> friend void swap(Row<T>&a, Row<T>& b);// Меняет объекты a и b местами
+
+	~Row();	//Деструктор
 };
 
 
@@ -54,11 +62,6 @@ inline void Row<T>::Show(bool nextdraw)
 		gotoxy(0, c.Y + n + 1);
 }
 
-template<typename T>
-inline size_t Row<T>::Size()
-{
-	return n;
-}
 
 template<typename T>
 inline Row<T>& Row<T>::Input()

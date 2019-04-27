@@ -6,19 +6,19 @@
 template<typename T>
 class SLAU
 {
-	Matrix<T> A;
-	Row<T> b;
-	Matrix<T> x;
-	bool solex;
-	int rank = 0;
-	double acc=1e-16;
-	bool solved = false;
-	Row<int>pivot;
-	vector<bool> used;
+	Matrix<T> A;// Матрица СЛАУ (исходная)
+	Row<T> b;// Столбец исходных членов (исходный)
+	Matrix<T> x; // Матрица решений в параметрическом виде
+	bool solex; // Существование решений
+	int rank = 0; //Ранг СЛАУ
+	double acc=1e-16; // Точность округления до нуля
+	bool solved = false; // Система решена?
+	Row<int>pivot; // ???
+	vector<bool> used; // ???
 public:
 	SLAU();
 	template<typename T1> friend class SLAU;
-	SLAU<T>& new_Input();
+	SLAU<T>& Input();//Ввод СЛАУ
 	int Gauss_forw(bool steps_sh=true);
 	int JGauss(bool steps_sh = true);
 	void interactive(bool steps_sh = true);
@@ -40,7 +40,7 @@ inline SLAU<T>::SLAU()
 
 
 template<typename T>
-inline SLAU<T>& SLAU<T>::new_Input()
+inline SLAU<T>& SLAU<T>::Input()
 {
 	int v, h;
 	cout << "Введите количество строк: ";

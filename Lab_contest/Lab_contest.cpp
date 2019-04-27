@@ -20,7 +20,14 @@
 const int NotUsed = system("color F1");
 
 void menu() {
-	vector<const char*> menu = { "Задать СЛАУ ","Решение СЛАУ методом Гаусса","Решение СЛАУ методом Жордана-Гаусса ","Интерактивный метод Гаусса ","Вывод результатов ","Выход" };
+
+	vector<const char*> menu = { "Задать СЛАУ ",
+		"Решение СЛАУ методом Гаусса",
+		"Решение СЛАУ методом Жордана-Гаусса ",
+		"Интерактивный метод Гаусса ",
+		"Вывод результатов ",
+		"Выход" }; // Пункты меню
+
 	int ch = -1;
 	SLAU<rational> rslau;
 	SLAU<float> flslau;
@@ -37,7 +44,7 @@ void menu() {
 		switch (ch)
 		{
 		case 1:
-			rslau.new_Input();
+			rslau.Input();
 			flslau = rslau;
 			slau_ex = true;
 			sol_inter = false;

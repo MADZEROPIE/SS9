@@ -11,23 +11,31 @@ private:
 
 public:
 	template<typename T1> friend class SLAU;
+	// Конструкторы
 	Matrix();
 	Matrix(uint32_t n, uint32_t m);
 	Matrix( Matrix& B);
+
+	//Операторы индексирования
 	T& operator()(int i, int j) { return M[i][j]; }
-	Matrix<T>& operator=( Matrix<T>& B);
-	Row<T> operator*(Row<T>& X);
 	Row<T>& operator[](int i) { return M[i]; }
-	Matrix<T>& Input();
+
+	Matrix<T>& operator=( Matrix<T>& B); //Операция присваивания
+
+	Row<T> operator*(Row<T>& X); //Умножение матрицы на столбец
+	
 	void cl_resize(int v, int h) {
 		for (int i = 0; i < n; ++i)	M[i].Clear(); 
 		M.Clear(); 
 		n = v; m = h;
 		M.resize(v);
 		for (int i = 0; i < n; ++i)	M[i].resize(h);
-	}
-	void Show(bool nextdraw=false);
-	~Matrix();
+	}//Отчистка и изменение размеров матрицы
+
+	Matrix<T>& Input(); //Ввод матрицы
+	void Show(bool nextdraw=false); //Вывод матрицы на экран
+
+	~Matrix();//Деструктор
 };
 
 template<typename T>
