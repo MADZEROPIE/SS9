@@ -5,10 +5,12 @@ void gotoxy(COORD coord)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
 void gotoxy(int x, int y)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { SHORT(x),SHORT(y) });
 }
+
 void drawline(int x, int y, int l)
 {
 	COORD cur=get_coords();
@@ -21,6 +23,7 @@ void drawline(int x, int y, int l)
 	}
 	gotoxy(cur);
 }
+
 void drawx(int x, int y, int n)
 {
 	
@@ -33,6 +36,7 @@ void drawx(int x, int y, int n)
 	}
 	gotoxy(x + 6, y);
 }
+
 bool get_ch()
 {
 	char ch = 'L';

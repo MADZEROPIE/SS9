@@ -130,31 +130,6 @@ void del(rational & a)
 	}
 }
 
-void set(rational & a)
-{
-	char t;
-	do { cin >> a.p >> t >> a.q; } while (!a.q);
-
-}
-
-rational set()
-{
-	rational a; char t;
-	do { cin >> a.p >> t >> a.q; } while (!a.q);
-
-	return a;
-}
-
-void show(const rational & a)
-{
-	cout << a.p << "/" << a.q;
-}
-
-
-void show(const double& a) {
-	cout << a;
-}
-
 
 int64_t gcd(int64_t a, int64_t b) {
 	if (a == 0) return b;

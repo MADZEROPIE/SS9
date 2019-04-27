@@ -15,4 +15,4 @@ void drawline(int x, int y, int l);
 void move_cur(COORD);
 void drawx(int x, int y, int n);
 
-bool get_ch();
+bool get_ch(); // Функция, получающая ввод от пользователя
