@@ -18,18 +18,23 @@ class SLAU
 public:
 	SLAU();
 	template<typename T1> friend class SLAU;
-	SLAU<T>& Input();//Ввод СЛАУ
-	int Gauss_forw(bool steps_sh=true);
-	int JGauss(bool steps_sh = true);
-	void interactive(bool steps_sh = true);
-	bool end_gauss(int k);
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
-	Matrix<T> Gauss_back();
-	bool sol_ex() { return solex; }
-	bool is_solved() { return solved; }
-	Row<T> check_res();
-	void Show(bool base=false);
-	void Show_sol();
+
+	SLAU<T>& Input();//Ввод СЛАУ
+	int Gauss_forw(bool steps_sh=true); //Прямой ход метода Гаусса
+	int JGauss(bool steps_sh = true);// Метод Жордана-Гаусса
+	
+	void interactive(bool steps_sh = true); //Интерактивный метод Гаусса
+	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
+	
+	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
+	Row<T> check_res();	//Подсчёт невязки
+
+	bool sol_ex() { return solex; }//Существование решений
+	bool is_solved() { return solved; }//Система решена?
+		
+	void Show(bool base=false);//Вывод СЛАУ
+	void Show_sol();//Вывод решения
 	~SLAU();
 };
 
@@ -422,11 +427,13 @@ void SLAU<T>::interactive(bool steps_sh)
 		{
 			pivot[j] = k;
 			used[k] = true;
-			if (steps_sh) cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
-			swap(A[i], A[k]);
-			swap(b[i], b[k]);
-			cout << endl;
-			this->Show();
+			if (i != k) {
+				if (steps_sh) cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+				swap(A[i], A[k]);
+				swap(b[i], b[k]);
+				cout << endl;
+				this->Show();
+			}
 			for (int l = k+1; l < n; ++l)
 			{
 				T d = A[l][j] / A[k][j];

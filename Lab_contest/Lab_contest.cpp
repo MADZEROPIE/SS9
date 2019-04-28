@@ -1,5 +1,4 @@
-﻿// Lab_contest.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿/*РАЗРАБОТАНО MADZEROPIE И STEP_TO_VICTORY ДЛЯ УЧАСТИЯ В КОНКУРСЕ ПРОГРАММНЫХ ПРОЕКТОВ. ВСЕ ПРАВА ЗАЩИЩЕНЫ.*/
 
 #include "pch.h"
 #include <iostream>
@@ -17,7 +16,7 @@
 6 = Yellow E = Light Yellow
 7 = White F = Bright White*/
 
-const int NotUsed = system("color F1");
+const int NotUsed = system("color F1");//Цвет консоли
 
 void menu() {
 
@@ -27,11 +26,11 @@ void menu() {
 		"Интерактивный метод Гаусса ",
 		"Выход" }; // Пункты меню
 
-	int ch = -1;
-	SLAU<rational> rslau;
-	SLAU<float> flslau;
-	bool slau_ex = false;
-	bool step_sh;
+	int ch = -1;//Переменная выбора пункта меню
+	SLAU<rational> rslau;//СЛАУ для rational
+	SLAU<float> flslau;//СЛАУ для float
+	bool slau_ex = false;//Существование СЛАУ
+	bool step_sh;//Вывод промежуточных преобразований
 	while (true) {
 		do
 		{
