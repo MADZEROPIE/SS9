@@ -23,14 +23,12 @@ bool rational::operator<=(const rational & a)
 
 bool rational::operator==(int a)
 {
-	if(a*q!=p) return false;
-	else return true;
+	return (a*q == p);
 }
 
 bool rational::operator!=(int a)
 {
-	if (a*q==p) return false;
-	else return true;
+	return (a*q != p);
 }
 
 rational::rational()
@@ -121,14 +119,18 @@ void swap(rational &a, rational&b)
 
 void del(rational & a)
 {
-	int64_t tmp = gcd(abs(a.p), abs(a.q));
-	a.p /= tmp;
-	a.q /= tmp;
-	if (a.p < 0 && a.q < 0) {
-		a.p *= -1;
-		a.q *= -1;
+	if (a.p <= LONG_MAX && a.p >= LONG_MIN && a.q <= LONG_MAX && a.q >= LONG_MIN) {
+		int64_t tmp = gcd(abs(a.p), abs(a.q));
+		a.p /= tmp;
+		a.q /= tmp;
+		if (a.p < 0 && a.q < 0) {
+			a.p *= -1;
+			a.q *= -1;
+		}
 	}
+	else throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
 }
+
 
 
 int64_t gcd(int64_t a, int64_t b) {
