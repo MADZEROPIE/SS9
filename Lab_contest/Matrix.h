@@ -88,7 +88,7 @@ inline Matrix<T> & Matrix<T>::operator=(Matrix<T> & B)
 template<typename T>
 inline Row<T> Matrix<T>::operator*(Row<T>& X)
 {
-	int len = X.Size();
+	int len = X.size();
 	Row<T> res(n);
 	if (m != len) cout << "ERROR"<<endl;
 	else {

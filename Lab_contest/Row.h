@@ -28,7 +28,7 @@ public:
 	void resize(uint32_t m); //Изменение размера
 	void Show(bool drawnext=false);	//Вывод на экран
 
-	size_t Size() {
+	size_t size() {
 		return n;
 	} // Возвращает размер столбца
 	Row<T>& Input(); //Ввод столбца

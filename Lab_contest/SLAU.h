@@ -6,14 +6,14 @@
 template<typename T>
 class SLAU
 {
-	Matrix<T> A;// Матрица СЛАУ (исходная)
-	Row<T> b;// Столбец исходных членов (исходный)
+	Matrix<T> A,A_base;// Матрица СЛАУ основная/исходная
+	Row<T> b,b_base;// Столбец исходных членов основной/исходный
 	Matrix<T> x; // Матрица решений в параметрическом виде
 	bool solex; // Существование решений
 	int rank = 0; //Ранг СЛАУ
 	double acc=1e-16; // Точность округления до нуля
 	bool solved = false; // Система решена?
-	Row<int>pivot; // ???
+	vector<int>pivot; // ???
 	vector<bool> used; // ???
 public:
 	SLAU();
@@ -28,7 +28,7 @@ public:
 	bool sol_ex() { return solex; }
 	bool is_solved() { return solved; }
 	Row<T> check_res();
-	void Show();
+	void Show(bool base=false);
 	void Show_sol();
 	~SLAU();
 };
@@ -55,21 +55,21 @@ inline SLAU<T>& SLAU<T>::Input()
 		cin >> h;
 		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); h = -1; }
 	} while (h < 0);
-	cout << "Введите точность вычислений: ";
+	/*cout << "Введите точность вычислений: ";
 	do
 	{
 		cin >> acc;
 		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); acc = -1.0; }
-	} while (acc < 0);
+	} while (acc < 0);*/
 	cout << endl;
-	A.cl_resize(v, h);
-	b.resize(v);
+	A_base.cl_resize(v, h);
+	b_base.resize(v);
 	pivot.resize(h);
 	used.resize(v);
 	solved = false;
 	for (int i = 0; i < h; ++i)
 		pivot[i] = -1;
-	cout << "Заполнить СЛАУ случайными числами? ";
+	cout << "Заполнить СЛАУ случайными числами? Y/N ";
 	bool random = get_ch();
 	COORD cur = get_coords();
 	if (!random){
@@ -82,7 +82,7 @@ inline SLAU<T>& SLAU<T>::Input()
 			for (int j = 0; j < h; ++j)
 			{
 				gotoxy(c.X + step * j, c.Y + i);
-				cin >> A[i][j];
+				cin >> A_base[i][j];
 			}
 		}
 	drawline(cur.X += step * h, cur.Y, v);
@@ -95,7 +95,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	for (int i = 0; i < v; ++i)
 	{
 		gotoxy(cur);
-		cin >> b[i];
+		cin >> b_base[i];
 		cur.Y += 1;
 	}
 	cur.Y += 1;
@@ -104,16 +104,16 @@ inline SLAU<T>& SLAU<T>::Input()
 	else {
 		srand(time(NULL));
 		for (int i = 0; i < v; ++i) {
-			b[i] = T(rand()%100);
+			b_base[i] = T(rand()%100);
 			for (int j = 0; j < h; ++j)
 			{
-				A[i][j] = T(rand()%100); 
+				A_base[i][j] = T(rand()%100); 
 			}
 		}
 	}
 	cout << "Система: A*x=b" << endl;
 	cur = get_coords();
-	A.Show(true);
+	A_base.Show(true);
 	cur = get_coords();
 	cur.X += 1;
 	gotoxy(cur);
@@ -124,19 +124,21 @@ inline SLAU<T>& SLAU<T>::Input()
 	gotoxy(cur);
 	cout << " = ";
 	cur.X += 4;
-	b.Show(true);
+	b_base.Show(true);
 	gotoxy(0, cur.Y + max(v,h) + 1);
 	return *this;
 }
 
 template<typename T>
-inline void SLAU<T>::Show()
+inline void SLAU<T>::Show(bool base)
 {
 	COORD xy1 = get_coords();
-	A.Show();
+	if(base) A_base.Show();
+	else A.Show();
 	COORD xy2 = { xy1.X + step * A.m,xy1.Y };
 	gotoxy(xy2);
-	b.Show();
+	if (base) b_base.Show();
+	else b.Show();
 }
 
 template<typename T>
@@ -202,9 +204,14 @@ inline SLAU<T>::~SLAU()
 template<typename T>
 inline int SLAU<T>::Gauss_forw(bool steps_sh )
 {
-	int m = A.m;
-	int n = A.n; rank=0;
+	int m = A_base.m;
+	int n = A_base.n; rank=0;
 	int k = 0;
+	A = A_base; b = b_base;
+	solved = false;
+	for (int i = 0; i < A.m; ++i)
+		pivot[i] = -1;
+	for (int j = 0; j < used.size(); ++j) used[j] = false;
 	for (int j = 0; j < m; ++j)
 	{
 		int max_elem = k;
@@ -225,7 +232,7 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh )
 				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				this->Show();
+				if (steps_sh){ cout << endl; this->Show();}
 			}
 			pivot[j] = k;
 			k++;
@@ -238,7 +245,9 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh )
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh) this->Show();
+			if (steps_sh) {
+				cout << endl; this->Show();
+			}
 		}
 	}	
 
@@ -308,13 +317,13 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 template<typename T>
 inline Row<T> SLAU<T>::check_res()
 {
-	int m = A.m;
+	int m = A_base.m;
 	Row<T> res;
 	Row<T> frw(m);
 	if (solex) {
 		for (int i = 0; i < m; ++i)
 			frw[i] = x[i][0];
-		res = A * frw - b;
+		res = A_base * frw - b_base;
 		cout << "Невязка:";
 		res.Show();
 		}
@@ -325,9 +334,14 @@ inline Row<T> SLAU<T>::check_res()
 template<typename T>
 inline int SLAU<T>::JGauss(bool steps_sh)
 {
-	int m = A.m;
-	int n = A.n; rank = 0;
+	int m = A_base.m;
+	int n = A_base.n; rank = 0;
 	int k = 0;
+	A = A_base; b = b_base;
+	solved = false;
+	for (int i = 0; i < A.m; ++i)
+		pivot[i] = -1;
+	for (int j = 0; j < used.size(); ++j) used[j] = false;
 	for (int j = 0; j < m; ++j)
 	{
 		int max_elem = k;
@@ -346,7 +360,9 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				if (steps_sh) this->Show();
+				if (steps_sh) {
+					cout << endl; this->Show();
+				}
 			}
 			pivot[j] = k;
 			k++;
@@ -361,7 +377,9 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh) this->Show();
+			if (steps_sh) {
+				cout << endl; this->Show();
+			}
 		}
 	}
 	
@@ -373,22 +391,29 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 template<typename T>
 void SLAU<T>::interactive(bool steps_sh)
 {
+	A = A_base; b = b_base;
+	solved = false;
+	for (int i = 0; i < A.m; ++i)
+		pivot[i] = -1;
+	for (int j = 0; j < used.size(); ++j) used[j] = false;
 	int n = A.n;
 	int m = A.m;
 	int k = 0;
 	do
 	{
 		int i,j;
+		cout << endl;
 		this->Show();
+		cout << "Выберите ведущий элемент. " << endl;
+		cout << "Введите номер строки: i = ";
 		do
 		{
-			cout << "Введите номер строки: i = ";
 			cin >> i;
 			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); i = -1; }
 		} while (i<0 || i>=n);
+		cout << "Введите номер столбца j = ";
 		do
 		{
-			cout << "Введите номер столбца j = ";
 			cin >> j;
 			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); j = -1; }
 		} while (j < 0 || j >= m);
@@ -400,6 +425,7 @@ void SLAU<T>::interactive(bool steps_sh)
 			if (steps_sh) cout << "Меняем местами строки с индексами " << i<< " и " << k << endl;
 			swap(A[i], A[k]);
 			swap(b[i], b[k]);
+			cout << endl;
 			this->Show();
 			for (int l = k+1; l < n; ++l)
 			{
@@ -411,7 +437,7 @@ void SLAU<T>::interactive(bool steps_sh)
 			}
 			k++;
 		}
-		else cout << "Выберите другой ведущий элемент."<<endl;
+		else cout << "Этот элемент не может быть выбран в качестве ведущего. Выберите другой ведущий элемент."<<endl;
 
 	} while (!end_gauss(k));
 	solved = true;
@@ -445,20 +471,20 @@ template<typename T>
 template<typename T1>
 inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 {
-	A.cl_resize(c.A.n,c.A.m);
+	A_base.cl_resize(c.A_base.n,c.A_base.m);
 	x.cl_resize(c.x.n,c.x.m);
-	b.resize(c.b.Size());
+	b_base.resize(c.b_base.size());
 	solved = false;
-	pivot.resize(c.pivot.Size());
+	pivot.resize(c.pivot.size());
 	used.resize(c.used.size());
-	for (int i = 0; i < pivot.Size(); ++i)
+	/*for (int i = 0; i < pivot.size(); ++i)
 		pivot[i] = -1;
-	acc = c.acc;
-	for (int i = 0; i < A.n; ++i)
+	//acc = c.acc;*/
+	for (int i = 0; i < A_base.n; ++i)
 	{
-		b[i] = T(c.b[i]);
-		for (int j = 0; j < A.m; ++j)
-			A(i, j) = T(c.A(i, j));
+		b_base[i] = T(c.b_base[i]);
+		for (int j = 0; j < A_base.m; ++j)
+			A_base(i, j) = T(c.A_base(i, j));
 	}
 	return *this;
 }

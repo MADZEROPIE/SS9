@@ -25,13 +25,12 @@ void menu() {
 		"Решение СЛАУ методом Гаусса",
 		"Решение СЛАУ методом Жордана-Гаусса ",
 		"Интерактивный метод Гаусса ",
-		"Вывод результатов ",
 		"Выход" }; // Пункты меню
 
 	int ch = -1;
 	SLAU<rational> rslau;
 	SLAU<float> flslau;
-	bool slau_ex = false,sol_inter=false;
+	bool slau_ex = false;
 	bool step_sh;
 	while (true) {
 		do
@@ -47,7 +46,6 @@ void menu() {
 			rslau.Input();
 			flslau = rslau;
 			slau_ex = true;
-			sol_inter = false;
 			break;
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -60,7 +58,22 @@ void menu() {
 			
 			cout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.Gauss_forw(step_sh);
-			sol_inter = false;
+
+			cout << "Метод Гаусса завершен." << endl;
+			cout << "Идет формирование решений... " << endl;
+			flslau.Gauss_back();
+			flslau.Show_sol();
+
+			rslau.Gauss_back();
+			rslau.Show_sol();
+
+			if (flslau.sol_ex()) {
+				cout << "Невязка для десятичных дробей (float) :" << endl;
+				flslau.check_res();
+
+				cout << "Невязка для рациональных дробей (rational) :" << endl;
+				rslau.check_res();
+			}
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -73,7 +86,22 @@ void menu() {
 			
 			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.JGauss(step_sh);
-			sol_inter = false;
+			
+			cout << "Метод Жордана-Гаусса завершен." << endl;
+			cout << "Идет формирование решений... " << endl;
+			flslau.Gauss_back();
+			flslau.Show_sol();
+
+			rslau.Gauss_back();
+			rslau.Show_sol();
+
+			if (flslau.sol_ex()) {
+				cout << "Невязка для десятичных дробей (float) :" << endl;
+				flslau.check_res();
+
+				cout << "Невязка для рациональных дробей (rational) :" << endl;
+				rslau.check_res();
+			}
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
@@ -82,27 +110,16 @@ void menu() {
 			
 			flslau.interactive(step_sh);
 			cout << "Метод Гаусса завершен." << endl;
-			sol_inter = true;
-			break;
-		case 5:
-			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			else if (!flslau.is_solved()) { system("cls"); cout << "Cначала вызовите метод Гаусса."<<endl; break; }
 			cout << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
 			flslau.Show_sol();
-			if (!sol_inter) {
-				rslau.Gauss_back();
-				rslau.Show_sol();
-			}
+
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				flslau.check_res();
-				if (!sol_inter) {
-					cout << "Невязка для рациональных дробей (rational) :" << endl;
-					rslau.check_res();
-				}
+				flslau.check_res();	
 			}
 			break;
+
 		default:
 			return;
 			break;
