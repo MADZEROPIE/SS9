@@ -119,8 +119,9 @@ void swap(rational &a, rational&b)
 
 void del(rational & a)
 {
-	if (a.p <= LONG_MAX && a.p >= LONG_MIN && a.q <= LONG_MAX && a.q >= LONG_MIN) {
+	if (a.p <= LLONG_MAX && a.p >= LLONG_MIN && a.q <= LLONG_MAX && a.q >= LLONG_MIN) {
 		int64_t tmp = gcd(abs(a.p), abs(a.q));
+		if(tmp<=0) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
 		a.p /= tmp;
 		a.q /= tmp;
 		if (a.p < 0 && a.q < 0) {
