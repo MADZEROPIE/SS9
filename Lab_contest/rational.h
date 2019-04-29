@@ -5,6 +5,8 @@
 #include <string>
 #include <exception>
 
+#define SAFE_RAT // ПРОВЕРКИ НА ПЕРЕПОЛНЕНИЯ
+
 using namespace std;
 
 struct rational
@@ -46,6 +48,13 @@ void swap(rational& a, rational& b);
 void del(rational& a);//Сокращение дроби
 int64_t gcd(int64_t, int64_t);//НОД
 rational abs(const rational&);//Модуль
+
+#ifdef SAFE_RAT
+int64_t safe_mult(int64_t a, int64_t b);
+int64_t safe_add(int64_t a, int64_t b);
+int64_t safe_sub(int64_t a, int64_t b);
+int64_t safe_div(int64_t a, int64_t b);
+#endif // SAFE_RAT
 
 ostream& operator<<(ostream& stream,const rational& a);	//Перегруженный потоковый вывод
 istream& operator>>(istream& stream, rational& a);	//Перегруженный потоковый ввод

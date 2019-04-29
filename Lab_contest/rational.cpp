@@ -76,8 +76,13 @@ rational & rational::operator/=(const rational & a)
 rational operator+(const rational & a, const rational & b)
 {
 	rational res;
-	res.p = a.p*b.q + b.p*a.q;
-	res.q = a.q*b.q;
+	#ifdef SAFE_RAT
+	res.p = safe_add(safe_mult(a.p, b.q), safe_mult(b.p, a.q));
+	res.q = safe_mult(a.q, b.q);
+	#else
+	res.p = a.p* b.q + b.p* a.q;
+	res.q = a.q* b.q;
+	#endif 
 	del(res);
 	return res;
 }
@@ -85,8 +90,13 @@ rational operator+(const rational & a, const rational & b)
 rational operator-(const rational & a, const rational & b)
 {
 	rational res;
-	res.p = a.p*b.q - b.p*a.q;
-	res.q = a.q*b.q;
+	#ifdef SAFE_RAT
+	res.p = safe_sub(safe_mult(a.p,b.q), safe_mult(b.p,a.q));
+	res.q = safe_mult(a.q,b.q);
+	#else
+	res.p = a.p* b.q - b.p* a.q;
+	res.q = a.q* b.q;
+	#endif 
 	del(res);
 	return res;
 }
@@ -94,8 +104,13 @@ rational operator-(const rational & a, const rational & b)
 rational operator*(const rational & a, const rational & b)
 {
 	rational res;
-	res.p = a.p*b.p;
-	res.q = a.q*b.q;
+	#ifdef SAFE_RAT
+	res.p = safe_mult(a.p,b.p);
+	res.q = safe_mult(a.q,b.q);
+	#else
+	res.p = a.p* b.p;
+	res.q = a.q* b.q;
+	#endif 
 	del(res);
 	return res;
 }
@@ -103,8 +118,13 @@ rational operator*(const rational & a, const rational & b)
 rational operator/(const rational & a, const rational & b)
 {
 	rational res;
-	res.p = a.p*b.q;
-	res.q = a.q*b.p;
+	#ifdef SAFE_RAT
+	res.p = safe_mult(a.p,b.q);
+	res.q = safe_mult(a.q,b.p);
+	#else
+	res.p = a.p* b.q;
+	res.q = a.q* b.p;
+	#endif 
 	del(res);
 	return res;
 }
@@ -120,7 +140,7 @@ void swap(rational& a, rational& b)
 void del(rational& a)
 {
 	int64_t tmp = gcd(abs(a.p), abs(a.q)); // При вызове abs, если число равно LLONG_MIN, abs вернет LLONG_MIN => gcd = отрицат. числу => если он равен -1, то будет переполнение
-	if (tmp <= 0) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	if (tmp == -1||tmp == 0) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
 	a.p /= tmp;
 	a.q /= tmp;
 	if (a.p < 0 && a.q < 0) {
@@ -156,6 +176,35 @@ rational abs(const rational& b)
 	}
 	return res;
 }
+
+#ifdef SAFE_RAT
+int64_t safe_mult(int64_t a, int64_t b)
+{
+	if (a > 0 && ((b>0 && a > LLONG_MAX / b)||(b<0 && b<LLONG_MIN/a )))  throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	if (a < 0 && (( b < 0 && b < LLONG_MAX / a) || (b > 0 && a < LLONG_MIN / b))) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	return a*b;
+}
+
+int64_t safe_add(int64_t a, int64_t b)
+{
+	if (((b > 0) && (a > (LLONG_MAX - b))) || ((b < 0) && (a < (LLONG_MIN - b)))) {
+		throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	}
+	return a + b;
+}
+
+
+int64_t safe_sub(int64_t a, int64_t b)
+{
+	return safe_add(a,-b);
+}
+
+int64_t safe_div(int64_t  a, int64_t  b)
+{
+	if (b==0 || (a==LLONG_MIN && b==-1)) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	return a / b;
+}
+#endif
 
 ostream & operator<<(ostream& stream, const rational& a)
 {

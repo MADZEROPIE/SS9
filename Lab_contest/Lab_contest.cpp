@@ -157,5 +157,14 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 	menu();
+
+	/*rational a, b;
+	while (true) {
+		cin >> a >> b;
+		cout << "a + b = " << a + b << endl;
+		cout << "a * b = " << a * b << endl;
+		cout << "a / b = " << a / b << endl;
+		cout << "a - b = " << a - b << endl;
+	}*/
 	return 0;
 }
