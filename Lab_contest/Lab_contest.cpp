@@ -7,15 +7,6 @@
 #include "Matrix.h"
 #include "SLAU.h"
 
-/*0 = Black 8 = Gray
-1 = Blue 9 = Light Blue
-2 = Green A = Light Green
-3 = Aqua B = Light Aqua
-4 = Red C = Light Red
-5 = Purple D = Light Purple
-6 = Yellow E = Light Yellow
-7 = White F = Bright White*/
-
 const int NotUsed = system("color F1");//Цвет консоли
 
 void menu() {
@@ -31,7 +22,7 @@ void menu() {
 	SLAU<float> flslau;//СЛАУ для float
 	bool slau_ex = false;//Существование СЛАУ
 	bool step_sh;//Вывод промежуточных преобразований
-	bool rat_overflow = false;
+	bool rat_overflow = false; //Переполнение rational
 	while (true) {
 		do
 		{
@@ -51,7 +42,7 @@ void menu() {
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
 			rat_overflow = false;
-			cout << "Выводить промежуточные преборазования с комментариями? ";
+			cout << "Выводить промежуточные преборазования с комментариями? Y/N";
 			step_sh = get_ch();
 			
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
@@ -95,7 +86,7 @@ void menu() {
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
 			rat_overflow = false;
-			cout << "Выводить промежуточные преборазования с комментариями? ";
+			cout << "Выводить промежуточные преборазования с комментариями? Y/N";
 			step_sh = get_ch();
 			
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
@@ -139,7 +130,7 @@ void menu() {
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Выводить пояснения? ";
+			cout << "Выводить пояснения? Y/N";
 			step_sh = get_ch();
 			
 			flslau.interactive(step_sh);
@@ -160,7 +151,6 @@ void menu() {
 		}
 	}
 }
-
 
 
 

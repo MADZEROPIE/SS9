@@ -30,11 +30,11 @@ public:
 	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
 	Row<T> check_res();	//Подсчёт невязки
 
-	bool sol_ex() { return solex; }//Существование решений
-	bool is_solved() { return solved; }//Система решена?
+	bool sol_ex() { return solex; }	//Существование решений
+	bool is_solved() { return solved; }	//Система решена?
 		
-	void Show(bool base=false);//Вывод СЛАУ
-	void Show_sol();//Вывод решения
+	void Show(bool base=false);	//Вывод СЛАУ
+	void Show_sol(); //Вывод решения
 	~SLAU();
 };
 
@@ -60,12 +60,6 @@ inline SLAU<T>& SLAU<T>::Input()
 		cin >> h;
 		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); h = -1; }
 	} while (h < 0);
-	/*cout << "Введите точность вычислений: ";
-	do
-	{
-		cin >> acc;
-		if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); acc = -1.0; }
-	} while (acc < 0);*/
 	cout << endl;
 	A_base.cl_resize(v, h);
 	b_base.resize(v);
@@ -109,7 +103,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	else {
 		srand(time(NULL));
 		for (int i = 0; i < v; ++i) {
-			b_base[i] = T(rand()%100);
+			b_base[i] = T(rand()%100000000000);
 			for (int j = 0; j < h; ++j)
 			{
 				A_base[i][j] = T(rand()%100); 
@@ -203,7 +197,6 @@ inline void SLAU<T>::Show_sol()
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
-	//cout << "DESTRUCTOR SLAU"<<endl;
 }
 
 template<typename T>
@@ -423,7 +416,7 @@ void SLAU<T>::interactive(bool steps_sh)
 			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); j = -1; }
 		} while (j < 0 || j >= m);
 		
-		if (pivot[j]==-1 && k<=i && abs(double(A[i][j]))>acc)
+		if (pivot[j]==-1 && k<=i && double(abs(A[i][j]))>acc)
 		{
 			pivot[j] = k;
 			used[k] = true;
@@ -465,7 +458,7 @@ bool SLAU<T>::end_gauss(int k)
 			if (pivot[i] == -1)
 			{
 				int j;
-				for (j = k; j < n && abs(double(A[j][i])) < acc; ++j)
+				for (j = k; j < n && double(abs(A[j][i])) < acc; ++j)
 					A[j][i] = T(0);
 				if (j < n)
 					return false;
@@ -484,9 +477,6 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 	solved = false;
 	pivot.resize(c.pivot.size());
 	used.resize(c.used.size());
-	/*for (int i = 0; i < pivot.size(); ++i)
-		pivot[i] = -1;
-	//acc = c.acc;*/
 	for (int i = 0; i < A_base.n; ++i)
 	{
 		b_base[i] = T(c.b_base[i]);
@@ -495,4 +485,3 @@ inline SLAU<T>& SLAU<T>::operator=(SLAU<T1>&c)
 	}
 	return *this;
 }
-

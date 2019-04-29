@@ -1,6 +1,8 @@
 #pragma once
 #include<iostream>
 #include "Con_sole.h"
+#include <iomanip>
+
 using namespace std;
 
 
@@ -75,7 +77,6 @@ inline Row<T>& Row<T>::Input()
 template<typename T>
 inline Row<T>::~Row()
 {
-	//cout << "ROW DESTRUCTOR" << endl;
 	n = 0;
 }
 

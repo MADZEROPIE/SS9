@@ -12,7 +12,7 @@ private:
 public:
 	template<typename T1> friend class SLAU;
 	// Конструкторы
-	Matrix();
+	Matrix() {}
 	Matrix(uint32_t n, uint32_t m);
 	Matrix( Matrix& B);
 
@@ -35,13 +35,8 @@ public:
 	Matrix<T>& Input(); //Ввод матрицы
 	void Show(bool nextdraw=false); //Вывод матрицы на экран
 
-	~Matrix();//Деструктор
+	~Matrix() {}//Деструктор
 };
-
-template<typename T>
-inline Matrix<T>::Matrix()
-{
-}
 
 template<typename T>
 inline Matrix<T>::Matrix(uint32_t n, uint32_t m)
@@ -64,7 +59,6 @@ inline Matrix<T>::Matrix( Matrix & B)
 		for (int j = 0; j < B.m; ++j) 
 			M[i][j] = B.M[i][j];  
 	}
-	
 }
 
 template<typename T>
@@ -109,8 +103,6 @@ inline Matrix<T>& Matrix<T>::Input()
 	M.resize(n);
 	cout << "Введите количество столбцов: ";
 	cin >> m;
-	//cout << "Введите точность вычислений: ";
-	//cin >> acc;
 	for (int i = 0; i < n; ++i) {
 		M[i].resize(m);
 		for (int j = 0; j < m; ++j) cin >> M[i][j];
@@ -134,12 +126,4 @@ inline void Matrix<T>::Show(bool nextdraw)
 		gotoxy(c.X + m * step + 1, c.Y);
 	else
 		gotoxy(0, c.Y + n + 2);
-}
-
-template<typename T>
-inline Matrix<T>::~Matrix()
-{
-	//cout << "MATRIX DESTRUCTOR" << endl;
-	//for(int i = 0; i < n; ++i) M[i].~Row();
-	//M.~Row();
 }

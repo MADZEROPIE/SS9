@@ -109,7 +109,7 @@ rational operator/(const rational & a, const rational & b)
 	return res;
 }
 
-void swap(rational &a, rational&b)
+void swap(rational& a, rational& b)
 {
 	rational tmp;
 	tmp = a;
@@ -117,19 +117,16 @@ void swap(rational &a, rational&b)
 	b = tmp;
 }
 
-void del(rational & a)
+void del(rational& a)
 {
-	if (a.p <= LLONG_MAX && a.p >= LLONG_MIN && a.q <= LLONG_MAX && a.q >= LLONG_MIN) {
-		int64_t tmp = gcd(abs(a.p), abs(a.q));
-		if(tmp<=0) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
-		a.p /= tmp;
-		a.q /= tmp;
-		if (a.p < 0 && a.q < 0) {
-			a.p *= -1;
-			a.q *= -1;
-		}
+	int64_t tmp = gcd(abs(a.p), abs(a.q)); // При вызове abs, если число равно LLONG_MIN, abs вернет LLONG_MIN => gcd = отрицат. числу => если он равен -1, то будет переполнение
+	if (tmp <= 0) throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
+	a.p /= tmp;
+	a.q /= tmp;
+	if (a.p < 0 && a.q < 0) {
+		a.p *= -1;
+		a.q *= -1;
 	}
-	else throw overflow_error("Переполнение. Дальнейшая работа с rational невозможна.");
 }
 
 
@@ -139,7 +136,7 @@ int64_t gcd(int64_t a, int64_t b) {
 	return gcd(b%a, a);
 }
 
-rational abs(const rational &b)
+rational abs(const rational& b)
 {
 	rational res;
 	if (b.p < 0)
@@ -158,16 +155,15 @@ rational abs(const rational &b)
 		res.q = b.q;
 	}
 	return res;
-	
 }
 
-ostream & operator<<(ostream & stream, const rational &a)
+ostream & operator<<(ostream& stream, const rational& a)
 {
 	stream << a.p << "/" << a.q;
 	return stream;
 }
 
-istream & operator>>(istream & stream, rational & a)
+istream & operator>>(istream& stream, rational& a)
 {
 	string str;
 	stream >> str;
@@ -189,8 +185,9 @@ istream & operator>>(istream & stream, rational & a)
 		else
 			num = (num * 10 + (str[i] - '0')*tmp);
 	}
-	if (flag)
-		a.q = num;
+	if (flag) {
+		(num != 0) ? a.q = num : a.q = 1;
+	}
 	else
 	{
 		a.p = num;
