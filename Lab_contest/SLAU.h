@@ -103,7 +103,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	else {
 		srand(time(NULL));
 		for (int i = 0; i < v; ++i) {
-			b_base[i] = T(rand()%100000000000);
+			b_base[i] = T(rand()%100);
 			for (int j = 0; j < h; ++j)
 			{
 				A_base[i][j] = T(rand()%100); 
