@@ -238,7 +238,7 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh )
 			for (int l = k; l < n; ++l)
 			{
 				T d = A[l][j] / A[k - 1][j];
-				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+				//if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
@@ -430,11 +430,12 @@ void SLAU<T>::interactive(bool steps_sh)
 			for (int l = k+1; l < n; ++l)
 			{
 				T d = A[l][j] / A[k][j];
-				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
+				//if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
 				A[l] -= A[k] * d;
 				b[l] -= b[k] * d;
 				A[l][j] = T(0);
 			}
+			if (steps_sh) cout << "Исключаем переменную x" << j << " из СЛАУ. ???" << endl;
 			k++;
 		}
 		else cout << "Этот элемент не может быть выбран в качестве ведущего. Выберите другой ведущий элемент."<<endl;
