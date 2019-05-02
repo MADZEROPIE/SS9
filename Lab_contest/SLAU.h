@@ -497,7 +497,7 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 		
 		if (!fout.is_open())
 		{
-			cout << "Не удалось открыть файл." << endl;
+			cout << "Не удалось открыть файл " << filename << endl;
 			steps_sh = false;
 		}
 		else
@@ -565,10 +565,7 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 	rank = k;
 	this->Show();
 	if (steps_sh)
-	{
-		this->Show_in_file(fout);
 		fout.close();
-	}
 }
 
 template<typename T>
