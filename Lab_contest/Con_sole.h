@@ -3,11 +3,12 @@
 #include <conio.h>
 #include <Windows.h>
 #include <vector>
+#include <string>
 #include <fstream>
 using namespace std;
 
 const int step = 12;
-const int fstep = 12;
+const int fstep = 19;
 
 
 

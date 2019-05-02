@@ -207,8 +207,17 @@ int64_t safe_div(int64_t  a, int64_t  b)
 #endif
 
 ostream & operator<<(ostream& stream, const rational& a)
-{
-	stream << a.p << "/" << a.q;
+{	
+	if (stream.width() == fstep)
+	{
+		stream.width(fstep / 2 - !(fstep % 2));
+		stream <<right<< a.p << "/";
+		stream.width(fstep / 2);
+		stream << left << a.q;
+	}
+	else
+		stream << a.p << "/" << a.q;
+		
 	return stream;
 }
 

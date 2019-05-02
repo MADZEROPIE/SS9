@@ -15,6 +15,7 @@ class SLAU
 	bool solved = false; // Система решена?
 	vector<int>pivot; // ???
 	vector<bool> used; // ???
+	string filename = "output.txt";
 public:
 	SLAU();
 	template<typename T1> friend class SLAU;
@@ -35,9 +36,11 @@ public:
 		
 	void Show(bool base=false);	//Вывод СЛАУ
 	void Show_in_file(ofstream&);
-	void Show_sol(); //Вывод решения
+	void Show_sol(bool steps_sh=true); //Вывод решения
 	~SLAU();
 };
+
+
 
 template<typename T>
 inline SLAU<T>::SLAU()
@@ -162,11 +165,11 @@ inline void SLAU<T>::Show_in_file(ofstream & fout)
 		fout << border << endl;
 	}
 
-
+	 
 }
 
 template<typename T>
-inline void SLAU<T>::Show_sol()
+inline void SLAU<T>::Show_sol(bool steps_sh)
 {
 	int m = A.m;
 	if (solex)
@@ -177,6 +180,57 @@ inline void SLAU<T>::Show_sol()
 		for (int i = 0; i < m; ++i)
 			for (int j = 0; j < n; ++j)
 				sol[j][i] = x[i][j];
+		ofstream fout;
+		fout.open(filename, ofstream::app);
+		if (!fout.is_open())
+		{
+			cout << "Не удалось открыть файл " << filename;
+			steps_sh = false;
+		}
+		if (steps_sh)
+		{
+			char border = char(166);
+			for (int j = 0; j < m; ++j)
+			{
+				fout << border;
+				fout << "x" << j+1;
+				fout.width(4);
+				fout << border;
+				if (j == 0)
+					fout << " = ";
+				else
+					fout << "   ";
+				fout << border;
+				fout.width(fstep);
+				fout << sol[0][j];
+				fout << border;
+				if (j == 0)
+					fout << " + ";
+				else
+					fout << "   ";
+				for (int i = 1; i < n; ++i)
+				{
+					fout << border;
+					fout.width(fstep);
+					fout << sol[i][j];
+					fout << border;
+					fout.width(5);
+					if (j == 0)
+						fout << " *t" << i;
+					else
+						fout << "   ";
+					fout.width(5);
+					if (i != n - 1 && j == 0)
+						fout << " + ";
+					else
+						fout << "   ";
+
+				}
+				fout << endl;
+			}
+			fout << endl;
+			fout.close();
+		}
 		COORD cur = get_coords();
 		drawx(cur.X, cur.Y, m);
 		cur = get_coords();
@@ -219,6 +273,8 @@ inline void SLAU<T>::Show_sol()
 	}
 	
 }
+
+
 template<typename T>
 inline SLAU<T>::~SLAU()
 {
@@ -228,7 +284,12 @@ template<typename T>
 inline int SLAU<T>::Gauss_forw(bool steps_sh )
 {
 	ofstream fout;
-	fout.open("output.txt",ofstream::app);
+	fout.open(filename,ofstream::app);
+	if (!fout.is_open())
+	{
+		cout << "Не удалось открыть файл " << filename << endl;
+	}
+
 	int m = A_base.m;
 	int n = A_base.n; rank=0;
 	int k = 0;
@@ -311,6 +372,8 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 
 		cout <<"РАНГ СИСТЕМЫ = " <<rank<<endl;
 		this->Show();
+		ofstream fout;
+		fout.open(filename, ofstream::app);
 		int p = 1;
 		for (int j = 0; j < m; ++j)
 		{
@@ -361,7 +424,7 @@ template<typename T>
 inline int SLAU<T>::JGauss(bool steps_sh)
 {
 	ofstream fout;
-	fout.open("output.txt",ofstream::app);
+	fout.open(filename,ofstream::app);
 	int m = A_base.m;
 	int n = A_base.n; rank = 0;
 	int k = 0;
@@ -389,7 +452,7 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
 				if (steps_sh) {
-					fout << endl; this->Show();
+					fout << endl; this->Show_in_file(fout);
 				}
 			}
 			pivot[j] = k;
@@ -406,7 +469,7 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 				A[l][j] = T(0);
 			}
 			if (steps_sh) {
-				fout << endl; this->Show();
+				fout << endl; this->Show_in_file(fout);
 			}
 		}
 	}
