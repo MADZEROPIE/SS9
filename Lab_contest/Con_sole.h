@@ -5,12 +5,11 @@
 #include <vector>
 #include <string>
 #include <fstream>
+
 using namespace std;
 
 const int step = 12;
 const int fstep = 19;
-
-
 
 COORD get_coords();
 void gotoxy(int x, int y);

@@ -5,6 +5,7 @@
 #include <string>
 #include <exception>
 #include "Con_sole.h"
+
 #define SAFE_RAT // опнбепйх мю оепеонкмемхъ
 
 using namespace std;

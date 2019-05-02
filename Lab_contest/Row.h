@@ -29,7 +29,7 @@ public:
 	void Clear(); //Удаление всех элементов столбца
 	void resize(uint32_t m); //Изменение размера
 	void Show(bool drawnext=false);	//Вывод на экран
-
+	void Show_in_file(ofstream&);
 	size_t size() {
 		return n;
 	} // Возвращает размер столбца
@@ -62,6 +62,20 @@ inline void Row<T>::Show(bool nextdraw)
 		gotoxy(c.X + step + 1, c.Y);
 	else
 		gotoxy(0, c.Y + n + 1);
+}
+
+template<typename T>
+inline void Row<T>::Show_in_file(ofstream & fout)
+{
+	char border = char(166);
+	for (int i = 0; i < n; ++i)
+	{
+		fout << border;
+		fout.width(fstep);
+		fout << arr[i];
+		fout << border << endl;
+	}
+	fout << endl;
 }
 
 

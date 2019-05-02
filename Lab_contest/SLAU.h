@@ -15,37 +15,29 @@ class SLAU
 	bool solved = false; // Система решена?
 	vector<int>pivot; // ???
 	vector<bool> used; // ???
-	string filename = "output.txt";
 public:
-	SLAU();
+	SLAU() {}
 	template<typename T1> friend class SLAU;
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 
 	SLAU<T>& Input();//Ввод СЛАУ
-	int Gauss_forw(bool steps_sh=true); //Прямой ход метода Гаусса
-	int JGauss(bool steps_sh = true);// Метод Жордана-Гаусса
+	int Gauss_forw(bool steps_sh=true, string filename = "output.txt"); //Прямой ход метода Гаусса
+	int JGauss(bool steps_sh = true, string filename = "output.txt");// Метод Жордана-Гаусса
 	
 	void interactive(bool steps_sh = true); //Интерактивный метод Гаусса
 	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
 	
 	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
-	Row<T> check_res();	//Подсчёт невязки
+	Row<T> check_res(bool steps_sh = true, string filename = "output.txt");	//Подсчёт невязки
 
 	bool sol_ex() { return solex; }	//Существование решений
 	bool is_solved() { return solved; }	//Система решена?
 		
 	void Show(bool base=false);	//Вывод СЛАУ
-	void Show_in_file(ofstream&);
-	void Show_sol(bool steps_sh=true); //Вывод решения
-	~SLAU();
+	void Show_in_file(ofstream&, bool base = false);// Вывод СЛАУ в файл
+	void Show_sol(bool steps_sh=true, string filename = "output.txt"); //Вывод решения
+	~SLAU() {}
 };
-
-
-
-template<typename T>
-inline SLAU<T>::SLAU()
-{
-}
 
 
 template<typename T>
@@ -145,10 +137,10 @@ inline void SLAU<T>::Show(bool base)
 }
 
 template<typename T>
-inline void SLAU<T>::Show_in_file(ofstream & fout)
+inline void SLAU<T>::Show_in_file(ofstream & fout, bool base)
 {
-	int n = A.n;
-	int m = A.m;
+	int n = A_base.n;
+	int m = A_base.m;
 	char border = char(166);
 	for (int i = 0; i < n; ++i)
 	{
@@ -156,20 +148,20 @@ inline void SLAU<T>::Show_in_file(ofstream & fout)
 		for (int j = 0; j < m; ++j)
 		{
 			fout.width(fstep);
-			fout << A[i][j];
-		}
-			
+			if (!base)  fout << A[i][j]; 
+			else fout << A_base[i][j];
+		}	
 		fout << border;
 		fout.width(fstep);
-		fout << b[i];
+		if (!base) fout << b[i];
+		else fout << b_base[i];
 		fout << border << endl;
 	}
-
-	 
+	fout << endl;
 }
 
 template<typename T>
-inline void SLAU<T>::Show_sol(bool steps_sh)
+inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
 {
 	int m = A.m;
 	if (solex)
@@ -181,11 +173,14 @@ inline void SLAU<T>::Show_sol(bool steps_sh)
 			for (int j = 0; j < n; ++j)
 				sol[j][i] = x[i][j];
 		ofstream fout;
-		fout.open(filename, ofstream::app);
-		if (!fout.is_open())
+		if (steps_sh)
 		{
-			cout << "Не удалось открыть файл " << filename;
-			steps_sh = false;
+			fout.open(filename, ofstream::app);
+			if (!fout.is_open())
+			{
+				cout << "Не удалось открыть файл " << filename;
+				steps_sh = false;
+			}
 		}
 		if (steps_sh)
 		{
@@ -229,7 +224,6 @@ inline void SLAU<T>::Show_sol(bool steps_sh)
 				fout << endl;
 			}
 			fout << endl;
-			fout.close();
 		}
 		COORD cur = get_coords();
 		drawx(cur.X, cur.Y, m);
@@ -271,25 +265,20 @@ inline void SLAU<T>::Show_sol(bool steps_sh)
 	{
 		cout << "Сначала вызовите Метод Гаусса или Жордана - Гаусса." << endl;
 	}
-	
-}
-
-
-template<typename T>
-inline SLAU<T>::~SLAU()
-{
 }
 
 template<typename T>
-inline int SLAU<T>::Gauss_forw(bool steps_sh )
+inline int SLAU<T>::Gauss_forw(bool steps_sh, string filename)
 {
 	ofstream fout;
-	fout.open(filename,ofstream::app);
-	if (!fout.is_open())
-	{
-		cout << "Не удалось открыть файл " << filename << endl;
+	if (steps_sh) {
+		fout.open(filename, ofstream::app);
+		if (!fout.is_open())
+		{
+			cout << "Не удалось открыть файл " << filename << endl;
+			steps_sh = false;
+		}
 	}
-
 	int m = A_base.m;
 	int n = A_base.n; rank=0;
 	int k = 0;
@@ -372,8 +361,6 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 
 		cout <<"РАНГ СИСТЕМЫ = " <<rank<<endl;
 		this->Show();
-		ofstream fout;
-		fout.open(filename, ofstream::app);
 		int p = 1;
 		for (int j = 0; j < m; ++j)
 		{
@@ -393,7 +380,6 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 				p++;
 			}
 		}
-		
 		solex = true;
 	}
 	else 
@@ -404,24 +390,37 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 }
 
 template<typename T>
-inline Row<T> SLAU<T>::check_res()
+inline Row<T> SLAU<T>::check_res(bool file_sh, string filename)
 {
 	int m = A_base.m;
 	Row<T> res;
 	Row<T> frw(m);
+	ofstream fout;
+	if (file_sh) {
+		fout.open(filename, ofstream::app);
+		if (!fout.is_open()) {
+			cout << "Не удалось открыть файл " << filename << endl;
+			file_sh = false;
+		}
+	}
 	if (solex) {
 		for (int i = 0; i < m; ++i)
 			frw[i] = x[i][0];
 		res = A_base * frw - b_base;
-		cout << "Невязка:";
+		cout << "Невязка: "<<endl;
 		res.Show();
-		}
-	else cout << "Невозможно посчитать невязку. " << endl;
+		if (file_sh) { fout << "Невязка: " << endl; res.Show_in_file(fout); }
+	}
+	else { 
+		cout << "Невозможно посчитать невязку. " << endl; 
+		if (file_sh) fout << "Невозможно посчитать невязку. " << endl;
+	}
+	fout.close();
 	return res;
 }
 
 template<typename T>
-inline int SLAU<T>::JGauss(bool steps_sh)
+inline int SLAU<T>::JGauss(bool steps_sh, string filename)
 {
 	ofstream fout;
 	fout.open(filename,ofstream::app);
@@ -473,7 +472,6 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 			}
 		}
 	}
-
 	solved = true;
 	rank = k;
 	fout.close();
