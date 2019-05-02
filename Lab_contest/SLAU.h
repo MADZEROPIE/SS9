@@ -199,7 +199,7 @@ inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
 				fout.width(fstep);
 				fout << sol[0][j];
 				fout << border;
-				if (j == 0)
+				if (j == 0 && n>1)
 					fout << " + ";
 				else
 					fout << "   ";
