@@ -161,7 +161,7 @@ inline void SLAU<T>::Show_in_file(ofstream & fout, bool base)
 }
 
 template<typename T>
-inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
+inline void SLAU<T>::Show_sol(bool file_out,string filename)
 {
 	int m = A.m;
 	if (solex)
@@ -173,16 +173,16 @@ inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
 			for (int j = 0; j < n; ++j)
 				sol[j][i] = x[i][j];
 		ofstream fout;
-		if (steps_sh)
+		if (file_out)
 		{
 			fout.open(filename, ofstream::app);
 			if (!fout.is_open())
 			{
 				cout << "Не удалось открыть файл " << filename;
-				steps_sh = false;
+				file_out = false;
 			}
 		}
-		if (steps_sh)
+		if (file_out)
 		{
 			char border = char(166);
 			for (int j = 0; j < m; ++j)
@@ -268,15 +268,15 @@ inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
 }
 
 template<typename T>
-inline int SLAU<T>::Gauss_forw(bool steps_sh, string filename)
+inline int SLAU<T>::Gauss_forw(bool file_out, string filename)
 {
 	ofstream fout;
-	if (steps_sh) {
+	if (file_out) {
 		fout.open(filename, ofstream::app);
 		if (!fout.is_open())
 		{
 			cout << "Не удалось открыть файл " << filename << endl;
-			steps_sh = false;
+			file_out = false;
 		}
 	}
 	int m = A_base.m;
@@ -301,13 +301,13 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh, string filename)
 			continue;
 		else
 		{
-			if (steps_sh) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if (file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				if (steps_sh) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				if (steps_sh){ cout << endl; this->Show_in_file(fout);}
+				if (file_out){ cout << endl; this->Show_in_file(fout);}
 			}
 			pivot[j] = k;
 			k++;
@@ -315,12 +315,12 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh, string filename)
 			for (int l = k; l < n; ++l)
 			{
 				T d = A[l][j] / A[k - 1][j];
-				if (steps_sh) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+				if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh) {
+			if (file_out) {
 				fout << endl; this->Show_in_file(fout);
 			}
 		}
@@ -390,17 +390,17 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 }
 
 template<typename T>
-inline Row<T> SLAU<T>::check_res(bool file_sh, string filename)
+inline Row<T> SLAU<T>::check_res(bool file_out, string filename)
 {
 	int m = A_base.m;
 	Row<T> res;
 	Row<T> frw(m);
 	ofstream fout;
-	if (file_sh) {
+	if (file_out) {
 		fout.open(filename, ofstream::app);
 		if (!fout.is_open()) {
 			cout << "Не удалось открыть файл " << filename << endl;
-			file_sh = false;
+			file_out = false;
 		}
 	}
 	if (solex) {
@@ -409,21 +409,21 @@ inline Row<T> SLAU<T>::check_res(bool file_sh, string filename)
 		res = A_base * frw - b_base;
 		cout << "Невязка: "<<endl;
 		res.Show();
-		if (file_sh) { fout << "Невязка: " << endl; res.Show_in_file(fout); }
+		if (file_out) { fout << "Невязка: " << endl; res.Show_in_file(fout); }
 	}
 	else { 
 		cout << "Невозможно посчитать невязку. " << endl; 
-		if (file_sh) fout << "Невозможно посчитать невязку. " << endl;
+		if (file_out) fout << "Невозможно посчитать невязку. " << endl;
 	}
 	fout.close();
 	return res;
 }
 
 template<typename T>
-inline int SLAU<T>::JGauss(bool steps_sh, string filename)
+inline int SLAU<T>::JGauss(bool file_out, string filename)
 {
 	ofstream fout;
-	fout.open(filename,ofstream::app);
+	if(file_out) fout.open(filename,ofstream::app);
 	int m = A_base.m;
 	int n = A_base.n; rank = 0;
 	int k = 0;
@@ -444,13 +444,13 @@ inline int SLAU<T>::JGauss(bool steps_sh, string filename)
 			continue;
 		else
 		{
-			if(steps_sh) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if(file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				if (steps_sh) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				if (steps_sh) {
+				if (file_out) {
 					fout << endl; this->Show_in_file(fout);
 				}
 			}
@@ -462,12 +462,12 @@ inline int SLAU<T>::JGauss(bool steps_sh, string filename)
 				if (l == k - 1)
 					continue;
 				T d = A[l][j] / A[k - 1][j];
-				if (steps_sh) fout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
+				if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh) {
+			if (file_out) {
 				fout << endl; this->Show_in_file(fout);
 			}
 		}
@@ -479,7 +479,7 @@ inline int SLAU<T>::JGauss(bool steps_sh, string filename)
 }
 
 template<typename T>
-void SLAU<T>::interactive(bool steps_sh,string filename)
+void SLAU<T>::interactive(bool file_out,string filename)
 {
 	A = A_base; b = b_base;
 	solved = false;
@@ -490,15 +490,15 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 	int m = A.m;
 	int k = 0;
 	ofstream fout;
-	fout.open(filename, ofstream::app);
-	if (steps_sh)
+	if(file_out) fout.open(filename, ofstream::app);
+	if (file_out)
 	{
 		
 		
 		if (!fout.is_open())
 		{
 			cout << "Не удалось открыть файл " << filename << endl;
-			steps_sh = false;
+			file_out = false;
 		}
 		else
 			fout << "Интерактивный режим:" << endl;
@@ -524,7 +524,7 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 		
 		if (pivot[j]==-1 && k<=i && double(abs(A[i][j]))>acc)
 		{
-			if (steps_sh)
+			if (file_out)
 			{
 				fout << "Выбран елемент с индексами i = " << i << " j = " << j << " в качестве ведущего элмента" << endl;
 			}
@@ -534,12 +534,12 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 				
 				swap(A[i], A[k]);
 				swap(b[i], b[k]);
-				if (steps_sh)
+				cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+				if (file_out)
 				{
-					cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
 					fout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+					this->Show_in_file(fout);
 				}
-				cout << endl;
 				this->Show();
 			}
 			for (int l = k+1; l < n; ++l)
@@ -550,9 +550,9 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 				b[l] -= b[k] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh)
+			cout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
+			if (file_out)
 			{
-				cout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
 				fout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
 				this->Show_in_file(fout);
 			}
@@ -564,7 +564,7 @@ void SLAU<T>::interactive(bool steps_sh,string filename)
 	solved = true;
 	rank = k;
 	this->Show();
-	if (steps_sh)
+	if (file_out)
 		fout.close();
 }
 

@@ -174,9 +174,9 @@ void menu(bool file_out=false) {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	bool step_sh;//Вывод промежуточных преобразований
+	bool file_out;//Вывод промежуточных преобразований
 	cout << "Сохранять промежуточные преборазования в файл? Y/N ";
-	step_sh = get_ch();
-	menu(step_sh);
+	file_out = get_ch();
+	menu(file_out);
 	return 0;
 }
