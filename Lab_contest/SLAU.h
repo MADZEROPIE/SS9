@@ -24,7 +24,7 @@ public:
 	int Gauss_forw(bool steps_sh=true, string filename = "output.txt"); //Прямой ход метода Гаусса
 	int JGauss(bool steps_sh = true, string filename = "output.txt");// Метод Жордана-Гаусса
 	
-	void interactive(bool steps_sh = true); //Интерактивный метод Гаусса
+	void interactive(bool steps_sh = true,string filename = "output.txt"); //Интерактивный метод Гаусса
 	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
 	
 	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
@@ -199,7 +199,7 @@ inline void SLAU<T>::Show_sol(bool steps_sh,string filename)
 				fout.width(fstep);
 				fout << sol[0][j];
 				fout << border;
-				if (j == 0)
+				if (j == 0 && n>1)
 					fout << " + ";
 				else
 					fout << "   ";
@@ -479,7 +479,7 @@ inline int SLAU<T>::JGauss(bool steps_sh, string filename)
 }
 
 template<typename T>
-void SLAU<T>::interactive(bool steps_sh)
+void SLAU<T>::interactive(bool steps_sh,string filename)
 {
 	A = A_base; b = b_base;
 	solved = false;
@@ -489,6 +489,20 @@ void SLAU<T>::interactive(bool steps_sh)
 	int n = A.n;
 	int m = A.m;
 	int k = 0;
+	ofstream fout;
+	fout.open(filename, ofstream::app);
+	if (steps_sh)
+	{
+		
+		
+		if (!fout.is_open())
+		{
+			cout << "Не удалось открыть файл " << filename << endl;
+			steps_sh = false;
+		}
+		else
+			fout << "Интерактивный режим:" << endl;
+	}
 	do
 	{
 		int i,j;
@@ -510,12 +524,21 @@ void SLAU<T>::interactive(bool steps_sh)
 		
 		if (pivot[j]==-1 && k<=i && double(abs(A[i][j]))>acc)
 		{
+			if (steps_sh)
+			{
+				fout << "Выбран елемент с индексами i = " << i << " j = " << j << " в качестве ведущего элмента" << endl;
+			}
 			pivot[j] = k;
 			used[k] = true;
 			if (i != k) {
-				if (steps_sh) cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+				
 				swap(A[i], A[k]);
 				swap(b[i], b[k]);
+				if (steps_sh)
+				{
+					cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+					fout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+				}
 				cout << endl;
 				this->Show();
 			}
@@ -527,7 +550,12 @@ void SLAU<T>::interactive(bool steps_sh)
 				b[l] -= b[k] * d;
 				A[l][j] = T(0);
 			}
-			if (steps_sh) cout << "Исключаем переменную x" << j << " из СЛАУ. ???" << endl;
+			if (steps_sh)
+			{
+				cout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
+				fout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
+				this->Show_in_file(fout);
+			}
 			k++;
 		}
 		else cout << "Этот элемент не может быть выбран в качестве ведущего. Выберите другой ведущий элемент."<<endl;
@@ -536,6 +564,8 @@ void SLAU<T>::interactive(bool steps_sh)
 	solved = true;
 	rank = k;
 	this->Show();
+	if (steps_sh)
+		fout.close();
 }
 
 template<typename T>
