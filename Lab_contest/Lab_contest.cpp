@@ -9,7 +9,7 @@
 
 const int NotUsed = system("color F1");//Цвет консоли
 
-void menu(bool step_sh=false) {
+void menu(bool file_out=false) {
 	vector<const char*> menu = { "Задать СЛАУ ",
 		"Решение СЛАУ методом Гаусса",
 		"Решение СЛАУ методом Жордана-Гаусса ",
@@ -23,12 +23,12 @@ void menu(bool step_sh=false) {
 	bool rat_overflow = false; //Переполнение rational
 	ofstream fout; //Файл
 	string filename = "output.txt"; //Путь файла
-	if (step_sh) {
+	if (file_out) {
 		fout.open(filename, ofstream::app);
 		if (!fout.is_open())
 		{
 			cout << "Не удалось открыть файл " << filename;
-			step_sh = false;
+			file_out = false;
 		}
 	}
 	while (true) {
@@ -50,112 +50,116 @@ void menu(bool step_sh=false) {
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
 			rat_overflow = false;
-			if(step_sh) {
+			if(file_out) {
 				fout << "Исходная система: " << endl;
 				rslau.Show_in_file(fout, true);
 			}
-			if(step_sh) fout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
+			if(file_out) fout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
-			flslau.Gauss_forw(step_sh);
+			flslau.Gauss_forw(file_out);
 			
 			try {
-				if (step_sh) fout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
+				if (file_out) fout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 				cout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
-				rslau.Gauss_forw(step_sh);
+				rslau.Gauss_forw(file_out);
 			}
 			catch (const std::overflow_error& ex)
 			{
-				if (step_sh) fout << ex.what() << '\n';
+				if (file_out) fout << ex.what() << '\n';
 				std::cerr << ex.what() << '\n';
 				rat_overflow = true;
 			}
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			if(step_sh) fout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
+			if(file_out) fout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
-			flslau.Show_sol();
+			flslau.Show_sol(file_out);
 			if (!rat_overflow) {
 				try {
 					rslau.Gauss_back();
-					rslau.Show_sol(step_sh);
+					rslau.Show_sol(file_out);
 				}
 				catch (const std::overflow_error& ex)
 				{
-					if (step_sh) fout << ex.what() << '\n';
+					if (file_out) fout << ex.what() << '\n';
 					std::cerr << ex.what() << '\n';
 					rat_overflow = true;
 				}
 			}
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				if (step_sh) fout << "Невязка для десятичных дробей (float) :" << endl;
-				flslau.check_res(step_sh);
+				if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
+				flslau.check_res(file_out);
 				if (!rat_overflow) {
-					if(step_sh) fout << "Невязка для рациональных дробей (rational) :" << endl;
+					if(file_out) fout << "Невязка для рациональных дробей (rational) :" << endl;
 					cout << "Невязка для рациональных дробей (rational) :" << endl;
-					rslau.check_res(step_sh);
+					rslau.check_res(file_out);
 				}
 			}
-			if(step_sh) fout.close();
+			if(file_out) fout.close();
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
 			rat_overflow = false;
-			cout << "Выводить промежуточные преборазования с комментариями? Y/N ";
-			step_sh = get_ch();
-			
+			if (file_out) {
+				fout << "Исходная система: " << endl;
+				rslau.Show_in_file(fout, true);
+			}
+			if (file_out) fout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
-			flslau.JGauss(step_sh);
+			flslau.JGauss(file_out);
 			
 			try {
+				if (file_out) fout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 				cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
-				rslau.JGauss(step_sh);
+				rslau.JGauss(file_out);
 			}
 			catch (const std::overflow_error& ex)
 			{
+				if (file_out) fout << ex.what() << '\n';
 				std::cerr << ex.what() << '\n';
 				rat_overflow = true;
 			}
-			cout << "Метод Жордана-Гаусса завершен." << endl;
-			cout << "Идет формирование решений... " << endl;
+			cout << "Метод Жордана-Гаусса завершен." << endl << "Идет формирование решений... " << endl;
+			if(file_out) fout << "Метод Жордана-Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
-			flslau.Show_sol();
+			flslau.Show_sol(file_out);
 
 			if (!rat_overflow) {
 				try {
 					rslau.Gauss_back();
-					rslau.Show_sol();
+					rslau.Show_sol(file_out);
 				}
 				catch (const std::overflow_error& ex)
 				{
+					if (file_out) fout << ex.what() << '\n';
 					std::cerr << ex.what() << '\n';
 					rat_overflow = true;
 				}
 			}
 
 			if (flslau.sol_ex()) {
+				if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				flslau.check_res();
-
+				flslau.check_res(file_out);
 				if (!rat_overflow) {
+					if (file_out) fout << "Невязка для рациональных дробей (rational) :" << endl;
 					cout << "Невязка для рациональных дробей (rational) :" << endl;
-					rslau.check_res();
+					rslau.check_res(file_out);
 				}
 			}
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Выводить пояснения? Y/N";
-			step_sh = get_ch();
-			
-			flslau.interactive(step_sh);
-			cout << "Метод Гаусса завершен." << endl;
-			cout << "Идет формирование решений... " << endl;
+			flslau.interactive(file_out);
+			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
+			if (file_out) fout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
-			flslau.Show_sol();
+			flslau.Show_sol(file_out);
 
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				flslau.check_res();	
+				if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
+				flslau.check_res(file_out);
 			}
 			break;
 
