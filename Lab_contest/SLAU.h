@@ -34,6 +34,7 @@ public:
 	bool is_solved() { return solved; }	//Система решена?
 		
 	void Show(bool base=false);	//Вывод СЛАУ
+	void Show_in_file(ofstream&);
 	void Show_sol(); //Вывод решения
 	~SLAU();
 };
@@ -141,6 +142,30 @@ inline void SLAU<T>::Show(bool base)
 }
 
 template<typename T>
+inline void SLAU<T>::Show_in_file(ofstream & fout)
+{
+	int n = A.n;
+	int m = A.m;
+	char border = char(166);
+	for (int i = 0; i < n; ++i)
+	{
+		fout << border;
+		for (int j = 0; j < m; ++j)
+		{
+			fout.width(fstep);
+			fout << A[i][j];
+		}
+			
+		fout << border;
+		fout.width(fstep);
+		fout << b[i];
+		fout << border << endl;
+	}
+
+
+}
+
+template<typename T>
 inline void SLAU<T>::Show_sol()
 {
 	int m = A.m;
@@ -202,6 +227,8 @@ inline SLAU<T>::~SLAU()
 template<typename T>
 inline int SLAU<T>::Gauss_forw(bool steps_sh )
 {
+	ofstream fout;
+	fout.open("output.txt",ofstream::app);
 	int m = A_base.m;
 	int n = A_base.n; rank=0;
 	int k = 0;
@@ -224,13 +251,13 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh )
 			continue;
 		else
 		{
-			if (steps_sh) cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if (steps_sh) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (steps_sh) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
-				if (steps_sh){ cout << endl; this->Show();}
+				if (steps_sh){ cout << endl; this->Show_in_file(fout);}
 			}
 			pivot[j] = k;
 			k++;
@@ -238,19 +265,20 @@ inline int SLAU<T>::Gauss_forw(bool steps_sh )
 			for (int l = k; l < n; ++l)
 			{
 				T d = A[l][j] / A[k - 1][j];
-				//if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+				if (steps_sh) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
 			if (steps_sh) {
-				cout << endl; this->Show();
+				fout << endl; this->Show_in_file(fout);
 			}
 		}
 	}	
 
 	solved = true;
 	rank = k;
+	fout.close();
 	return rank;
 }
 
@@ -332,6 +360,8 @@ inline Row<T> SLAU<T>::check_res()
 template<typename T>
 inline int SLAU<T>::JGauss(bool steps_sh)
 {
+	ofstream fout;
+	fout.open("output.txt",ofstream::app);
 	int m = A_base.m;
 	int n = A_base.n; rank = 0;
 	int k = 0;
@@ -352,14 +382,14 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 			continue;
 		else
 		{
-			if(steps_sh) cout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+			if(steps_sh) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
 			if (max_elem != k)
 			{
-				if (steps_sh) cout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+				if (steps_sh) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
 				swap(A[max_elem], A[k]);
 				swap(b[max_elem], b[k]);
 				if (steps_sh) {
-					cout << endl; this->Show();
+					fout << endl; this->Show();
 				}
 			}
 			pivot[j] = k;
@@ -370,19 +400,20 @@ inline int SLAU<T>::JGauss(bool steps_sh)
 				if (l == k - 1)
 					continue;
 				T d = A[l][j] / A[k - 1][j];
-				if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
+				if (steps_sh) fout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
 				A[l] -= A[k - 1] * d;
 				b[l] -= b[k - 1] * d;
 				A[l][j] = T(0);
 			}
 			if (steps_sh) {
-				cout << endl; this->Show();
+				fout << endl; this->Show();
 			}
 		}
 	}
-	
+
 	solved = true;
 	rank = k;
+	fout.close();
 	return rank;
 }
 

@@ -3,10 +3,13 @@
 #include <conio.h>
 #include <Windows.h>
 #include <vector>
-
+#include <fstream>
 using namespace std;
 
 const int step = 12;
+const int fstep = 12;
+
+
 
 COORD get_coords();
 void gotoxy(int x, int y);
