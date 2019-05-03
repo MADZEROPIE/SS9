@@ -20,17 +20,8 @@ void menu(bool file_out=false) {
 	SLAU<rational> rslau;//СЛАУ для rational
 	SLAU<float> flslau;//СЛАУ для float
 	bool slau_ex = false;//Существование СЛАУ
-	bool rat_overflow = false; //Переполнение rational
 	ofstream fout; //Файл
 	string filename = "output.txt"; //Путь файла
-	/*if (file_out) {
-		fout.open(filename, ofstream::app);
-		if (!fout.is_open())
-		{
-			cout << "Не удалось открыть файл " << filename;
-			file_out = false;
-		}
-	}*/
 	while (true) {
 		do
 		{
@@ -45,20 +36,13 @@ void menu(bool file_out=false) {
 			rslau.Input();
 			flslau = rslau;
 			slau_ex = true;
-			rat_overflow = false;
 			break;
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			rat_overflow = false;
-			//if(file_out) {
-			//	fout << "Исходная система: " << endl;
-			//	rslau.Show_in_file(fout, true);
-			//}
-			//if(file_out) fout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
+			
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
 			flslau.Gauss_forw(file_out, filename);
 
-			//if (file_out) fout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 			cout << "Выполняется метод Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.Gauss_forw(file_out, filename);
 	
@@ -72,34 +56,23 @@ void menu(bool file_out=false) {
 			}
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				//if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
 				flslau.check_res(file_out, filename);
-				if (!rat_overflow) {
-					//if(file_out) fout << "Невязка для рациональных дробей (rational) :" << endl;
+				if (!rslau.rat_over()) {
 					cout << "Невязка для рациональных дробей (rational) :" << endl;
 					rslau.check_res(file_out, filename);
 				}
 			}
-			//if(file_out) fout.close();
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			rat_overflow = false;
-			//if (file_out) {
-			//	fout << "Исходная система: " << endl;
-			//	rslau.Show_in_file(fout, true);
-			//}
-			//if (file_out) fout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
+			
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
 			flslau.JGauss(file_out, filename);
 			
-			
-			//if (file_out) fout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 			cout << "Выполняется метод Жордана-Гаусса для рациональных дробей (rational)..." << endl;
 			rslau.JGauss(file_out, filename);
 			
 			cout << "Метод Жордана-Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			//if(file_out) fout << "Метод Жордана-Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
 			flslau.Show_sol(file_out, filename);
 
@@ -109,11 +82,9 @@ void menu(bool file_out=false) {
 			}
 
 			if (flslau.sol_ex()) {
-				//if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
 				cout << "Невязка для десятичных дробей (float) :" << endl;
 				flslau.check_res(file_out, filename);
 				if (!rslau.rat_over()) {
-					//if (file_out) fout << "Невязка для рациональных дробей (rational) :" << endl;
 					cout << "Невязка для рациональных дробей (rational) :" << endl;
 					rslau.check_res(file_out, filename);
 				}
@@ -123,17 +94,13 @@ void menu(bool file_out=false) {
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
 			flslau.interactive(file_out);
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			//if (file_out) fout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
 			flslau.Show_sol(file_out);
-
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
-				//if (file_out) fout << "Невязка для десятичных дробей (float) :" << endl;
 				flslau.check_res(file_out);
 			}
 			break;
-
 		default:
 			return;
 			break;

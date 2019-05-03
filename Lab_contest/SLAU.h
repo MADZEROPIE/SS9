@@ -15,7 +15,7 @@ class SLAU
 	bool solved = false; // Система решена?
 	vector<int>pivot; // ???
 	vector<bool> used; // ???
-	bool rat_overflow = false;
+	bool rat_overflow = false; //Переполнение rational
 public:
 	SLAU() {}
 	template<typename T1> friend class SLAU;
