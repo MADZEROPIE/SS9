@@ -15,6 +15,7 @@ class SLAU
 	bool solved = false; // Система решена?
 	vector<int>pivot; // ???
 	vector<bool> used; // ???
+	bool rat_overflow = false;
 public:
 	SLAU() {}
 	template<typename T1> friend class SLAU;
@@ -36,6 +37,7 @@ public:
 	void Show(bool base=false);	//Вывод СЛАУ
 	void Show_in_file(ofstream&, bool base = false);// Вывод СЛАУ в файл
 	void Show_sol(bool steps_sh=true, string filename = "output.txt"); //Вывод решения
+	bool rat_over() { return rat_overflow; }
 	~SLAU() {}
 };
 
@@ -121,6 +123,7 @@ inline SLAU<T>& SLAU<T>::Input()
 	cur.X += 4;
 	b_base.Show(true);
 	gotoxy(0, cur.Y + max(v,h) + 1);
+	rat_overflow = false;
 	return *this;
 }
 
@@ -273,10 +276,14 @@ inline int SLAU<T>::Gauss_forw(bool file_out, string filename)
 	ofstream fout;
 	if (file_out) {
 		fout.open(filename, ofstream::app);
-		if (!fout.is_open())
-		{
+		if (!fout.is_open()) {
 			cout << "Не удалось открыть файл " << filename << endl;
 			file_out = false;
+		}
+		else {
+			fout << "Исходная система: " << endl;
+			this->Show_in_file(fout, true);
+			fout << "Выполняется метод Гаусса..." << endl;
 		}
 	}
 	int m = A_base.m;
@@ -287,45 +294,52 @@ inline int SLAU<T>::Gauss_forw(bool file_out, string filename)
 	for (int i = 0; i < A.m; ++i)
 		pivot[i] = -1;
 	for (int j = 0; j < used.size(); ++j) used[j] = false;
-	for (int j = 0; j < m; ++j)
-	{
-		int max_elem = k;
-		for (int i = k; i < n; ++i)
+	try {
+		for (int j = 0; j < m; ++j)
 		{
-			if (abs(double(A[i][j])) < acc)
-				A[i][j] = T(0);
-			else if (abs(A[i][j]) > abs(A[max_elem][j]))
-				max_elem = i;
-		}
-		if (max_elem>=n || double(abs(A[max_elem][j]))<acc)
-			continue;
-		else
-		{
-			if (file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
-			if (max_elem != k)
+			int max_elem = k;
+			for (int i = k; i < n; ++i)
 			{
-				if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
-				swap(A[max_elem], A[k]);
-				swap(b[max_elem], b[k]);
-				if (file_out){ cout << endl; this->Show_in_file(fout);}
+				if (abs(double(A[i][j])) < acc)
+					A[i][j] = T(0);
+				else if (abs(A[i][j]) > abs(A[max_elem][j]))
+					max_elem = i;
 			}
-			pivot[j] = k;
-			k++;
-			used[k-1] = true;
-			for (int l = k; l < n; ++l)
+			if (max_elem >= n || double(abs(A[max_elem][j])) < acc)
+				continue;
+			else
 			{
-				T d = A[l][j] / A[k - 1][j];
-				if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
-				A[l] -= A[k - 1] * d;
-				b[l] -= b[k - 1] * d;
-				A[l][j] = T(0);
-			}
-			if (file_out) {
-				fout << endl; this->Show_in_file(fout);
+				if (file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+				if (max_elem != k)
+				{
+					if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+					swap(A[max_elem], A[k]);
+					swap(b[max_elem], b[k]);
+					if (file_out) { cout << endl; this->Show_in_file(fout); }
+				}
+				pivot[j] = k;
+				k++;
+				used[k - 1] = true;
+				for (int l = k; l < n; ++l)
+				{
+					T d = A[l][j] / A[k - 1][j];
+					if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+					A[l] -= A[k - 1] * d;
+					b[l] -= b[k - 1] * d;
+					A[l][j] = T(0);
+				}
+				if (file_out) {
+					fout << endl; this->Show_in_file(fout);
+				}
 			}
 		}
-	}	
-
+	}
+	catch (const std::overflow_error& ex) {
+		if (file_out) fout << ex.what() << '\n';
+		std::cerr << ex.what() << '\n';
+		rat_overflow = true;
+	}
+	if (file_out) fout << "Метод Гаусса завершен." << endl;
 	solved = true;
 	rank = k;
 	fout.close();
@@ -337,55 +351,62 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 {
 	int m = A.m;
 	int n = A.n;
-	
-	if (solved) {
-		for (int i = 0; i < n; ++i)
-			if (used[i] == false && double(abs(b[i])) < acc);
-				
-			else if (used[i]==false)
-			{
-				cout << "Система несовместна." << endl;
-				solex = false;
-				return x;
-			}
-		x.cl_resize(m, m - rank + 1);
-		for (int j=0;j<m;++j)
-			if (pivot[j]>=0)
-				for (int i = pivot[j] - 1; i >= 0; i--)
-				{
-					T d = A[i][j] / A[pivot[j]][j];
-					A[i] -= A[pivot[j]] * d;
-					b[i] -= b[pivot[j]] * d;
-					A[i][j] = T(0);
-				}
+	try
+	{
+		if (solved) {
+			for (int i = 0; i < n; ++i)
+				if (used[i] == false && double(abs(b[i])) < acc);
 
-		cout <<"РАНГ СИСТЕМЫ = " <<rank<<endl;
-		this->Show();
-		int p = 1;
-		for (int j = 0; j < m; ++j)
-		{
-			if (pivot[j] >= 0)
-			{
-				x[j][0] = b[pivot[j]] / A[pivot[j]][j];
-				int k = 1;
-				for (int l = 0; l < m; ++l)
+				else if (used[i] == false)
 				{
-					if (pivot[l] == -1)
-						x[j][k++] = T(0)-A[pivot[j]][l] / A[pivot[j]][j];
+					cout << "Система несовместна." << endl;
+					solex = false;
+					return x;
+				}
+			x.cl_resize(m, m - rank + 1);
+			for (int j = 0; j < m; ++j)
+				if (pivot[j] >= 0)
+					for (int i = pivot[j] - 1; i >= 0; i--)
+					{
+						T d = A[i][j] / A[pivot[j]][j];
+						A[i] -= A[pivot[j]] * d;
+						b[i] -= b[pivot[j]] * d;
+						A[i][j] = T(0);
+					}
+
+			cout << "РАНГ СИСТЕМЫ = " << rank << endl;
+			this->Show();
+			int p = 1;
+			for (int j = 0; j < m; ++j)
+			{
+				if (pivot[j] >= 0)
+				{
+					x[j][0] = b[pivot[j]] / A[pivot[j]][j];
+					int k = 1;
+					for (int l = 0; l < m; ++l)
+					{
+						if (pivot[l] == -1)
+							x[j][k++] = T(0) - A[pivot[j]][l] / A[pivot[j]][j];
+					}
+				}
+				else
+				{
+					x[j][p] = 1;
+					p++;
 				}
 			}
-			else
-			{
-				x[j][p] = 1;
-				p++;
-			}
+			solex = true;
 		}
-		solex = true;
+		else
+		{
+			cout << "Сначала вызовите Метод Гаусса или Жордана-Гаусса." << endl;
+		}
 	}
-	else 
-	{	
-		cout << "Сначала вызовите Метод Гаусса или Жордана-Гаусса." << endl;
+	catch (const std::overflow_error& ex) {
+		std::cerr << ex.what() << '\n';
+		rat_overflow = true;
 	}
+	
 	return x;
 }
 
@@ -407,7 +428,7 @@ inline Row<T> SLAU<T>::check_res(bool file_out, string filename)
 		for (int i = 0; i < m; ++i)
 			frw[i] = x[i][0];
 		res = A_base * frw - b_base;
-		cout << "Невязка: "<<endl;
+		//cout << "Невязка: "<<endl;
 		res.Show();
 		if (file_out) { fout << "Невязка: " << endl; res.Show_in_file(fout); }
 	}
@@ -423,7 +444,18 @@ template<typename T>
 inline int SLAU<T>::JGauss(bool file_out, string filename)
 {
 	ofstream fout;
-	if(file_out) fout.open(filename,ofstream::app);
+	if (file_out) {
+		fout.open(filename, ofstream::app);
+		if (!fout.is_open()) {
+			cout << "Не удалось открыть файл " << filename << endl;
+			file_out = false;
+		}
+		else {
+			fout << "Исходная система: " << endl;
+			this->Show_in_file(fout, true);
+			fout << "Выполняется метод Жордана-Гаусса..." << endl;
+		}
+	}
 	int m = A_base.m;
 	int n = A_base.n; rank = 0;
 	int k = 0;
@@ -432,48 +464,58 @@ inline int SLAU<T>::JGauss(bool file_out, string filename)
 	for (int i = 0; i < A.m; ++i)
 		pivot[i] = -1;
 	for (int j = 0; j < used.size(); ++j) used[j] = false;
-	for (int j = 0; j < m; ++j)
+	try
 	{
-		int max_elem = k;
-		for (int i = k; i < n; ++i)
-			if (abs(double(A[i][j])) < acc)
-				A[i][j] = T(0);
-			else if (abs(A[i][j]) > abs(A[max_elem][j]))
-				max_elem = i;
-		if (max_elem >= n || double(abs(A[max_elem][j]))<acc)
-			continue;
-		else
+		for (int j = 0; j < m; ++j)
 		{
-			if(file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
-			if (max_elem != k)
+			int max_elem = k;
+			for (int i = k; i < n; ++i)
+				if (abs(double(A[i][j])) < acc)
+					A[i][j] = T(0);
+				else if (abs(A[i][j]) > abs(A[max_elem][j]))
+					max_elem = i;
+			if (max_elem >= n || double(abs(A[max_elem][j])) < acc)
+				continue;
+			else
 			{
-				if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
-				swap(A[max_elem], A[k]);
-				swap(b[max_elem], b[k]);
+				if (file_out) fout << "Максимальный по модулю элемент находится в " << max_elem << " - ой строке" << endl;
+				if (max_elem != k)
+				{
+					if (file_out) fout << "Меняем местами строки с индексами " << max_elem << " и " << k << endl;
+					swap(A[max_elem], A[k]);
+					swap(b[max_elem], b[k]);
+					if (file_out) {
+						fout << endl; this->Show_in_file(fout);
+					}
+				}
+				pivot[j] = k;
+				k++;
+				used[k - 1] = true;
+				for (int l = 0; l < n; ++l)
+				{
+					if (l == k - 1)
+						continue;
+					T d = A[l][j] / A[k - 1][j];
+					if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k - 1 << " строку, умноженную на " << d << endl;
+					A[l] -= A[k - 1] * d;
+					b[l] -= b[k - 1] * d;
+					A[l][j] = T(0);
+				}
 				if (file_out) {
 					fout << endl; this->Show_in_file(fout);
 				}
 			}
-			pivot[j] = k;
-			k++;
-			used[k-1] = true;
-			for (int l = 0; l < n; ++l)
-			{
-				if (l == k - 1)
-					continue;
-				T d = A[l][j] / A[k - 1][j];
-				if (file_out) fout << "Вычитаем из " << l << "-ой строки " << k-1 << " строку, умноженную на " << d << endl;
-				A[l] -= A[k - 1] * d;
-				b[l] -= b[k - 1] * d;
-				A[l][j] = T(0);
-			}
-			if (file_out) {
-				fout << endl; this->Show_in_file(fout);
-			}
 		}
 	}
+	catch (const std::overflow_error& ex) {
+		if (file_out) fout << ex.what() << '\n';
+		std::cerr << ex.what() << '\n';
+		rat_overflow = true;
+	}
+	
 	solved = true;
 	rank = k;
+	if (file_out) fout << "Метод Жордана-Гаусса завершен." << endl;
 	fout.close();
 	return rank;
 }
@@ -500,72 +542,81 @@ void SLAU<T>::interactive(bool file_out,string filename)
 			cout << "Не удалось открыть файл " << filename << endl;
 			file_out = false;
 		}
-		else
+		else {
+			fout << "Исходная система: " << endl;
+			this->Show_in_file(fout, true);
 			fout << "Интерактивный режим:" << endl;
+		}
 	}
-	do
-	{
-		int i,j;
-		cout << endl;
-		this->Show();
-		cout << "Выберите ведущий элемент. " << endl;
-		cout << "Введите номер строки: i = ";
+	try {
 		do
 		{
-			cin >> i;
-			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); i = -1; }
-		} while (i<0 || i>=n);
-		cout << "Введите номер столбца j = ";
-		do
-		{
-			cin >> j;
-			if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); j = -1; }
-		} while (j < 0 || j >= m);
-		
-		if (pivot[j]==-1 && k<=i && double(abs(A[i][j]))>acc)
-		{
-			if (file_out)
+			int i, j;
+			cout << endl;
+			this->Show();
+			cout << "Выберите ведущий элемент. " << endl;
+			cout << "Введите номер строки: i = ";
+			do
 			{
-				fout << "Выбран елемент с индексами i = " << i << " j = " << j << " в качестве ведущего элмента" << endl;
-			}
-			pivot[j] = k;
-			used[k] = true;
-			if (i != k) {
-				
-				swap(A[i], A[k]);
-				swap(b[i], b[k]);
-				cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+				cin >> i;
+				if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); i = -1; }
+			} while (i < 0 || i >= n);
+			cout << "Введите номер столбца j = ";
+			do
+			{
+				cin >> j;
+				if (!(cin.good())) { cin.clear(); cin.ignore(); fflush(stdin); j = -1; }
+			} while (j < 0 || j >= m);
+
+			if (pivot[j] == -1 && k <= i && double(abs(A[i][j])) > acc)
+			{
 				if (file_out)
 				{
-					fout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+					fout << "Выбран элемент с индексами i = " << i << " j = " << j << " в качестве ведущего элмента" << endl;
+				}
+				pivot[j] = k;
+				used[k] = true;
+				if (i != k) {
+
+					swap(A[i], A[k]);
+					swap(b[i], b[k]);
+					cout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+					if (file_out)
+					{
+						fout << "Меняем местами строки с индексами " << i << " и " << k << endl;
+						this->Show_in_file(fout);
+					}
+					this->Show();
+				}
+				for (int l = k + 1; l < n; ++l)
+				{
+					T d = A[l][j] / A[k][j];
+					//if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
+					A[l] -= A[k] * d;
+					b[l] -= b[k] * d;
+					A[l][j] = T(0);
+				}
+				cout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
+				if (file_out)
+				{
+					fout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
 					this->Show_in_file(fout);
 				}
-				this->Show();
+				k++;
 			}
-			for (int l = k+1; l < n; ++l)
-			{
-				T d = A[l][j] / A[k][j];
-				//if (steps_sh) cout << "Вычитаем из " << l << "-ой строки " << k  << " строку, умноженную на " << d << endl;
-				A[l] -= A[k] * d;
-				b[l] -= b[k] * d;
-				A[l][j] = T(0);
-			}
-			cout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
-			if (file_out)
-			{
-				fout << "Исключаем переменную x" << j << " из СЛАУ." << endl;
-				this->Show_in_file(fout);
-			}
-			k++;
-		}
-		else cout << "Этот элемент не может быть выбран в качестве ведущего. Выберите другой ведущий элемент."<<endl;
+			else cout << "Этот элемент не может быть выбран в качестве ведущего. Выберите другой ведущий элемент." << endl;
 
-	} while (!end_gauss(k));
+		} while (!end_gauss(k));
+	}
+	catch (const std::overflow_error& ex) {
+		if (file_out) fout << ex.what() << '\n';
+		std::cerr << ex.what() << '\n';
+		rat_overflow = true;
+	}
+	if (file_out) { fout << "Метод Гаусса завершен." << endl; fout.close(); }
 	solved = true;
 	rank = k;
 	this->Show();
-	if (file_out)
-		fout.close();
 }
 
 template<typename T>
