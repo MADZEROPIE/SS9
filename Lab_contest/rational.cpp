@@ -21,14 +21,14 @@ bool rational::operator<=(const rational & a)
 	return ((p*a.q) <= (a.p*q));
 }
 
-bool rational::operator==(int a)
+bool rational::operator==(const rational& a)
 {
-	return (a*q == p);
+	return ((p*a.q) == (a.p*q));
 }
 
-bool rational::operator!=(int a)
+bool rational::operator!=(const rational& a)
 {
-	return (a*q != p);
+	return ((p*a.q) != (a.p*q));
 }
 
 rational::rational()

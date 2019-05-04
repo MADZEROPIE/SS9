@@ -22,21 +22,21 @@ public:
 	template<typename T1>SLAU<T>& operator=(SLAU<T1>&);
 
 	SLAU<T>& Input();//Ввод СЛАУ
-	int Gauss_forw(bool steps_sh=true, string filename = "output.txt"); //Прямой ход метода Гаусса
-	int JGauss(bool steps_sh = true, string filename = "output.txt");// Метод Жордана-Гаусса
+	int Gauss_forw(bool file_out = false, string filename = "output.txt"); //Прямой ход метода Гаусса
+	int JGauss(bool file_out = false, string filename = "output.txt");// Метод Жордана-Гаусса
 	
-	void interactive(bool steps_sh = true,string filename = "output.txt"); //Интерактивный метод Гаусса
+	void interactive(bool file_out = false,string filename = "output.txt"); //Интерактивный метод Гаусса
 	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
 	
 	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
-	Row<T> check_res(bool steps_sh = true, string filename = "output.txt");	//Подсчёт невязки
+	Row<T> check_res(bool file_out = false, string filename = "output.txt");	//Подсчёт невязки
 
 	bool sol_ex() { return solex; }	//Существование решений
 	bool is_solved() { return solved; }	//Система решена?
 		
 	void Show(bool base=false);	//Вывод СЛАУ
 	void Show_in_file(ofstream&, bool base = false);// Вывод СЛАУ в файл
-	void Show_sol(bool steps_sh=true, string filename = "output.txt"); //Вывод решения
+	void Show_sol(bool file_out = false, string filename = "output.txt"); //Вывод решения
 	bool rat_over() { return rat_overflow; }
 	~SLAU() {}
 };
@@ -572,7 +572,7 @@ void SLAU<T>::interactive(bool file_out,string filename)
 			{
 				if (file_out)
 				{
-					fout << "Выбран элемент с индексами i = " << i << " j = " << j << " в качестве ведущего элмента" << endl;
+					fout << "Выбран элемент с индексами i = " << i << " j = " << j << " в качестве ведущего элемента" << endl;
 				}
 				pivot[j] = k;
 				used[k] = true;

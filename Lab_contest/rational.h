@@ -20,8 +20,8 @@ struct rational
 	bool operator < (const rational& a);
 	bool operator >= (const rational& a);
 	bool operator <= (const rational& a);
-	bool operator ==(int a);
-	bool operator!=(int a);
+	bool operator ==(const rational& a);
+	bool operator!=(const rational& a);
 
 	//Конструкторы
 	rational();

@@ -9,7 +9,7 @@
 
 const int NotUsed = system("color F1");//Цвет консоли
 
-void menu(bool file_out=false) {
+void menu() {
 	vector<const char*> menu = { "Задать СЛАУ ",
 		"Решение СЛАУ методом Гаусса",
 		"Решение СЛАУ методом Жордана-Гаусса ",
@@ -22,6 +22,7 @@ void menu(bool file_out=false) {
 	bool slau_ex = false;//Существование СЛАУ
 	ofstream fout; //Файл
 	string filename = "output.txt"; //Путь файла
+	bool file_out;
 	while (true) {
 		do
 		{
@@ -39,7 +40,8 @@ void menu(bool file_out=false) {
 			break;
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			
+			cout << "Сохранять промежуточные преборазования в файл "<<filename<<"? Y/N ";
+			file_out = get_ch();
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
 			flslau.Gauss_forw(file_out, filename);
 
@@ -65,7 +67,8 @@ void menu(bool file_out=false) {
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			
+			cout << "Сохранять промежуточные преборазования в файл " << filename << "? Y/N ";
+			file_out = get_ch();
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
 			flslau.JGauss(file_out, filename);
 			
@@ -92,6 +95,8 @@ void menu(bool file_out=false) {
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
+			cout << "Сохранять промежуточные преборазования в файл " << filename << "? Y/N ";
+			file_out = get_ch();
 			flslau.interactive(file_out);
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			flslau.Gauss_back();
@@ -112,9 +117,6 @@ void menu(bool file_out=false) {
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	bool file_out;//Вывод промежуточных преобразований
-	cout << "Сохранять промежуточные преборазования в файл? Y/N ";
-	file_out = get_ch();
-	menu(file_out);
+	menu();
 	return 0;
 }
