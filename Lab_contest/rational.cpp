@@ -129,14 +129,6 @@ rational operator/(const rational & a, const rational & b)
 	return res;
 }
 
-void swap(rational& a, rational& b)
-{
-	rational tmp;
-	tmp = a;
-	a = b;
-	b = tmp;
-}
-
 void del(rational& a)
 {
 	int64_t tmp = gcd(abs(a.p), abs(a.q)); // ѕри вызове abs, если число равно LLONG_MIN, abs вернет LLONG_MIN => gcd = отрицат. числу => если он равен -1, то будет переполнение

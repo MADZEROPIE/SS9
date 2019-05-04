@@ -45,7 +45,6 @@ rational operator- (const rational& a, const rational& b);
 rational operator* (const rational& a, const rational& b);
 rational operator/ (const rational& a, const rational& b);
 
-void swap(rational& a, rational& b);
 void del(rational& a);//Сокращение дроби
 int64_t gcd(int64_t, int64_t);//НОД
 rational abs(const rational&);//Модуль
