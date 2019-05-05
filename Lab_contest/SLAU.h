@@ -13,7 +13,7 @@ class SLAU
 	int rank = 0; //Ранг СЛАУ
 	double acc=1e-16; // Точность округления до нуля
 	bool solved = false; // Система решена?
-	vector<int>pivot; // ???
+	vector<int>pivot; // Вектор индексов ведущих элементов
 	vector<bool> used; // ???
 	bool rat_overflow = false; //Переполнение rational
 public:
@@ -28,7 +28,7 @@ public:
 	void interactive(bool file_out = false,string filename = "output.txt"); //Интерактивный метод Гаусса
 	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
 	
-	Matrix<T> Gauss_back(); //Обратный ход ход метода Гаусса (формирование решений)
+	Matrix<T> Gauss_back(bool file_out = false, string filename = "output.txt"); //Обратный ход ход метода Гаусса (формирование решений)
 	Row<T> check_res(bool file_out = false, string filename = "output.txt");	//Подсчёт невязки
 
 	bool sol_ex() { return solex; }	//Существование решений
@@ -227,6 +227,7 @@ inline void SLAU<T>::Show_sol(bool file_out,string filename)
 				fout << endl;
 			}
 			fout << endl;
+			fout.close();
 		}
 		COORD cur = get_coords();
 		drawx(cur.X, cur.Y, m);
@@ -287,7 +288,7 @@ inline int SLAU<T>::Gauss_forw(bool file_out, string filename)
 		}
 	}
 	int m = A_base.m;
-	int n = A_base.n; rank=0;
+	int n = A_base.n; rank = 0;
 	int k = 0;
 	A = A_base; b = b_base;
 	solved = false;
@@ -339,18 +340,29 @@ inline int SLAU<T>::Gauss_forw(bool file_out, string filename)
 		std::cerr << ex.what() << '\n';
 		rat_overflow = true;
 	}
-	if (file_out) fout << "Метод Гаусса завершен." << endl;
+	if (file_out) {this->Show_in_file(fout);
+	fout << "Метод Гаусса завершен." << endl;
+	fout.close();
+	}
+	this->Show();
 	solved = true;
 	rank = k;
-	fout.close();
 	return rank;
 }
 
 template<typename T>
-inline Matrix<T> SLAU<T>::Gauss_back()
+inline Matrix<T> SLAU<T>::Gauss_back(bool file_out, string filename)
 {
 	int m = A.m;
 	int n = A.n;
+	ofstream fout;
+	if (file_out) {
+		fout.open(filename, ofstream::app);
+		if (!fout.is_open()) {
+			cout << "Не удалось открыть файл " << filename << endl;
+			file_out = false;
+		}
+	}
 	try
 	{
 		if (solved) {
@@ -359,7 +371,8 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 
 				else if (used[i] == false)
 				{
-					cout << "Система несовместна." << endl;
+					if (file_out) fout << "Система несовместна. " << endl;
+					cout << "Система несовместна. ";
 					solex = false;
 					return x;
 				}
@@ -375,6 +388,7 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 					}
 
 			cout << "РАНГ СИСТЕМЫ = " << rank << endl;
+			if (file_out) fout<< "РАНГ СИСТЕМЫ = " << rank << endl;
 			this->Show();
 			int p = 1;
 			for (int j = 0; j < m; ++j)
@@ -399,14 +413,16 @@ inline Matrix<T> SLAU<T>::Gauss_back()
 		}
 		else
 		{
+			if (file_out) fout << "Сначала вызовите Метод Гаусса или Жордана-Гаусса." << endl;
 			cout << "Сначала вызовите Метод Гаусса или Жордана-Гаусса." << endl;
 		}
 	}
 	catch (const std::overflow_error& ex) {
+		if (file_out) fout << ex.what() << '\n';
 		std::cerr << ex.what() << '\n';
 		rat_overflow = true;
 	}
-	
+	if (file_out) fout.close();
 	return x;
 }
 
@@ -515,8 +531,10 @@ inline int SLAU<T>::JGauss(bool file_out, string filename)
 	
 	solved = true;
 	rank = k;
-	if (file_out) fout << "Метод Жордана-Гаусса завершен." << endl;
-	fout.close();
+	if (file_out) {
+		fout << "Метод Жордана-Гаусса завершен." << endl;
+		fout.close();
+	}
 	return rank;
 }
 

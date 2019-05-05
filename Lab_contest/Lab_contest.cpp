@@ -50,10 +50,10 @@ void menu() {
 	
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
 			if(file_out) fout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			flslau.Gauss_back();
+			flslau.Gauss_back(file_out);
 			flslau.Show_sol(file_out, filename);
 			if (!rslau.rat_over()) {
-				rslau.Gauss_back();
+				rslau.Gauss_back(file_out);
 				rslau.Show_sol(file_out, filename);
 			}
 			if (flslau.sol_ex()) {
@@ -76,11 +76,11 @@ void menu() {
 			rslau.JGauss(file_out, filename);
 			
 			cout << "Метод Жордана-Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			flslau.Gauss_back();
+			flslau.Gauss_back(file_out);
 			flslau.Show_sol(file_out, filename);
 
 			if (!rslau.rat_over()) {
-				rslau.Gauss_back();
+				rslau.Gauss_back(file_out);
 				rslau.Show_sol(file_out, filename);
 			}
 
@@ -99,7 +99,7 @@ void menu() {
 			file_out = get_ch();
 			flslau.interactive(file_out);
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
-			flslau.Gauss_back();
+			flslau.Gauss_back(file_out);
 			flslau.Show_sol(file_out);
 			if (flslau.sol_ex()) {
 				cout << "Невязка для десятичных дробей (float) :" << endl;
