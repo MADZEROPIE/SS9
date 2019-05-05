@@ -25,7 +25,7 @@ public:
 	int Gauss_forw(bool file_out = false, string filename = "output.txt"); //Прямой ход метода Гаусса
 	int JGauss(bool file_out = false, string filename = "output.txt");// Метод Жордана-Гаусса
 	
-	void interactive(bool file_out = false,string filename = "output.txt"); //Интерактивный метод Гаусса
+	int interactive(bool file_out = false,string filename = "output.txt"); //Интерактивный метод Гаусса
 	bool end_gauss(int k); // Проверка на окончание интерактивного метода Гаусса
 	
 	Matrix<T> Gauss_back(bool file_out = false, string filename = "output.txt"); //Обратный ход ход метода Гаусса (формирование решений)
@@ -539,7 +539,7 @@ inline int SLAU<T>::JGauss(bool file_out, string filename)
 }
 
 template<typename T>
-void SLAU<T>::interactive(bool file_out,string filename)
+int SLAU<T>::interactive(bool file_out,string filename)
 {
 	A = A_base; b = b_base;
 	solved = false;
@@ -635,6 +635,7 @@ void SLAU<T>::interactive(bool file_out,string filename)
 	solved = true;
 	rank = k;
 	this->Show();
+	return rank;
 }
 
 template<typename T>
