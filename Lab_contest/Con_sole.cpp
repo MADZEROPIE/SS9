@@ -44,10 +44,6 @@ bool get_ch()
 	return (ch == 'Y' || ch == '1');
 }
 
-void move_cur(COORD coord)
-{
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
 
 COORD get_coords()
 {

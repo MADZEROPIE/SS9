@@ -34,7 +34,7 @@ public:
 		return n;
 	} // Возвращает размер столбца
 	Row<T>& Input(); //Ввод столбца
-	template <typename T> friend void swap(Row<T>&a, Row<T>& b);// Меняет объекты a и b местами
+	template <typename T> friend void swap(Row<T>& a, Row<T>& b);// Меняет объекты a и b местами
 
 	~Row();	//Деструктор
 };
