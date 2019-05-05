@@ -549,12 +549,10 @@ void SLAU<T>::interactive(bool file_out,string filename)
 	int n = A.n;
 	int m = A.m;
 	int k = 0;
-	ofstream fout;
-	if(file_out) fout.open(filename, ofstream::app);
+	ofstream fout; 
 	if (file_out)
-	{
-		
-		
+	{	
+		fout.open(filename, ofstream::app);
 		if (!fout.is_open())
 		{
 			cout << "Не удалось открыть файл " << filename << endl;

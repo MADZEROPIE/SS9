@@ -28,12 +28,12 @@ public:
 
 	void Clear(); //Удаление всех элементов столбца
 	void resize(uint32_t m); //Изменение размера
-	void Show(bool drawnext=false);	//Вывод на экран
-	void Show_in_file(ofstream&);
-	size_t size() {
-		return n;
-	} // Возвращает размер столбца
+
 	Row<T>& Input(); //Ввод столбца
+	void Show(bool drawnext=false);	//Вывод на экран
+	void Show_in_file(ofstream&); // Вывод в файл
+	
+	size_t size() { return n; } // Возвращает размер столбца
 	template <typename T> friend void swap(Row<T>& a, Row<T>& b);// Меняет объекты a и b местами
 
 	~Row();	//Деструктор
