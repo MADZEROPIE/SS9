@@ -40,7 +40,7 @@ void menu() {
 			break;
 		case 2:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Сохранять промежуточные преборазования в файл "<<filename<<"? Y/N ";
+			cout << "Сохранять промежуточные преобразования в файл "<<filename<<"? Y/N ";
 			file_out = get_ch();
 			cout << "Выполняется метод Гаусса для десятичных дробей (float)..." << endl;
 			flslau.Gauss_forw(file_out, filename);
@@ -67,7 +67,7 @@ void menu() {
 			break;
 		case 3:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Сохранять промежуточные преборазования в файл " << filename << "? Y/N ";
+			cout << "Сохранять промежуточные преобразования в файл " << filename << "? Y/N ";
 			file_out = get_ch();
 			cout << "Выполняется метод Жордана-Гаусса для десятичных дробей (float)..." << endl;
 			flslau.JGauss(file_out, filename);
@@ -95,7 +95,7 @@ void menu() {
 			break;
 		case 4:
 			if (!slau_ex) { system("cls"); cout << "Cначала создайте СЛАУ." << endl; break; }
-			cout << "Сохранять промежуточные преборазования в файл " << filename << "? Y/N ";
+			cout << "Сохранять промежуточные преобразования в файл " << filename << "? Y/N ";
 			file_out = get_ch();
 			flslau.interactive(file_out);
 			cout << "Метод Гаусса завершен." << endl << "Идет формирование решений... " << endl;
